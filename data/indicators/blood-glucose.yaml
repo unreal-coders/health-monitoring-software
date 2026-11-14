@@ -1,0 +1,76 @@
+id: blood-glucose
+name: Blood glucose
+domain: Metabolism and nutrition
+entry_kind: measurement
+unit: mg/dL
+
+mechanism:
+  summary: >-
+    The challenge statement names blood sugar, in mg/dL, as a useful health
+    indicator for astronauts. Keeping nutritional status is critical to crew
+    health and performance, and each crewmember's nutrient and energy needs are
+    calculated from age, sex, body mass, height, and activity.
+  hazards: []
+  hazards_note: The NASA sources consulted do not link blood glucose to one of the five hazards.
+  sources: [space-apps-challenge, nasa-std-3001-v1]
+
+measurement:
+  method: null
+  method_note: >-
+    No NASA source was found for how blood glucose is measured on board. The
+    method must be added with a NASA source before the sheet is complete.
+  sources: []
+  interval: null
+  interval_note: No measurement interval found in the NASA sources consulted.
+
+baseline:
+  value: null
+  type: null
+  note: No baseline value found in the NASA sources consulted.
+
+thresholds:
+  green: null
+  yellow: null
+  red: null
+  note: >-
+    No numeric blood glucose ranges were found in the NASA sources consulted. No
+    green, yellow, or red range is defined until the team agrees on a source.
+  sources: []
+
+countermeasures:
+  - text: >-
+      Each crewmember is provided with 100% of their calculated nutrient and
+      energy requirements, based on age, sex, body mass, height, and activity.
+    source: nasa-std-3001-v1
+
+flight_surgeon:
+  when_to_contact: >-
+    No NASA rule for this indicator was found. Following the project rule, the
+    astronaut shares any value the app cannot evaluate with the flight surgeon.
+  if_no_real_time_contact: >-
+    Each vehicle has at least two crewmembers trained as Crew Medical Officers,
+    the medical experts for the mission. The astronaut reports to them.
+  sources: [nasa-std-3001-v1]
+
+astronaut_text:
+  no_reference: There is no NASA reference to rate this value yet. Share it with the flight surgeon.
+  no_contact: If you cannot reach the flight surgeon, tell your Crew Medical Officer.
+  missing: You have not logged your blood glucose yet.
+
+limitations:
+  - No NASA source was found for on-board glucose measurement, its ranges, or its link to a spaceflight hazard.
+  - Nutritional needs depend on age, sex, body mass, height, and activity ([V1 4020]), but no glucose range by age or sex was found.
+
+sources:
+  - id: space-apps-challenge
+    title: "Create Health Monitoring Software for Astronauts on Space Missions"
+    publisher: NASA Space Apps Challenge 2026
+    url: https://www.spaceappschallenge.org/2026/challenges/health-monitoring-software/?tab=details
+  - id: nasa-std-3001-v1
+    title: "NASA-STD-3001 Volume 1, Revision C: Crew Health"
+    publisher: NASA
+    url: https://standards.nasa.gov/sites/default/files/standards/NASA/C//nasa-std-3001-vol-1-rev-c-signature.pdf
+    locator: "Section 4.5, [V1 4020], [V1 3006], [V1 5003]"
+
+author: Troy Leonardo Moreno Calderon
+reviewer: null

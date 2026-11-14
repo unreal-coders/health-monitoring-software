@@ -1,0 +1,107 @@
+id: mood
+name: Mood
+domain: Behavioral
+entry_kind: self-report
+unit: null
+input: scale
+
+mechanism:
+  summary: >-
+    Prolonged isolation and confinement can increase the risk of behavioral
+    issues and psychiatric disorders, such as anxiety and depression, which may
+    affect sleep, morale, and decision making.
+  hazards: [isolation-and-confinement, distance-from-earth]
+  detail:
+    - text: >-
+        Common behavioral health concerns in spaceflight include stress,
+        depression, anxiety, relationship problems, and grief. They can be
+        temporary or develop into a psychiatric disorder.
+      source: ochmo-tb-016
+    - text: >-
+        Mood disturbance (for example, irritability) is one of the conditions
+        NASA says should be addressed on every mission.
+      source: nasa-std-3001-v1
+    - text: >-
+        Crews on the ISS can talk with family and medical professionals, but long
+        communication delays on a trip to Mars will create new challenges.
+      source: hrp-risk-behavioral
+  sources: [hrp-risk-behavioral, ochmo-tb-016, nasa-std-3001-v1]
+
+measurement:
+  method: >-
+    The astronaut rates their mood on a short scale in the app. NASA uses
+    behavioral performance surveys in ARCHeR.
+  method_note: >-
+    No NASA mood scale was found. The scale the app uses must be defined with a
+    source.
+  sources: [hrp-archer]
+  interval: null
+  interval_note: No measurement interval found in the NASA sources consulted.
+
+baseline:
+  value: null
+  type: null
+  note: No baseline value found in the NASA sources consulted.
+
+thresholds:
+  green: null
+  yellow: null
+  red: null
+  note: >-
+    NASA-STD-3001 requires crew behavioral health to stay within clinically
+    accepted values, as determined by behavioral health evaluations, but gives
+    no scale or values for a mood self-report. No green, yellow, or red range is
+    defined until the team agrees on a source.
+  sources: [nasa-std-3001-v1]
+
+countermeasures:
+  - text: Keeping a regular journal is one of the self-care options NASA encourages.
+    source: hrp-risk-behavioral
+  - text: Growing fresh vegetables may have therapeutic benefits as a reminder of life on Earth.
+    source: hrp-risk-behavioral
+  - text: Spacecraft windows reduce monotony and the sense of confinement, and privacy is a priority for psychological well-being.
+    source: hrp-risk-behavioral
+  - text: Crew care packages, support events, and family conferences are part of NASA's psychological support.
+    source: ochmo-tb-016
+  - text: Photographing Earth and journaling are important outlets to manage stress.
+    source: ochmo-tb-016
+
+flight_surgeon:
+  when_to_contact: >-
+    No NASA rule for this indicator was found. Following the project rule, the
+    astronaut shares any value the app cannot evaluate with the flight surgeon.
+  if_no_real_time_contact: >-
+    Each vehicle has at least two crewmembers trained as Crew Medical Officers,
+    the medical experts for the mission. The astronaut reports to them.
+  sources: [nasa-std-3001-v1]
+
+astronaut_text:
+  no_reference: There is no NASA reference to rate this value yet. Share it with the flight surgeon.
+  no_contact: If you cannot reach the flight surgeon, tell your Crew Medical Officer.
+  missing: You have not logged your mood yet.
+
+limitations:
+  - No NASA mood scale or range was found, so the app cannot assign a color yet.
+  - A mood self-report does not replace the behavioral health evaluations NASA uses.
+
+sources:
+  - id: hrp-risk-behavioral
+    title: Risk of Behavioral Changes and Psychiatric Disorders
+    publisher: NASA Human Research Program
+    url: https://www.nasa.gov/reference/risk-of-behavioral-conditions-and-psychiatric-disorders/
+  - id: ochmo-tb-016
+    title: "OCHMO-TB-016 Behavioral Health and Performance, Rev B"
+    publisher: NASA Office of the Chief Health and Medical Officer
+    url: https://www.nasa.gov/wp-content/uploads/2023/12/ochmo-tb-016-behavioral-health.pdf
+  - id: hrp-archer
+    title: ARCHeR
+    publisher: NASA Human Research Program
+    url: https://www.nasa.gov/reference/archer/
+  - id: nasa-std-3001-v1
+    title: "NASA-STD-3001 Volume 1, Revision C: Crew Health"
+    publisher: NASA
+    url: https://standards.nasa.gov/sites/default/files/standards/NASA/C//nasa-std-3001-vol-1-rev-c-signature.pdf
+    locator: "[V1 4011]; Appendix E, Table E.2-2; [V1 3006], [V1 5003]"
+
+author: Troy Leonardo Moreno Calderon
+reviewer: null

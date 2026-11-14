@@ -1,0 +1,133 @@
+id: exercise
+name: Exercise
+domain: Musculoskeletal
+entry_kind: log
+unit: minutes per day
+
+mechanism:
+  summary: >-
+    Microgravity weakens bones, muscles, and the heart and lungs, which makes
+    critical tasks harder and raises the risk of injury. Exercise is prescribed
+    as a countermeasure and is vital to keep crew health and performance.
+  hazards: [gravity-fields]
+  detail:
+    - text: >-
+        Without the load of Earth's gravity, weight-bearing bones lose on average
+        1% to 1.5% of their mineral density per month.
+      source: hrp-hazard-gravity
+    - text: >-
+        On average, strength and aerobic fitness drop 10% to 12% from pre-mission
+        levels on the ISS.
+      source: hrp-risk-fitness
+    - text: >-
+        Astronauts get routine bone scans before and after spaceflight, and
+        exercise is essential to prevent declines in bone tissue.
+      source: hrp-risk-bone
+    - text: >-
+        Exercise is also a countermeasure for orthostatic intolerance and for
+        immune and sensorimotor function.
+      source: ochmo-tb-031
+  sources: [hrp-risk-fitness, hrp-risk-bone, hrp-hazard-gravity, ochmo-tb-031]
+
+measurement:
+  method: >-
+    The astronaut gets a reminder to exercise and logs the minutes done. The app
+    adds them up for the day.
+  method_note: No NASA source was found for an exercise self-log method.
+  sources: []
+  interval: null
+  interval_note: One log per exercise session. No NASA measurement interval was found.
+
+daily_target:
+  value: 90
+  unit: minutes
+  text: >-
+    Six to seven days a week, astronauts on the ISS do resistance training and
+    aerobic exercise for 1.5 hours per day.
+  source: hrp-risk-fitness
+
+baseline:
+  value: null
+  type: null
+  note: Not applicable to an exercise log.
+
+thresholds:
+  green:
+    at_least: 90
+    meaning: The day's exercise meets the 1.5 hours per day ISS astronauts do.
+    source: hrp-risk-fitness
+  yellow:
+    below: 90
+    meaning: The day's exercise is below the 1.5 hours per day ISS astronauts do.
+    source: hrp-risk-fitness
+  red: null
+  note: >-
+    The 1.5 hours per day is what ISS astronauts do six to seven days a week. No
+    NASA value was found for a critical (red) level.
+  sources: [hrp-risk-fitness]
+
+reference_values:
+  - text: In-mission muscle strength must stay at or above 80% of baseline values.
+    source: nasa-std-3001-v1
+  - text: In-mission aerobic capacity must stay at or above 80% of the pre-mission capacity.
+    source: nasa-std-3001-v1
+  - text: Countermeasures must keep hip and spine bone mineral density at or above 95% of pre-mission values, and at or above 90% for the femoral neck.
+    source: nasa-std-3001-v1
+
+countermeasures:
+  - text: Resistance training and aerobic exercise, 1.5 hours per day, six to seven days a week on the ISS.
+    source: hrp-risk-fitness
+  - text: >-
+      On the ISS, exercise uses an advanced resistive exercise device (ARED), a
+      cycle ergometer, and a treadmill.
+    source: nasa-std-3001-v1
+  - text: Medications like bisphosphonates could help reduce some bone loss.
+    source: hrp-risk-bone
+
+flight_surgeon:
+  when_to_contact: >-
+    No NASA rule for this indicator was found. Following the project rule, the
+    astronaut shares any value the app cannot evaluate with the flight surgeon.
+  if_no_real_time_contact: >-
+    Each vehicle has at least two crewmembers trained as Crew Medical Officers,
+    the medical experts for the mission. The astronaut reports to them.
+  sources: [nasa-std-3001-v1]
+
+astronaut_text:
+  reminder: Remember to exercise today.
+  progress: "You have done {done} of {target} minutes today."
+  green: You reached today's exercise, the 1.5 hours a day ISS astronauts do.
+  yellow: You are below today's exercise. ISS astronauts do 1.5 hours a day to protect against muscle and bone loss.
+  no_contact: If you cannot reach the flight surgeon, tell your Crew Medical Officer.
+  missing: You have not logged any exercise today.
+
+limitations:
+  - Logging exercise does not measure bone density, muscle strength, or aerobic capacity.
+  - Deconditioning varies by person and depends on starting fitness, age, mission duration, and gravity level (ochmo-tb-031).
+  - Spacecraft for the Moon and Mars will likely have less room for exercise equipment.
+
+sources:
+  - id: hrp-risk-fitness
+    title: Risk of Reduced Cardiorespiratory and Musculoskeletal Fitness
+    publisher: NASA Human Research Program
+    url: https://www.nasa.gov/reference/risk-of-reduced-cardiorespiratory-and-musculoskeletal-fitness/
+  - id: hrp-risk-bone
+    title: Risk of Spaceflight-Induced Bone Changes
+    publisher: NASA Human Research Program
+    url: https://www.nasa.gov/reference/risk-of-spaceflight-induced-bone-changes/
+  - id: hrp-hazard-gravity
+    title: "Hazard: Gravity Fields"
+    publisher: NASA Human Research Program
+    url: https://www.nasa.gov/hrp/hazard-gravity-fields/
+  - id: ochmo-tb-031
+    title: "OCHMO-TB-031 Exercise Overview"
+    publisher: NASA Office of the Chief Health and Medical Officer
+    url: https://www.nasa.gov/ochmo-tb-031-exercise-overview-2/
+  - id: nasa-std-3001-v1
+    title: "NASA-STD-3001 Volume 1, Revision C: Crew Health"
+    publisher: NASA
+    url: https://standards.nasa.gov/sites/default/files/standards/NASA/C//nasa-std-3001-vol-1-rev-c-signature.pdf
+    locator: "[V1 4003], [V1 4024], [V1 4027]; [V1 3006], [V1 5003]"
+
+author: Troy Leonardo Moreno Calderon
+reviewer: null

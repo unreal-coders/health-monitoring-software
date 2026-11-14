@@ -1,0 +1,99 @@
+id: heart-rate
+name: Heart rate
+domain: Cardiovascular
+entry_kind: measurement
+unit: beats per minute
+
+mechanism:
+  summary: >-
+    Weightlessness changes blood circulation and how the heart and blood vessels
+    work. Spaceflight can lead to heart arrhythmias and other cardiovascular
+    problems, and the risk grows with longer missions.
+  hazards: [gravity-fields]
+  detail:
+    - text: >-
+        On return to gravity, lower blood volume can cause orthostatic
+        intolerance. Its symptoms include decreased blood pressure and increased
+        heart rate.
+      source: ochmo-tb-033
+    - text: >-
+        Compression garments help maintain blood pressure and reduce a fast heart
+        rate (tachycardia) after landing.
+      source: ochmo-tb-019
+  sources: [hrp-risk-cardio, ochmo-tb-019, ochmo-tb-033]
+
+measurement:
+  method: >-
+    Heart rate is one of the vital signs that in-mission medical capabilities
+    assess and store. NASA has tested heart monitoring (electrocardiogram) and
+    pulse oximetry with the Tempus Pro multi-functional medical device.
+  sources: [ochmo-tb-033, glenn-mim]
+  interval: null
+  interval_note: No measurement interval found in the NASA sources consulted.
+
+baseline:
+  value: null
+  type: null
+  note: No baseline value found in the NASA sources consulted.
+
+thresholds:
+  green: null
+  yellow: null
+  red: null
+  note: >-
+    NASA-STD-3001 says in-mission medical care follows current U.S. medical care
+    practices, within mission limits, but does not give numeric heart rate
+    ranges. No green, yellow, or red range is defined until the team agrees on
+    a source.
+  sources: [nasa-std-3001-v1]
+
+countermeasures:
+  - text: Regular exercise and a healthy diet help crews keep cardiovascular fitness.
+    source: hrp-risk-cardio
+  - text: In-flight aerobic or resistance exercise counteracts cardiac and muscle deconditioning.
+    source: ochmo-tb-019
+  - text: Before landing, compression garments help maintain blood pressure and reduce a fast heart rate.
+    source: ochmo-tb-019
+
+flight_surgeon:
+  when_to_contact: >-
+    No NASA rule for this indicator was found. Following the project rule, the
+    astronaut shares any value the app cannot evaluate with the flight surgeon.
+  if_no_real_time_contact: >-
+    Each vehicle has at least two crewmembers trained as Crew Medical Officers,
+    the medical experts for the mission. The astronaut reports to them.
+  sources: [nasa-std-3001-v1]
+
+astronaut_text:
+  no_reference: There is no NASA reference to rate this value yet. Share it with the flight surgeon.
+  no_contact: If you cannot reach the flight surgeon, tell your Crew Medical Officer.
+  missing: You have not logged your heart rate yet.
+
+limitations:
+  - The NASA sources consulted give no numeric heart rate ranges, so the app cannot assign a color yet.
+
+sources:
+  - id: hrp-risk-cardio
+    title: Risk of Cardiovascular Adaptations
+    publisher: NASA Human Research Program
+    url: https://www.nasa.gov/reference/risk-of-cardiovascular-adaptations/
+  - id: ochmo-tb-019
+    title: "OCHMO-TB-019 Orthostatic Intolerance, Rev B"
+    publisher: NASA Office of the Chief Health and Medical Officer
+    url: https://www.nasa.gov/wp-content/uploads/2023/12/ochmo-tb-019-orthostatic-intolerance.pdf
+  - id: ochmo-tb-033
+    title: "OCHMO-TB-033 Spaceflight Experience and Medical Care, Rev D"
+    publisher: NASA Office of the Chief Health and Medical Officer
+    url: https://www.nasa.gov/wp-content/uploads/2023/12/ochmo-tb-033-spaceflight-experience-medical-care.pdf
+  - id: glenn-mim
+    title: Multifunctional Integrated Medical Devices
+    publisher: NASA Glenn Research Center
+    url: https://www.nasa.gov/glenn/glenn-expertise-space-exploration/human-health-performance/exploration-medical-technologies/multifunctional-integrated-medical-devices
+  - id: nasa-std-3001-v1
+    title: "NASA-STD-3001 Volume 1, Revision C: Crew Health"
+    publisher: NASA
+    url: https://standards.nasa.gov/sites/default/files/standards/NASA/C//nasa-std-3001-vol-1-rev-c-signature.pdf
+    locator: "[V1 3004], [V1 3006], [V1 5003]"
+
+author: Troy Leonardo Moreno Calderon
+reviewer: null
