@@ -53,7 +53,7 @@ The exact MVP features are defined in the MVP Scope (_pending_).
 | [`CONTRIBUTING.md`](CONTRIBUTING.md)  | **Contributing guide**: local development, commit convention, branches, and pull requests. |
 | `docs/research.md` _(pending)_        | **Research**: spaceflight hazards, effect on each body system, and on-board measurement.   |
 | `data/` _(pending)_                   | **Indicator Catalog**: one YAML sheet per indicator and demonstration data.                |
-| `docs/mvp-scope.md` _(draft)_         | **MVP Scope**: features, stack, code organization, and status evaluation.                  |
+| [`mvp-scope.md`](docs/mvp-scope.md)   | **MVP Scope**: features, stack, code organization, and status evaluation.                  |
 | [Figma][figma]                        | **Interface design**: user flows, visual guide, final design, and prototype.               |
 | `docs/submission/` _(pending)_        | **Submission**: checklist, project description, pitch script, and demo plan.               |
 
@@ -63,7 +63,7 @@ The exact MVP features are defined in the MVP Scope (_pending_).
 
 ## Technical stack
 
-_Pending_. It is defined in the MVP Scope. The application and the files in `data/` are in English, because the application loads those files and the end users are crews that operate in English.
+TypeScript with Vite and React, deployed as a static site on GitHub Pages. The stack, code organization, and deployment are defined in section 2 of the [MVP Scope](docs/mvp-scope.md). The application and the files in `data/` are in English, because the application loads those files and the end users are crews that operate in English.
 
 ---
 
