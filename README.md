@@ -56,7 +56,7 @@ The exact MVP features are defined in the MVP Scope (_pending_).
 | `docs/mvp-scope.md` _(draft)_         | **MVP Scope**: features, stack, code organization, and status evaluation.                  |
 | `docs/submission/` _(pending)_        | **Submission**: checklist, project description, pitch script, and demo plan.               |
 
-Interface design: Figma _(pending)_.
+Interface design: [Figma](https://www.figma.com/design/XvscEW1Ipid5l8MwM2tcZu/Health-Monitoring-Software?node-id=0-1&t=oLKmyYheuJVwfErX-1).
 
 ---
 
