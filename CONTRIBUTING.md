@@ -1,63 +1,63 @@
-# Guía de contribución
+# Contributing Guide
 
-Guía para el equipo: cómo levantar el proyecto localmente y qué convenciones seguir para commits, ramas y pull requests. Incluye además el flujo de trabajo completo de un cambio, desde el issue hasta el merge, y una sección final con las convenciones propias de cada proyecto.
+Guide for the team: how to run the project locally and which conventions to follow for commits, branches, and pull requests. It also includes the full workflow of a change, from issue to merge, and a final section with the conventions specific to each project.
 
 ---
 
-## Desarrollo local
+## Local development
 
-### Requisitos previos
+### Prerequisites
 
-- Las herramientas del stack del proyecto, en la versión que fije el repositorio
+- The tools of the project's stack, in the version pinned by the repository
 - Git
 
-### Instalación
+### Installation
 
 ```bash
-git clone <url-del-repositorio>
-cd <nombre-del-repositorio>
+git clone <repository-url>
+cd <repository-name>
 ```
 
-### Ejecutar en desarrollo
+### Run in development
 
-Se ejecuta el proyecto con la opción de ejecución propia del stack o del entorno de desarrollo.
-
----
-
-## Idioma
-
-Inglés. Es el estándar de facto para commits, código y comentarios, independientemente del idioma de trabajo del equipo.
+The project is run with the execution option specific to the stack or the development environment.
 
 ---
 
-## Convención de commits, ramas y pull requests
+## Language
 
-Esta sección está escrita en términos genéricos, sin referencias a un proyecto en particular.
+English. It is the de facto standard for commits, code, and comments, regardless of the team's working language.
+
+---
+
+## Commit, branch, and pull request convention
+
+This section is written in generic terms, without references to a particular project.
 
 ### Issues
 
-El repositorio vive dentro de una organización de GitHub; tanto el acceso al repositorio como al Project del equipo dependen de la membresía en esa organización.
+The repository lives inside a GitHub organization; access to both the repository and the team's Project depends on membership in that organization.
 
-#### Cuándo crear un issue
+#### When to create an issue
 
-- **Obligatorio** para `feat` y `fix`: son los tipos que cambian el comportamiento, y son justo lo que un Project necesita rastrear. El issue se vincula al PR que lo resuelve (ver [Pull Requests](#pull-requests)) y se cierra solo al fusionar, sin actualizar el tablero a mano.
-- **Opcional** para el resto de los tipos (`chore`, `docs`, `refactor`, `test`, `style`, `perf`, `ci`): son cambios de mantenimiento sin impacto en el comportamiento — exigir un issue para, por ejemplo, corregir una errata en el README es más proceso del que el cambio amerita.
+- **Required** for `feat` and `fix`: they are the types that change behavior, and exactly what a Project needs to track. The issue is linked to the PR that resolves it (see [Pull Requests](#pull-requests)) and closes automatically on merge, with no manual board update.
+- **Optional** for the other types (`chore`, `docs`, `refactor`, `test`, `style`, `perf`, `ci`): they are maintenance changes with no impact on behavior. Requiring an issue to, for example, fix a typo in the README is more process than the change warrants.
 
-Si un issue abarca más de lo que cabe en un PR razonable, se divide en sub-issues más chicos antes de empezar: permite avanzar en incrementos manejables y termina en pull requests más chicos y más fáciles de revisar.
+If an issue covers more than fits in a reasonable PR, it is split into smaller sub-issues before starting: this allows progress in manageable increments and results in smaller pull requests that are easier to review.
 
-#### Crear el issue
+#### Create the issue
 
-El título sigue el mismo formato que un commit (ver [Formato del mensaje](#formato-del-mensaje)): issue, PR y commit comparten un único formato de título.
+The title follows the same format as a commit (see [Message format](#message-format)): issue, PR, and commit share a single title format.
 
 ```bash
 gh issue create --title "feat(scope): short description of the change" --body "Explain the why and any context worth preserving."
 ```
 
-Si el equipo usa un GitHub Project para dar seguimiento visual al trabajo, `--project <nombre>` agrega el issue ahí directamente al crearlo (requiere autorizar el scope `project` una sola vez: `gh auth refresh -s project`).
+If the team uses a GitHub Project for visual tracking of the work, `--project <name>` adds the issue there directly on creation (requires authorizing the `project` scope once: `gh auth refresh -s project`).
 
 ### Commits
 
-#### Formato del mensaje
+#### Message format
 
 ```
 <type>(<optional scope>): <short description in lowercase, no trailing period>
@@ -67,41 +67,41 @@ Si el equipo usa un GitHub Project para dar seguimiento visual al trabajo, `--pr
 [optional footer — external links, issue references, and other meta-information]
 ```
 
-El cuerpo y el footer sirven como documentación mientras se desarrolla la rama — visibles en `git log` y en la pestaña "Commits" del PR (ver [Pull Requests](#pull-requests) sobre qué se conserva al fusionar).
+The body and footer serve as documentation while the branch is in development — visible in `git log` and in the PR's "Commits" tab (see [Pull Requests](#pull-requests) for what is kept on merge).
 
-#### Tipos
+#### Types
 
-| Tipo       | Cuándo usarlo                                                                   |
-| ---------- | ------------------------------------------------------------------------------- |
-| `feat`     | Nueva funcionalidad visible para la persona usuaria o la API                    |
-| `fix`      | Corrección de un bug                                                            |
-| `chore`    | Tareas de mantenimiento sin efecto en el comportamiento (deps, config, scripts) |
-| `docs`     | Cambios solo de documentación (README, comentarios)                             |
-| `refactor` | Cambio de código que no arregla un bug ni agrega funcionalidad                  |
-| `test`     | Agregar o corregir pruebas                                                      |
-| `style`    | Formato, espacios, punto y coma — sin cambio de lógica                          |
-| `perf`     | Cambio que mejora rendimiento                                                   |
-| `ci`       | Cambios en workflows / configuración de integración continua                    |
+| Type       | When to use it                                                       |
+| ---------- | -------------------------------------------------------------------- |
+| `feat`     | New functionality visible to the user or the API                     |
+| `fix`      | Bug fix                                                              |
+| `chore`    | Maintenance tasks with no effect on behavior (deps, config, scripts) |
+| `docs`     | Documentation-only changes (README, comments)                        |
+| `refactor` | Code change that neither fixes a bug nor adds functionality          |
+| `test`     | Adding or fixing tests                                               |
+| `style`    | Formatting, whitespace, semicolons — no change in logic              |
+| `perf`     | Change that improves performance                                     |
+| `ci`       | Changes to workflows / continuous integration configuration          |
 
 #### Scope
 
-Opcional pero recomendado. Generalmente corresponde a un módulo, componente o área funcional definida en la documentación técnica del proyecto (arquitectura, blueprint técnico, SDD, etc.) — por ejemplo `auth`, `api`, `ui`, `storage`. También puede ser una etiqueta corta libre que describa el área tocada sin corresponder a un módulo formal (ej. `deps`).
+Optional but recommended. It generally corresponds to a module, component, or functional area defined in the project's technical documentation (architecture, technical blueprint, SDD, etc.) — for example `auth`, `api`, `ui`, `storage`. It can also be a free short label describing the area touched without corresponding to a formal module (e.g. `deps`).
 
-Si el proyecto cuenta con documentos de requisitos con identificadores únicos (SRS, historias de usuario, tickets — incluyendo issues de GitHub, ver [Issues](#issues)), y el commit implementa uno puntual, referenciar ese identificador en la descripción del commit ayuda a mantener trazabilidad.
+If the project has requirements documents with unique identifiers (SRS, user stories, tickets — including GitHub issues, see [Issues](#issues)), and the commit implements a specific one, referencing that identifier in the commit description helps maintain traceability.
 
-Cuando varias funcionalidades pertenecen conceptualmente a un mismo grupo definido en la arquitectura del proyecto (por ejemplo, un panel compartido por varias entidades), se usa el nombre de ese grupo como scope en lugar del nombre puntual de la entidad que se esté tocando en ese commit — mantiene el scope alineado con la arquitectura documentada, no con la superficie del cambio.
+When several features conceptually belong to the same group defined in the project's architecture (for example, a panel shared by several entities), the name of that group is used as the scope instead of the name of the specific entity being touched in that commit — this keeps the scope aligned with the documented architecture, not with the surface of the change.
 
 #### Breaking changes
 
-Si un commit rompe compatibilidad (ej. cambia la forma de una respuesta ya en uso), se agrega `!` después del tipo/scope:
+If a commit breaks compatibility (e.g. changes the shape of a response already in use), `!` is added after the type/scope:
 
 ```
 feat(api)!: rename `id` field to `userId` in response payload
 ```
 
-El impacto debe describirse en la descripción del PR (ver [Pull Requests](#pull-requests)). Opcionalmente, si ayuda a documentar el porqué mientras la rama sigue en desarrollo, el cuerpo del commit puede incluir una nota breve al respecto.
+The impact must be described in the PR description (see [Pull Requests](#pull-requests)). Optionally, if it helps document the why while the branch is still in development, the commit body can include a brief note about it.
 
-#### Ejemplos
+#### Examples
 
 ```
 feat(auth): add password reset flow
@@ -113,38 +113,38 @@ refactor(storage): extract local persistence logic into shared module
 test(validation): cover required-field edge cases
 ```
 
-#### Reglas rápidas
+#### Quick rules
 
-- Descripción corta en modo imperativo presente ("add", "fix", "remove"), no en pasado ni en tercera persona. Regla mental: el mensaje completa la frase "If applied, this commit will \_\_\_".
-- Sin punto final en la línea de descripción.
-- Un commit = un cambio lógico. Si la descripción necesita un "and", probablemente son dos commits.
+- Short description in the present imperative ("add", "fix", "remove"), not in the past or third person. Rule of thumb: the message completes the sentence "If applied, this commit will \_\_\_".
+- No trailing period on the description line.
+- One commit = one logical change. If the description needs an "and", it is probably two commits.
 
-### Ramas
+### Branches
 
-#### Nombrado
+#### Naming
 
 ```
-<prefijo>/<descripción corta en kebab-case>
+<prefix>/<short description in kebab-case>
 ```
 
-El prefijo coincide con el tipo que tendrá el PR, salvo `feat`, que usa `feature/` en vez de `feat/`.
+The prefix matches the type the PR will have, except `feat`, which uses `feature/` instead of `feat/`.
 
-| Tipo de commit                                     | Prefijo de rama             | Ejemplo                                        |
+| Commit type                                        | Branch prefix               | Example                                        |
 | -------------------------------------------------- | --------------------------- | ---------------------------------------------- |
 | `feat`                                             | `feature/`                  | `feature/user-profile`                         |
-| `chore`, `docs`, `refactor`, `test`, `style`, etc. | mismo nombre del tipo + `/` | `chore/update-dependencies`, `docs/api-readme` |
+| `chore`, `docs`, `refactor`, `test`, `style`, etc. | same name as the type + `/` | `chore/update-dependencies`, `docs/api-readme` |
 
-#### Crear una rama
+#### Create a branch
 
-Si el trabajo tiene un issue (ver [Issues](#issues)), la rama se crea vinculada a ese issue, usando `--name` para respetar el nombrado de la sección anterior:
+If the work has an issue (see [Issues](#issues)), the branch is created linked to that issue, using `--name` to respect the naming from the previous section:
 
 ```bash
-gh issue develop <número-de-issue> --name feature/example --checkout
+gh issue develop <issue-number> --name feature/example --checkout
 ```
 
-Por defecto esto crea la rama en el repositorio actual a partir de la rama default (`main`) y la deja lista localmente — no hace falta actualizar `main` a mano primero.
+By default this creates the branch in the current repository from the default branch (`main`) and leaves it ready locally — there is no need to update `main` by hand first.
 
-Sin issue (caso opcional descrito en [Issues](#issues)), la rama se crea de la forma tradicional:
+Without an issue (optional case described in [Issues](#issues)), the branch is created the traditional way:
 
 ```bash
 git checkout main
@@ -152,36 +152,36 @@ git pull origin main
 git checkout -b chore/example
 ```
 
-- `git pull origin main` evita partir de una versión vieja de `main` — de lo contrario, el PR puede terminar rechazado si el repositorio exige que la rama esté actualizada.
+- `git pull origin main` avoids starting from an old version of `main` — otherwise, the PR may end up rejected if the repository requires the branch to be up to date.
 
 ### Pull Requests
 
-#### Título y descripción
+#### Title and description
 
-- El **título** sigue el mismo formato que un commit (ver [Formato del mensaje](#formato-del-mensaje)) — al hacer squash merge, se convierte en el mensaje del commit final en `main`.
-- La **descripción** se conserva como cuerpo del commit final — ahí va el contexto que se quiere preservar permanentemente, incluyendo el detalle de un breaking change.
-- Ambos quedan para siempre en el historial de `main`: vale la pena escribirlos con cuidado en vez de dejarlos en automático.
+- The **title** follows the same format as a commit (see [Message format](#message-format)) — on squash merge, it becomes the final commit message on `main`.
+- The **description** is kept as the body of the final commit — it holds the context to be preserved permanently, including the detail of a breaking change.
+- Both stay in the history of `main` forever: it is worth writing them carefully instead of leaving them automatic.
 
-#### Crear el PR
+#### Create the PR
 
-Si el PR resuelve un issue, la descripción incluye la palabra clave de cierre correspondiente (`Closes #<número>`, `Fixes #<número>` o `Resolves #<número>`). Esa palabra clave solo se interpreta cuando el PR apunta a la rama default del repositorio — al fusionarlo contra `main`, GitHub cierra el issue automáticamente y actualiza su estado en el Project sin acción manual.
+If the PR resolves an issue, the description includes the corresponding closing keyword (`Closes #<number>`, `Fixes #<number>`, or `Resolves #<number>`). That keyword is only interpreted when the PR targets the repository's default branch — when merged into `main`, GitHub closes the issue automatically and updates its status in the Project with no manual action.
 
 ```bash
-gh pr create --title "<type>(<scope>): <description>" --body "<context to preserve in main>. Closes #<número>"
+gh pr create --title "<type>(<scope>): <description>" --body "<context to preserve in main>. Closes #<number>"
 ```
 
-Si el repositorio tiene CI configurado con el trigger `on: pull_request`, se dispara automáticamente al crear el PR.
+If the repository has CI configured with the `on: pull_request` trigger, it fires automatically when the PR is created.
 
-#### Fusionar (merge)
+#### Merge
 
 ```bash
 gh pr merge --auto --squash
 ```
 
-- `--squash` colapsa todos los commits de la rama en uno solo.
-- `--auto` fusiona en cuanto el CI pase y las reglas de protección de rama (si existen) se cumplan, sin tener que esperar ni volver después.
-- Si el CI falla, el auto-merge simplemente no se dispara — hay que corregir y hacer push de nuevo sobre la misma rama.
-- Si `main` avanza mientras el PR sigue abierto y el repositorio exige que la rama esté actualizada, el auto-merge se queda esperando. Actualizar manualmente:
+- `--squash` collapses all the branch's commits into a single one.
+- `--auto` merges as soon as CI passes and the branch protection rules (if any) are met, without having to wait or come back later.
+- If CI fails, auto-merge simply does not fire — the problem has to be fixed and pushed again on the same branch.
+- If `main` advances while the PR is still open and the repository requires the branch to be up to date, auto-merge waits. Update manually:
 
 ```bash
 git fetch origin
@@ -189,84 +189,84 @@ git merge origin/main
 git push
 ```
 
-o usar el botón **"Update branch"** en GitHub. El CI se vuelve a correr y el auto-merge retoma su curso.
+or use the **"Update branch"** button on GitHub. CI runs again and auto-merge resumes.
 
-### Flujo de trabajo completo
+### Complete workflow
 
-Secuencia de punta a punta para cualquier cambio, de uno trivial a un módulo entero. Asume Git y GitHub CLI (`gh`) instalados; si el equipo no usa `gh`, los mismos pasos aplican creando y fusionando el PR desde la interfaz web de GitHub. También asume que, si el repositorio exige squash merge y/o protección sobre `main`, esa configuración ya existe — de lo contrario, algunos pasos (como `--auto`) no aplican tal cual.
+End-to-end sequence for any change, from a trivial one to an entire module. It assumes Git and GitHub CLI (`gh`) are installed; if the team does not use `gh`, the same steps apply by creating and merging the PR from the GitHub web interface. It also assumes that, if the repository requires squash merge and/or protection on `main`, that configuration already exists — otherwise, some steps (such as `--auto`) do not apply as written.
 
-1. **Crear el issue** (obligatorio para `feat`/`fix`; opcional para el resto — ver [Issues](#issues))
+1. **Create the issue** (required for `feat`/`fix`; optional for the rest — see [Issues](#issues))
    ```bash
    gh issue create --title "feat(scope): short description of the change" --body "Explain the why and any context worth preserving."
    ```
-2. **Crear la rama**
+2. **Create the branch**
    ```bash
-   gh issue develop <número-de-issue> --name feature/example --checkout
+   gh issue develop <issue-number> --name feature/example --checkout
    ```
-   Sin issue, se crea de la forma tradicional:
+   Without an issue, it is created the traditional way:
    ```bash
    git checkout main
    git pull origin main
    git checkout -b chore/example
    ```
-3. **Hacer commits siguiendo la convención**
+3. **Commit following the convention**
    ```bash
    git add .
    git commit -m "feat(scope): short description of the change"
    ```
-4. **Subir la rama**
+4. **Push the branch**
    ```bash
    git push -u origin feature/example
    ```
-   Solo se necesita `-u` la primera vez; después basta `git push`.
-5. **Abrir el PR**
+   `-u` is only needed the first time; afterwards `git push` is enough.
+5. **Open the PR**
    ```bash
-   gh pr create --title "feat(scope): short description of the change" --body "Explain the why and any context worth preserving in main. Closes #<número>"
+   gh pr create --title "feat(scope): short description of the change" --body "Explain the why and any context worth preserving in main. Closes #<number>"
    ```
-6. **Fusionar**
+6. **Merge**
    ```bash
    gh pr merge --auto --squash
    ```
-   Si el repositorio tiene habilitada la opción de borrar ramas automáticamente al fusionar, la rama remota desaparece sola.
-7. **Actualizar `main` local**
+   If the repository has the option to automatically delete branches on merge enabled, the remote branch disappears on its own.
+7. **Update local `main`**
 
    ```bash
    git checkout main
    git pull origin main
    ```
 
-   Trae a la copia local el commit de squash merge recién creado en `main`.
+   This brings the newly created squash merge commit on `main` into the local copy.
 
-8. **Limpieza local (opcional)**
+8. **Local cleanup (optional)**
    ```bash
    git branch -D feature/example
    ```
-   El remoto ya se encargó de la suya si esa opción está habilitada; esto solo limpia la copia local.
+   The remote already took care of its own if that option is enabled; this only cleans the local copy.
 
 ---
 
-## Convenciones del proyecto
+## Project conventions
 
-Esta es la única sección que se adapta en cada proyecto; el resto del documento se reutiliza sin cambios.
+This is the only section adapted for each project; the rest of the document is reused unchanged.
 
-- **Tipos:** `docs` para todo lo que está en `README.md`, `docs/` y `data/` (incluidas fichas y datos de demostración). `feat` y `fix` solo para código en `src/`.
-- **Scopes:** el documento o carpeta tocada, siempre en inglés: `guide` (`docs/guia-equipo.md`), `research` (`docs/investigacion.md`), `mvp` (`docs/alcance-mvp.md`), `catalog` (`data/`), `delivery` (`docs/entrega/`), `config` (`docs/repository-config.md`) y `ui` (diseño de interfaz).
-- **Idioma:** español en `README.md` y `docs/`. Inglés en código, commits, ramas, issues y pull requests, y en `data/`, porque la aplicación carga esos archivos.
-- **Documentos:** cada documento de `docs/`, salvo `repository-config.md` (plantilla reutilizable), lleva al inicio una tabla de datos y un historial de cambios con el formato de abajo. Toda actualización sube la versión y agrega una fila al historial.
+- **Types:** `docs` for everything in `README.md`, `docs/`, and `data/` (including indicator sheets and demonstration data). `feat` and `fix` only for code in `src/`.
+- **Scopes:** the document or folder touched, always in English: `guide` (`docs/team-guide.md`), `research` (`docs/research.md`), `mvp` (`docs/mvp-scope.md`), `catalog` (`data/`), `submission` (`docs/submission/`), `config` (`docs/repository-config.md`), and `ui` (interface design).
+- **Language:** English throughout the repository: `README.md`, `docs/`, `data/`, code, commits, branches, issues, and pull requests. The event requires all project material, and anything linked in the submission, to be in English.
+- **Documents:** each document in `docs/`, except `repository-config.md` (reusable template), starts with a data table and a change history in the format below. Every update bumps the version and adds a row to the history.
 
   ```markdown
-  | Campo                     | Detalle            |
-  | ------------------------- | ------------------ |
-  | Versión del documento     | 1.0.0              |
-  | Fecha de creación         | [fecha]            |
-  | Estado                    | Publicado          |
-  | Responsable del documento | [nombre del dueño] |
+  | Field            | Detail       |
+  | ---------------- | ------------ |
+  | Document version | 1.0.0        |
+  | Creation date    | [date]       |
+  | Status           | Published    |
+  | Document owner   | [owner name] |
 
-  ## Historial de cambios
+  ## Change history
 
-  | Versión  | Fecha   | Cambio                                          |
-  | -------- | ------- | ----------------------------------------------- |
-  | Borrador | [fecha] | Creación del documento.                         |
-  | 1.0.0    | [fecha] | Primera versión publicada en el repositorio.    |
-  | 1.1.0    | [fecha] | [Descripción breve de lo que cambió y por qué.] |
+  | Version | Date   | Change                                       |
+  | ------- | ------ | -------------------------------------------- |
+  | Draft   | [date] | Document created.                            |
+  | 1.0.0   | [date] | First version published in the repository.   |
+  | 1.1.0   | [date] | [Brief description of what changed and why.] |
   ```
