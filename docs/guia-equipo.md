@@ -5,7 +5,7 @@
 | Equipo                    | Unreal Coders (6 integrantes, UABC Ensenada)                                               |
 | Evento                    | NASA Space Apps Challenge 2026, reto _Health Monitoring Software_                          |
 | Enunciado oficial         | https://www.spaceappschallenge.org/2026/challenges/health-monitoring-software/?tab=details |
-| Versión del documento     | 1.0.0                                                                                      |
+| Versión del documento     | 1.1.0                                                                                      |
 | Fecha de creación         | 2 de noviembre de 2026                                                                     |
 | Estado                    | Publicado                                                                                  |
 | Responsable del documento | Mike Armando Montano Valencia                                                              |
@@ -14,10 +14,11 @@ Este documento define cómo trabaja el equipo, qué se construye y quién es res
 
 ## Historial de cambios
 
-| Versión  | Fecha                  | Cambio                                                                                                    |
-| -------- | ---------------------- | --------------------------------------------------------------------------------------------------------- |
-| Borrador | 2 de noviembre de 2026 | Creación del documento.                                                                                   |
-| 1.0.0    | 4 de noviembre de 2026 | Primera versión publicada en el repositorio, con los ajustes posteriores a la reunión del 3 de noviembre. |
+| Versión  | Fecha                   | Cambio                                                                                                                |
+| -------- | ----------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| Borrador | 2 de noviembre de 2026  | Creación del documento.                                                                                               |
+| 1.0.0    | 4 de noviembre de 2026  | Primera versión publicada en el repositorio, con los ajustes posteriores a la reunión del 3 de noviembre.             |
+| 1.1.0    | 13 de noviembre de 2026 | Se agregan el rol de líder de producto e integración y las tareas de implementación de cada integrante (§1, §5 y §7). |
 
 ---
 
@@ -28,14 +29,14 @@ Cada integrante tiene dos responsabilidades:
 - **Investigación:** un dominio y los indicadores o temas que cubre. El resultado son sus fichas del Catálogo (en el caso de Troy, la Investigación).
 - **Rol en el proyecto:** lo que hace además de investigar, es decir, los documentos y piezas de las que es responsable.
 
-| Nombre                        | Investigación: dominio  | Investigación: indicadores o temas                                                                                                                                           | Rol en el proyecto                                                                                                                        |
-| ----------------------------- | ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| Mike Armando Montano Valencia | Cardiovascular          | Presión arterial, frecuencia cardiaca                                                                                                                                        | Coordina al equipo, redacta el Alcance del MVP (funciones)                                                                                |
-| José Antonio Montoya García   | Metabolismo y nutrición | Glucosa, nutrición                                                                                                                                                           | Define el esquema del Catálogo (estados, reglas de redacción y formato de fuentes) y redacta la evaluación de estados del Alcance del MVP |
-| José Pablo Rovera Nava        | Musculoesquelético      | Densidad ósea, músculo                                                                                                                                                       | Proyecto base del código; stack y organización del código del Alcance del MVP                                                             |
-| Mextli Citlal Perez Aguirre   | Inmunidad y temperatura | Temperatura corporal, señales inmunes                                                                                                                                        | Datos de demostración y video                                                                                                             |
-| Kenan Rojas Arroyo            | Conductual              | Sueño, estado de ánimo                                                                                                                                                       | UX/UI: Diseño de interfaz                                                                                                                 |
-| Troy Leonardo Moreno Calderon | Transversal             | Los cinco peligros del vuelo (radiación, aislamiento y confinamiento, distancia de la Tierra, campos gravitatorios y entornos cerrados hostiles), medición a bordo, entornos | Redacta el README, la descripción del proyecto, la checklist de entrega y el guion del pitch con las diapositivas                         |
+| Nombre                        | Investigación: dominio  | Investigación: indicadores o temas                                                                                                                                           | Rol en el proyecto                                                                                                                                                                                                                                                          |
+| ----------------------------- | ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Mike Armando Montano Valencia | Cardiovascular          | Presión arterial, frecuencia cardiaca                                                                                                                                        | Líder de producto e integración: coordina al equipo, define las prioridades del alcance, verifica la aplicación contra el enunciado y mantiene estable la rama `main`. Redacta el Alcance del MVP (funciones). Implementa la gamificación, si el Alcance del MVP la incluye |
+| José Antonio Montoya García   | Metabolismo y nutrición | Glucosa, nutrición                                                                                                                                                           | Define el esquema del Catálogo (estados, reglas de redacción y formato de fuentes) y redacta la evaluación de estados del Alcance del MVP. Implementa el motor de evaluación de estados, la lógica y la alerta de escalamiento y el panel de guía del indicador             |
+| José Pablo Rovera Nava        | Musculoesquelético      | Densidad ósea, músculo                                                                                                                                                       | Proyecto base del código; stack y organización del código del Alcance del MVP. Implementa la carga y validación de las fichas, el estado de la aplicación, el formulario de captura de mediciones con sus recordatorios y la ejecución o despliegue                         |
+| Mextli Citlal Perez Aguirre   | Inmunidad y temperatura | Temperatura corporal, señales inmunes                                                                                                                                        | Datos de demostración y video. Implementa el selector de escenarios y las gráficas de tendencia                                                                                                                                                                             |
+| Kenan Rojas Arroyo            | Conductual              | Sueño, estado de ánimo                                                                                                                                                       | UX/UI: Diseño de interfaz. Implementa el sistema visual, el dashboard y la figura humana interactiva (si el Alcance del MVP la incluye)                                                                                                                                     |
+| Troy Leonardo Moreno Calderon | Transversal             | Los cinco peligros del vuelo (radiación, aislamiento y confinamiento, distancia de la Tierra, campos gravitatorios y entornos cerrados hostiles), medición a bordo, entornos | Redacta el README, la descripción del proyecto, la checklist de entrega y el guion del pitch con las diapositivas. Implementa la sección de aprendizaje sobre los peligros del vuelo (si el Alcance del MVP la incluye)                                                     |
 
 ---
 
@@ -136,14 +137,25 @@ src/
 
 **Fase 3 · Evento y entrega (14–15 nov)**
 
-| Entregable                                                      | Documento | Resp.       |
-| --------------------------------------------------------------- | --------- | ----------- |
-| Implementación según el Alcance del MVP y el diseño de interfaz | `src/`    | Por definir |
-| Guion del pitch y diapositivas                                  | Entrega   | Troy        |
-| Video demo o capturas                                           | Entrega   | Mextli      |
-| README final y descripción del proyecto                         | Entrega   | Troy        |
-| Fuentes de cada dominio en el README (cada quien las suyas)     | Entrega   | Todos       |
-| Ensayo de la demo                                               | Entrega   | Todos       |
+| Entregable                                                                             | Documento | Resp.        |
+| -------------------------------------------------------------------------------------- | --------- | ------------ |
+| Carga y validación de las fichas, estado de la aplicación y ejecución o despliegue     | `src/`    | José Pablo   |
+| Formulario de captura de mediciones y recordatorios de medición                        | `src/`    | José Pablo   |
+| Motor de evaluación de estados, con pruebas                                            | `src/`    | José Antonio |
+| Lógica y alerta de escalamiento al cirujano de vuelo                                   | `src/`    | José Antonio |
+| Panel de guía del indicador                                                            | `src/`    | José Antonio |
+| Sistema visual (paleta de estados, tarjeta de indicador y semáforo) y dashboard        | `src/`    | Kenan        |
+| Figura humana interactiva (si el Alcance del MVP la incluye)                           | `src/`    | Kenan        |
+| Selector de escenarios de los datos de demostración                                    | `src/`    | Mextli       |
+| Gráficas de tendencia                                                                  | `src/`    | Mextli       |
+| Sección de aprendizaje sobre los peligros del vuelo (si el Alcance del MVP la incluye) | `src/`    | Troy         |
+| Gamificación (si el Alcance del MVP la incluye)                                        | `src/`    | Mike         |
+| Verificación de la aplicación contra el enunciado y la guía de Judging & Awards        | `src/`    | Mike         |
+| Guion del pitch y diapositivas                                                         | Entrega   | Troy         |
+| Video demo o capturas                                                                  | Entrega   | Mextli       |
+| README final y descripción del proyecto                                                | Entrega   | Troy         |
+| Fuentes de cada dominio en el README (cada quien las suyas)                            | Entrega   | Todos        |
+| Ensayo de la demo                                                                      | Entrega   | Todos        |
 
 ---
 
@@ -174,3 +186,4 @@ src/
 | Los requisitos y el diseño técnico se escriben en un solo documento ligero, el Alcance del MVP, sin identificadores de requisitos ni matriz de trazabilidad | Reduce la carga de documentación para dedicar el tiempo a fichas, diseño e implementación                                                                           |
 | El significado de los estados, el formato de fuentes y las reglas de redacción se definen una sola vez en el esquema de la ficha, antes de investigar       | Fichas consistentes sin revisión posterior                                                                                                                          |
 | La aplicación, incluidos los textos para el astronauta, y los archivos de `data/` están en inglés                                                           | Idioma de la persona usuaria (tripulaciones que operan en inglés) y consistencia entre la interfaz y los datos, ya que la aplicación carga los archivos de `data/`. |
+| Durante la implementación, un integrante ejerce el rol de líder de producto e integración, además de su investigación                                       | Un solo responsable del alcance y de la verificación contra el enunciado durante un evento de dos días                                                              |
