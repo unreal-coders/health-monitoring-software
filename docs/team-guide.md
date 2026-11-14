@@ -5,7 +5,7 @@
 | Team               | Unreal Coders (6 members, UABC Ensenada)                                                   |
 | Event              | NASA Space Apps Challenge 2026, _Health Monitoring Software_ challenge                     |
 | Official statement | https://www.spaceappschallenge.org/2026/challenges/health-monitoring-software/?tab=details |
-| Document version   | 1.1.0                                                                                      |
+| Document version   | 1.2.0                                                                                      |
 | Creation date      | November 2, 2026                                                                           |
 | Status             | Published                                                                                  |
 | Document owner     | Mike Armando Montano Valencia                                                              |
@@ -19,6 +19,7 @@ This document defines how the team works, what is built, and who is responsible 
 | Draft   | November 2, 2026  | Document created.                                                                                             |
 | 1.0.0   | November 4, 2026  | First version published in the repository, with the adjustments after the November 3 meeting.                 |
 | 1.1.0   | November 14, 2026 | Translated to English to meet the event's language requirement. Documents and paths renamed to English names. |
+| 1.2.0   | November 14, 2026 | Phase 3: owners assigned to the implementation of `src/`, which was previously undefined.                     |
 
 ---
 
@@ -137,14 +138,17 @@ src/
 
 **Phase 3 · Event and submission (Nov 14–15)**
 
-| Deliverable                                                        | Document   | Owner         |
-| ------------------------------------------------------------------ | ---------- | ------------- |
-| Implementation according to the MVP Scope and the interface design | `src/`     | To be defined |
-| Pitch script and slides                                            | Submission | Troy          |
-| Demo video or screenshots                                          | Submission | Mextli        |
-| Final README and project description                               | Submission | Troy          |
-| Sources of each domain in the README (each their own)              | Submission | Everyone      |
-| Demo rehearsal                                                     | Submission | Everyone      |
+| Deliverable                                                                                                  | Document   | Owner      |
+| ------------------------------------------------------------------------------------------------------------ | ---------- | ---------- |
+| Code owner of `src/`: deployment workflow, integration of the pieces below, and review of its pull requests  | `src/`     | José Pablo |
+| Implementation of the status evaluation, the loading of the sheets and demo scenarios, and the local storage | `src/`     | Mike       |
+| Implementation of the screens and components according to the interface design                               | `src/`     | Kenan      |
+| Loading the demonstration scenarios into the application and testing the full flow                           | `src/`     | Mextli     |
+| Pitch script and slides                                                                                      | Submission | Troy       |
+| Demo video or screenshots                                                                                    | Submission | Mextli     |
+| Final README and project description                                                                         | Submission | Troy       |
+| Sources of each domain in the README (each their own)                                                        | Submission | Everyone   |
+| Demo rehearsal                                                                                               | Submission | Everyone   |
 
 ---
 
