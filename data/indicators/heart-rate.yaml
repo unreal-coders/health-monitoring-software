@@ -37,15 +37,39 @@ baseline:
   note: No baseline value found in the NASA sources consulted.
 
 thresholds:
-  green: null
-  yellow: null
-  red: null
+  evaluation: first-match
+  applies_to: >-
+    Resting heart rate, measured sitting or lying down, calm, and feeling well.
+  rules:
+    - color: yellow
+      label: Above the normal resting range
+      when: "value > 100"
+      text: >-
+        Your resting heart rate is above the normal range. This is not always a
+        sign of a problem. Share it with the flight surgeon.
+      contact_flight_surgeon: true
+      source: aha-heart-rate
+    - color: yellow
+      label: Below the normal resting range
+      when: "value < 60"
+      text: >-
+        Your resting heart rate is below the normal range. This does not always
+        signal a problem and is common in athletes. Share it with the flight
+        surgeon.
+      contact_flight_surgeon: true
+      source: aha-heart-rate
+    - color: green
+      label: Normal resting range
+      when: "value >= 60 and value <= 100"
+      text: Your resting heart rate is in the normal range.
+      contact_flight_surgeon: false
+      source: aha-heart-rate
   note: >-
-    NASA-STD-3001 says in-mission medical care follows current U.S. medical care
-    practices, within mission limits, but does not give numeric heart rate
-    ranges. No green, yellow, or red range is defined until the team agrees on
-    a source.
-  sources: [nasa-std-3001-v1]
+    NASA-STD-3001 gives no numeric heart rate ranges, so the range comes from the
+    American Heart Association: a normal resting heart rate is between 60 and
+    100 beats per minute. The AHA gives no critical (red) value. Sharing an
+    out-of-range value with the flight surgeon follows the project rule.
+  sources: [aha-heart-rate, nasa-std-3001-v1]
 
 countermeasures:
   - text: Regular exercise and a healthy diet help crews keep cardiovascular fitness.
@@ -57,20 +81,22 @@ countermeasures:
 
 flight_surgeon:
   when_to_contact: >-
-    No NASA rule for this indicator was found. Following the project rule, the
-    astronaut shares any value the app cannot evaluate with the flight surgeon.
+    When the resting heart rate is outside 60 to 100 beats per minute. The AHA
+    says this is not always a problem; sharing it follows the project rule.
   if_no_real_time_contact: >-
     Each vehicle has at least two crewmembers trained as Crew Medical Officers,
     the medical experts for the mission. The astronaut reports to them.
   sources: [nasa-std-3001-v1]
 
 astronaut_text:
-  no_reference: There is no NASA reference to rate this value yet. Share it with the flight surgeon.
+  how_to: Measure while sitting or lying down, calm, and feeling well.
   no_contact: If you cannot reach the flight surgeon, tell your Crew Medical Officer.
   missing: You have not logged your heart rate yet.
 
 limitations:
-  - The NASA sources consulted give no numeric heart rate ranges, so the app cannot assign a color yet.
+  - The range is an Earth clinical reference from the AHA, not a value made for spaceflight. NASA gives none.
+  - The range only applies at rest. Heart rate rises with exercise and does not return to resting right away.
+  - The AHA page gives no different ranges by age or sex.
 
 sources:
   - id: hrp-risk-cardio
@@ -94,6 +120,10 @@ sources:
     publisher: NASA
     url: https://standards.nasa.gov/sites/default/files/standards/NASA/C//nasa-std-3001-vol-1-rev-c-signature.pdf
     locator: "[V1 3004], [V1 3006], [V1 5003]"
+  - id: aha-heart-rate
+    title: All About Heart Rate (last reviewed May 13, 2024)
+    publisher: American Heart Association
+    url: https://www.heart.org/en/health-topics/high-blood-pressure/the-facts-about-high-blood-pressure/all-about-heart-rate-pulse
 
 author: Troy Leonardo Moreno Calderon
 reviewer: null

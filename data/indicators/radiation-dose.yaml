@@ -34,12 +34,15 @@ baseline:
   source: nasa-std-3001-v1
 
 thresholds:
-  green: null
-  yellow: null
-  red:
-    at_least: 600
-    meaning: The career effective dose limit is reached. NASA requires it to stay below 600 mSv.
-    source: nasa-std-3001-v1
+  evaluation: first-match
+  applies_to: The accumulated effective dose.
+  rules:
+    - color: red
+      label: Career limit reached
+      when: "value >= 600"
+      text: Your dose reached NASA's career limit of 600 mSv. Contact the flight surgeon now.
+      contact_flight_surgeon: true
+      source: nasa-std-3001-v1
   note: >-
     NASA-STD-3001 limits a crewmember's total career effective radiation dose to
     less than 600 mSv, and requires exposure to be kept as low as reasonably
@@ -76,7 +79,6 @@ flight_surgeon:
   sources: [nasa-std-3001-v1]
 
 astronaut_text:
-  red: Your dose reached NASA's career limit of 600 mSv. Contact the flight surgeon now.
   no_reference: There is no NASA reference to rate this value yet. Share it with the flight surgeon.
   no_contact: If you cannot reach the flight surgeon, tell your Crew Medical Officer.
   missing: You have not logged your radiation dose yet.

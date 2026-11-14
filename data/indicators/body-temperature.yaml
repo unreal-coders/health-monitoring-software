@@ -28,39 +28,54 @@ baseline:
   source: nasa-std-3001-v1
 
 thresholds:
-  green: null
-  yellow: null
-  red:
-    below: 35
-    meaning: Hypothermia, a medical emergency.
-    source: nasa-std-3001-v1
+  evaluation: first-match
+  rules:
+    - color: red
+      label: Hypothermia
+      when: "value < 35"
+      text: Your temperature is below 35 °C. This is hypothermia, a medical emergency. Contact the flight surgeon now.
+      contact_flight_surgeon: true
+      source: nasa-std-3001-v1
+    - color: yellow
+      label: Fever
+      when: "value >= 38"
+      text: Your temperature is 38 °C or higher, which counts as a fever. Share it with the flight surgeon.
+      contact_flight_surgeon: true
+      source: cdc-fever
+    - color: green
+      label: No fever or hypothermia
+      when: "value >= 35 and value < 38"
+      text: Your temperature shows no fever or hypothermia.
+      contact_flight_surgeon: false
+      source: [nasa-std-3001-v1, cdc-fever]
   note: >-
-    NASA-STD-3001 defines hypothermia below 35 °C. No NASA range was found for
-    green, yellow, or fever, so only values below 35 °C get a color.
-  sources: [nasa-std-3001-v1]
+    NASA-STD-3001 defines hypothermia as a body temperature below 35 °C. NASA
+    gives no fever value, so fever comes from the CDC: a measured temperature of
+    38 °C (100.4 °F) or greater. Green only means neither definition is met.
+    Sharing a fever with the flight surgeon follows the project rule.
+  sources: [nasa-std-3001-v1, cdc-fever]
 
 countermeasures: []
 countermeasures_note: No countermeasure for the astronaut found in the NASA sources consulted.
 
 flight_surgeon:
   when_to_contact: >-
-    Below 35 °C (hypothermia, a medical emergency). For any other value, the
-    project rule applies: the astronaut shares values the app cannot evaluate
-    with the flight surgeon.
+    Below 35 °C (hypothermia, a medical emergency), and at 38 °C or higher
+    (fever).
   if_no_real_time_contact: >-
     Each vehicle has at least two crewmembers trained as Crew Medical Officers,
     the medical experts for the mission. The astronaut reports to them.
   sources: [nasa-std-3001-v1]
 
 astronaut_text:
-  red: Your temperature is below 35 °C. This is hypothermia, a medical emergency. Contact the flight surgeon now.
-  no_reference: There is no NASA reference to rate this value yet. Share it with the flight surgeon.
   no_contact: If you cannot reach the flight surgeon, tell your Crew Medical Officer.
   missing: You have not logged your body temperature yet.
 
 limitations:
-  - No NASA fever threshold was found, so a high temperature does not get a color.
+  - The fever value comes from a CDC definition for ill travelers, not from a value made for spaceflight.
+  - The CDC definition also counts feeling warm to the touch or a history of feeling feverish, which a number cannot capture.
   - The 37 °C baseline is a general reference, not a value measured for each astronaut.
+  - Neither source gives different values by age or sex.
 
 sources:
   - id: nasa-std-3001-v1
@@ -72,6 +87,10 @@ sources:
     title: Multifunctional Integrated Medical Devices
     publisher: NASA Glenn Research Center
     url: https://www.nasa.gov/glenn/glenn-expertise-space-exploration/human-health-performance/exploration-medical-technologies/multifunctional-integrated-medical-devices
+  - id: cdc-fever
+    title: Definitions of Signs, Symptoms, and Conditions of Ill Travelers
+    publisher: Centers for Disease Control and Prevention
+    url: https://www.cdc.gov/quarantine/maritime/definitions-signs-symptoms-conditions-ill-travelers.html
 
 author: Troy Leonardo Moreno Calderon
 reviewer: null

@@ -60,12 +60,12 @@ baseline:
   note: Not applicable to a symptom checklist.
 
 thresholds:
-  green: null
-  yellow: null
-  red: null
+  evaluation: first-match
+  rules: []
   note: >-
-    No NASA rule was found for which symptoms, or how many, lead to each status.
-    No green, yellow, or red rule is defined until the team agrees on a source.
+    No NASA rule or clinical guideline was found for which symptoms, or how
+    many, lead to each status. No green, yellow, or red rule is defined until
+    the team agrees on a source.
   sources: []
 
 countermeasures:

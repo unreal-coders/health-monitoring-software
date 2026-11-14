@@ -37,15 +37,20 @@ baseline:
   note: No individual baseline value found in the NASA sources consulted.
 
 thresholds:
-  green:
-    at_least: 7
-    meaning: At or above the amount of sleep an average adult needs.
-    source: ochmo-tb-041
-  yellow:
-    below: 7
-    meaning: Less than the amount of sleep an average adult needs.
-    source: ochmo-tb-041
-  red: null
+  evaluation: first-match
+  rules:
+    - color: yellow
+      label: Below the recommended amount
+      when: "value < 7"
+      text: You slept less than 7 hours, below what an average adult needs. Use your scheduled rest and self-care time.
+      contact_flight_surgeon: false
+      source: [ochmo-tb-041, hrp-risk-sleep]
+    - color: green
+      label: Recommended amount
+      when: "value >= 7"
+      text: You slept 7 hours or more, the amount an average adult needs.
+      contact_flight_surgeon: false
+      source: ochmo-tb-041
   note: >-
     OCHMO-TB-041 cites the National Sleep Foundation and the American Academy of
     Sleep Medicine: an average adult needs 7 to 9 hours of sleep for optimal
@@ -74,8 +79,6 @@ flight_surgeon:
   sources: [nasa-std-3001-v1]
 
 astronaut_text:
-  green: You slept 7 hours or more, the amount an average adult needs.
-  yellow: You slept less than 7 hours, below what an average adult needs. Use your scheduled rest and self-care time.
   no_contact: If you cannot reach the flight surgeon, tell your Crew Medical Officer.
   missing: You have not logged your sleep yet.
 

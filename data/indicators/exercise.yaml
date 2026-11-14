@@ -52,15 +52,21 @@ baseline:
   note: Not applicable to an exercise log.
 
 thresholds:
-  green:
-    at_least: 90
-    meaning: The day's exercise meets the 1.5 hours per day ISS astronauts do.
-    source: hrp-risk-fitness
-  yellow:
-    below: 90
-    meaning: The day's exercise is below the 1.5 hours per day ISS astronauts do.
-    source: hrp-risk-fitness
-  red: null
+  evaluation: first-match
+  applies_to: The sum of the minutes logged today.
+  rules:
+    - color: yellow
+      label: Below today's target
+      when: "value < 90"
+      text: You are below today's exercise. ISS astronauts do 1.5 hours a day to protect against muscle and bone loss.
+      contact_flight_surgeon: false
+      source: hrp-risk-fitness
+    - color: green
+      label: Target reached
+      when: "value >= 90"
+      text: You reached today's exercise, the 1.5 hours a day ISS astronauts do.
+      contact_flight_surgeon: false
+      source: hrp-risk-fitness
   note: >-
     The 1.5 hours per day is what ISS astronauts do six to seven days a week. No
     NASA value was found for a critical (red) level.
@@ -96,8 +102,6 @@ flight_surgeon:
 astronaut_text:
   reminder: Remember to exercise today.
   progress: "You have done {done} of {target} minutes today."
-  green: You reached today's exercise, the 1.5 hours a day ISS astronauts do.
-  yellow: You are below today's exercise. ISS astronauts do 1.5 hours a day to protect against muscle and bone loss.
   no_contact: If you cannot reach the flight surgeon, tell your Crew Medical Officer.
   missing: You have not logged any exercise today.
 
