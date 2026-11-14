@@ -4,13 +4,12 @@
 | ---------------- | --------------------------------------------------------------------------------------- |
 | Document version | Draft                                                                                   |
 | Creation date    | November 14, 2026                                                                       |
-| Status           | Draft, pending review by the document owner                                             |
-| Document owner   | José Antonio Montoya García                                                             |
+| Status           | Draft                                                                                   |
 | Written by       | Troy Leonardo Moreno Calderon, from the format of the first ten sheets in `indicators/` |
 
 The format of every indicator sheet in `data/indicators/`. The sheets are the single source of medical data: the application loads them to decide each indicator's status and what guidance to show, and no medical value is defined in code (see the [MVP Scope](../docs/mvp-scope.md)).
 
-This document describes the format the first ten sheets already use. It was written while the owner was absent, so the owner may change it; any change must be applied to all sheets.
+This document describes the format the first ten sheets already use. Any change to it must be applied to all sheets.
 
 ## Change history
 
