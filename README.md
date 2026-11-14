@@ -69,14 +69,14 @@ _Pending_. It is defined in the MVP Scope. The application and the files in `dat
 
 ## Team
 
-| Name                                                                  | Role / area                                                                        |
-| --------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| [Montano Valencia, Mike Armando](https://github.com/MikeArmando)      | Team coordinator and owner of the MVP Scope                                        |
-| [Montoya García, José Antonio](https://github.com/josemontoya83-del)  | Owner of the Indicator Catalog                                                     |
-| [Rovera Nava, José Pablo](https://github.com/Jose-Pablo-programacion) | Code base project, stack, and code organization                                    |
-| [Perez Aguirre, Mextli Citlal](https://github.com/mxcitali)           | Demonstration data and video                                                       |
-| [Rojas Arroyo, Kenan](https://github.com/KenanRojasArroyo)            | UX/UI designer                                                                     |
-| [Moreno Calderon, Troy Leonardo](https://github.com/Troy2404)         | Cross-cutting research, README, and submission (description, checklist, and pitch) |
+| Name                                                                  | Research domain          | Project role                                        |
+| --------------------------------------------------------------------- | ------------------------ | --------------------------------------------------- |
+| [Montano Valencia, Mike Armando](https://github.com/MikeArmando)      | Cardiovascular           | Team coordinator, MVP Scope owner, and app logic    |
+| [Montoya García, José Antonio](https://github.com/josemontoya83-del)  | Metabolism and nutrition | Indicator Catalog owner and status evaluation rules |
+| [Rovera Nava, José Pablo](https://github.com/Jose-Pablo-programacion) | Musculoskeletal          | Stack, code organization, and code owner of `src/`  |
+| [Perez Aguirre, Mextli Citlal](https://github.com/mxcitali)           | Immunity and temperature | Demonstration data, flow testing, and demo video    |
+| [Rojas Arroyo, Kenan](https://github.com/KenanRojasArroyo)            | Behavioral               | UX/UI design and app screens                        |
+| [Moreno Calderon, Troy Leonardo](https://github.com/Troy2404)         | Cross-cutting            | Research document, README, and submission           |
 
 ---
 
