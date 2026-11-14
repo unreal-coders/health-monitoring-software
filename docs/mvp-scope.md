@@ -2,7 +2,7 @@
 
 | Field            | Detail                        |
 | ---------------- | ----------------------------- |
-| Document version | 1.0.0                         |
+| Document version | 1.1.0                         |
 | Creation date    | November 14, 2026             |
 | Status           | In development                |
 | Document owner   | Mike Armando Montano Valencia |
@@ -15,6 +15,7 @@ This document defines what the MVP application does, what it is built with, and 
 | ------- | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | Draft   | November 14, 2026 | Document created with the must-have and nice-to-have features and the out-of-scope items. Pending: stack and code organization, and status evaluation. |
 | 1.0.0   | November 14, 2026 | First version published in the repository: features, stack and code organization, and deployment. Status evaluation (section 3) pending.               |
+| 1.1.0   | November 14, 2026 | Indicators covered expanded to the ten accepted by the team, with three kinds of entries. Section 3 lists the cases these entries add.                 |
 
 ---
 
@@ -28,13 +29,24 @@ The application is a decision-support prototype, not a medical device. It perman
 
 The minimum that must work in the demo. It follows from what the challenge statement requires (gathering health indicators and allowing them to be evaluated and acted on) and from the decisions in the Team Guide.
 
-- **Indicator logging.** The astronaut manually enters the value of an indicator, with date and time, through a form. Each field shows the unit and how to measure the indicator on board, taken from its sheet.
-- **Indicators covered.** Blood pressure, heart rate, glucose, body temperature, hours of sleep, and mood: the indicators mentioned in the challenge statement.
+- **Indicator logging.** The astronaut manually enters an indicator, with date and time, through a form. Each field shows the unit and how to check the indicator on board, taken from its sheet. There are three kinds of entries:
+  - **Measurement:** a reading taken with a device, such as blood pressure.
+  - **Self-report:** an answer given in the app, such as mood on a scale or a symptom checklist.
+  - **Log:** an amount done toward a daily target, such as minutes of exercise.
+- **Indicators covered.** Ten indicators that the astronaut can check alone, in about two minutes, with a small device or none, and with an immediate result. The selection criteria and on-board methods are in the [Research document](research.md).
+  - **Cardiovascular:** heart rate, blood pressure, oxygen saturation.
+  - **Metabolism and nutrition:** blood glucose.
+  - **Immunity and temperature:** body temperature, immune symptoms.
+  - **Behavioral:** sleep hours, mood.
+  - **Musculoskeletal:** exercise. Bone density cannot be measured on board, so the application tracks exercise, the main countermeasure against bone and muscle loss.
+  - **Cross-cutting:** radiation dose.
+
+  Blood pressure, heart rate, glucose, body temperature, sleep hours, and mood are the indicators mentioned in the challenge statement.
 - **Status per indicator.** Each indicator shows green, yellow, or red according to the rules and thresholds in its sheet. Color is accompanied by text or an icon so that status does not rely on color alone. No threshold is defined outside the sheet.
 - **Overview.** One screen shows the current status of all covered indicators at a glance.
 - **Indicator detail and guidance.** Presents, from the sheet: why it is measured and which spaceflight hazards affect it, how it is measured, baseline value, what the current status means, actions and countermeasures, when to contact the flight surgeon, what the crew does if there is no real-time contact, and limitations. Texts are short, free of jargon, and do not diagnose.
 - **Escalation alert.** When the sheet indicates it for the current status, the application warns that the flight surgeon must be contacted and shows what to do if there is no real-time contact.
-- **History and trend.** Each indicator shows a chart of its values over time, with the status of each point, so that a gradual deterioration is visible. Entries are kept when the application is reloaded.
+- **History and trend.** Each indicator shows a chart of its values over time, with the status of each point, so that a gradual deterioration is visible. For logs, each point is the daily total. Entries are kept when the application is reloaded.
 - **Demonstration data.** The application loads the three synthetic scenarios (normal, gradual deterioration, and acute event) from `data/demo/` and allows switching between them.
 - **Visible sources.** Each indicator allows consulting the sources that support its values and actions.
 
@@ -42,8 +54,8 @@ The minimum that must work in the demo. It follows from what the challenge state
 
 Features that add value to the demo but are not required to meet the challenge. They are implemented only at the end, and only if time remains: all must-have features are finished first.
 
-- **Interactive human figure.** A body figure whose regions can be clicked. Each region opens the detail of the indicators related to it and shows their current status.
-- **Measurement reminders.** An indicator shows when a new measurement is due or overdue, based on the interval defined in its sheet.
+- **Interactive human figure.** A body figure whose regions can be clicked. Each region opens the detail of the indicators related to it and shows their current status. Radiation dose affects the whole body, so it is shown outside the figure.
+- **Measurement reminders.** An indicator shows when a new measurement is due or overdue, based on the interval defined in its sheet. For exercise, it reminds the astronaut to exercise and to log the minutes.
 - **Flight surgeon report.** A summary of the current status and recent values of the indicators, ready to be copied or printed and sent to the flight surgeon.
 - **Engagement tracking.** The application rewards keeping up with the measurement routine, not the values measured. It shows how many of the covered indicators are up to date, and for each indicator the number of consecutive measurements logged on time. What "on time" means is defined in the status evaluation (section 3), from the measurement interval in the indicator's sheet. Progress never depends on the status of an indicator, so nothing encourages hiding or altering a reading. It is computed from the logged entries and stores no additional data.
 
@@ -108,3 +120,15 @@ The app is built with `npm run build` and the output folder is published on GitH
 ## 3. Status evaluation
 
 _Pending._ Owner: José Antonio Montoya García. It must cover the edge cases: missing data, out-of-range value, and outdated measurement.
+
+It must also define how each kind of entry gets its status:
+
+| Entry                   | Indicators                                                                     | Status comes from                                                        |
+| ----------------------- | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------ |
+| Measurement             | Heart rate, blood pressure, oxygen saturation, blood glucose, body temperature | The reading compared with the sheet's thresholds.                        |
+| Self-report, scale      | Sleep hours, mood                                                              | The answer compared with the sheet's thresholds.                         |
+| Self-report, checklist  | Immune symptoms                                                                | The sheet's rules for which symptoms, or how many, lead to each status.  |
+| Log                     | Exercise                                                                       | The day's total compared with the sheet's daily target.                  |
+| Accumulated measurement | Radiation dose                                                                 | The dose accumulated during the mission compared with the sheet's limit. |
+
+For this, the sheet schema needs the entry kind, the unit, the measurement interval, and, for logs, the daily target.

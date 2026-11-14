@@ -28,20 +28,20 @@ The texts the astronaut sees use short sentences without jargon and do not diagn
 
 Since no real individual data is available, the demo uses synthetic data with three scenarios: normal, gradual deterioration, and acute event.
 
-The exact MVP features are defined in the MVP Scope (_pending_).
+The exact MVP features are defined in the [MVP Scope](docs/mvp-scope.md).
 
 ---
 
 ## Indicators by domain
 
-| Domain                   | Indicators or topics                                                                     |
-| ------------------------ | ---------------------------------------------------------------------------------------- |
-| Cardiovascular           | Blood pressure, heart rate                                                               |
-| Metabolism and nutrition | Glucose, nutrition                                                                       |
-| Musculoskeletal          | Bone density, muscle                                                                     |
-| Immunity and temperature | Body temperature, immune signals                                                         |
-| Behavioral               | Sleep, mood                                                                              |
-| Cross-cutting            | The five spaceflight hazards, on-board measurement, and environments (Research document) |
+| Domain                   | Indicators or topics                                                                      |
+| ------------------------ | ----------------------------------------------------------------------------------------- |
+| Cardiovascular           | Heart rate, blood pressure, oxygen saturation                                             |
+| Metabolism and nutrition | Blood glucose                                                                             |
+| Musculoskeletal          | Exercise                                                                                  |
+| Immunity and temperature | Body temperature, immune symptoms                                                         |
+| Behavioral               | Sleep hours, mood                                                                         |
+| Cross-cutting            | Radiation dose; the five spaceflight hazards and on-board measurement (Research document) |
 
 ---
 
