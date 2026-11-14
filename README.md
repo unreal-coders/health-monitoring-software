@@ -51,7 +51,7 @@ The exact MVP features are defined in the MVP Scope (_pending_).
 | ------------------------------------- | ------------------------------------------------------------------------------------------ |
 | [`team-guide.md`](docs/team-guide.md) | **Team Guide**: working rules, schedule, task allocation, and decisions.                   |
 | [`CONTRIBUTING.md`](CONTRIBUTING.md)  | **Contributing guide**: local development, commit convention, branches, and pull requests. |
-| `docs/research.md` _(pending)_        | **Research**: spaceflight hazards, effect on each body system, and on-board measurement.   |
+| [`research.md`](docs/research.md)     | **Research**: spaceflight hazards, effect on each body system, and on-board measurement.   |
 | `data/` _(pending)_                   | **Indicator Catalog**: one YAML sheet per indicator and demonstration data.                |
 | [`mvp-scope.md`](docs/mvp-scope.md)   | **MVP Scope**: features, stack, code organization, and status evaluation.                  |
 | [Figma][figma]                        | **Interface design**: user flows, visual guide, final design, and prototype.               |
