@@ -1,11 +1,67 @@
-/* Health wheel. Segment colors come only from the status kind. */
+/* Health wheel. Segment colors come only from the status kind.
+   Glass look: frosted HTML layers (.radial-glass) under an SVG that draws
+   the glowing colored borders, gloss and sparkle.
+   NOTE: the blur needs something behind the wheel (a gradient, image or
+   content). On a flat background the glass will just look like a tint. */
 
-.radial {
-  display: block;
+/* Status color per kind, used by the glass layer, border and glow */
+.kind-green { --status: var(--color-status-normal); }
+.kind-yellow { --status: var(--color-status-caution); }
+.kind-red { --status: var(--color-status-critical); }
+.kind-missing,
+.kind-no-reference { --status: var(--color-status-missing); }
+
+/* Fallback for elements with no kind class. It must live on a lower-specificity
+   selector than the kind-* rules, never on the elements themselves, or it
+   overrides the status color (this was why every glow rendered gray). */
+.radial-wrap { --status: var(--color-status-missing); }
+
+.radial-wrap {
+  position: relative;
   width: 100%;
   max-width: 600px;
-  height: auto;
+  aspect-ratio: 1;
   margin: 0 auto;
+}
+
+.radial-defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+
+/* ---------- Frosted glass layers ---------- */
+
+.radial-glass {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  /* Very light tint so the background shows through */
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--status) 6%, transparent),
+    color-mix(in srgb, var(--status) 0%, transparent) 55%,
+    color-mix(in srgb, var(--status) 4%, transparent)
+  );
+  -webkit-backdrop-filter: blur(3px) saturate(105%);
+  backdrop-filter: blur(3px) saturate(105%);
+}
+
+/* center circle: (C - R_CORE) / SIZE = (300 - 128) / 600 */
+.radial-glass-core {
+  inset: 28.667%;
+  border-radius: 50%;
+}
+
+/* ---------- SVG overlay ---------- */
+
+.radial {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible; /* lets the glow extend past the SVG edge */
   user-select: none;
 }
 
@@ -19,31 +75,33 @@
   cursor: pointer;
 }
 
+/* Gloss: bright reflection across the top of each segment. Also the click target. */
+.radial-gloss {
+  opacity: 0.45; /* softer reflection */
+  stroke: none;
+  pointer-events: all;
+}
+
+/* The wedge path is the colored glowing border */
 .radial-wedge {
-  fill: var(--color-surface);
-  stroke: var(--color-status-missing);
-  stroke-width: 1.5;
-  transition: stroke-width 180ms ease-out;
+  fill: none;
+  stroke: var(--status);
+  stroke: var(--status);
+  stroke-width: 1.8;
+  pointer-events: none;
+  filter:
+    drop-shadow(0 0 3px color-mix(in srgb, var(--status) 80%, transparent))
+    drop-shadow(0 0 10px color-mix(in srgb, var(--status) 45%, transparent));
+  transition: stroke-width 180ms ease-out, filter 180ms ease-out;
 }
 
 .radial-segment:hover .radial-wedge {
-  stroke-width: 2.5;
+  stroke-width: 2.6;
+  filter:
+    drop-shadow(0 0 4px var(--status))
+    drop-shadow(0 0 14px color-mix(in srgb, var(--status) 60%, transparent));
 }
 
-.radial-segment.kind-green .radial-wedge {
-  fill: var(--color-tint-normal);
-  stroke: var(--color-status-normal);
-}
-
-.radial-segment.kind-yellow .radial-wedge {
-  fill: var(--color-tint-caution);
-  stroke: var(--color-status-caution);
-}
-
-.radial-segment.kind-red .radial-wedge {
-  fill: var(--color-tint-critical);
-  stroke: var(--color-status-critical);
-}
 
 .radial-segment.kind-no-reference .radial-wedge {
   stroke-dasharray: 6 4;
@@ -51,32 +109,54 @@
 
 .radial-segment.is-selected .radial-wedge {
   stroke: var(--color-text);
-  stroke-width: 3;
+  stroke-width: 3.2;
+}
+
+/* Sparkle in the corner of each segment */
+.radial-spark {
+  fill: #fff;
+  opacity: 0.45;
+  pointer-events: none;
+  filter: drop-shadow(0 0 2px #fff);
+}
+
+/* Halo behind the text keeps it readable over any background */
+.radial-name,
+.radial-value,
+.radial-unit,
+.radial-status {
+  paint-order: stroke fill;
+  stroke: color-mix(in srgb, var(--color-bg, #000) 55%, transparent);
+  stroke-width: 3px;
+  stroke-linejoin: round;
 }
 
 .radial-name {
   fill: var(--color-text);
   font-family: var(--font-family);
-  font-size: 13px;
-  font-weight: var(--font-weight-medium);
+  font-size: 14px;
+  font-weight: var(--font-weight-bold, 700);
 }
 
 .radial-value {
   fill: var(--color-text);
   font-family: var(--font-mono);
-  font-size: 22px;
+  font-size: 30px;
+  font-weight: var(--font-weight-bold, 700);
   font-variant-numeric: tabular-nums;
 }
 
 .radial-unit {
-  fill: var(--color-text-muted);
+  fill: var(--color-text);
   font-family: var(--font-family);
-  font-size: 11px;
+  font-size: 14px;
+  opacity: 0.85;
 }
 
 .radial-status {
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 14px;
+  font-weight: var(--font-weight-bold, 700);
   letter-spacing: var(--letter-spacing-label);
   text-transform: uppercase;
   fill: var(--color-status-missing-text);
@@ -105,30 +185,26 @@
   fill: var(--color-status-missing-text);
 }
 
-/* Center */
+/* ---------- Center ---------- */
+
 .radial-core-outer {
-  fill: var(--color-footer);
+  fill: none;
+  stroke: color-mix(in srgb, var(--color-text) 14%, transparent);
+  stroke-width: 1;
+}
+
+.radial-core-gloss {
+  pointer-events: none;
 }
 
 .radial-core {
-  fill: var(--color-surface);
-  stroke: var(--color-status-missing);
-  stroke-width: 2;
-}
-
-.radial-core.kind-green {
-  fill: var(--color-tint-normal);
-  stroke: var(--color-status-normal);
-}
-
-.radial-core.kind-yellow {
-  fill: var(--color-tint-caution);
-  stroke: var(--color-status-caution);
-}
-
-.radial-core.kind-red {
-  fill: var(--color-tint-critical);
-  stroke: var(--color-status-critical);
+  fill: none;
+  stroke: var(--status);
+  stroke: var(--status);
+  stroke-width: 2.2;
+  filter:
+    drop-shadow(0 0 4px color-mix(in srgb, var(--status) 80%, transparent))
+    drop-shadow(0 0 12px color-mix(in srgb, var(--status) 45%, transparent));
 }
 
 .radial-core-icon {
@@ -148,6 +224,12 @@
   font-size: 14px;
   letter-spacing: var(--letter-spacing-label);
   text-transform: uppercase;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .radial-wedge {
+    transition: none;
+  }
 }
 
 /* Small screens: the wheel keeps only the status symbol; chips and the card carry the details */
