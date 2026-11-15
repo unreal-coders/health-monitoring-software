@@ -2,7 +2,7 @@
 
 | Field            | Detail                        |
 | ---------------- | ----------------------------- |
-| Document version | 1.1.0                         |
+| Document version | 1.2.0                         |
 | Creation date    | November 14, 2026             |
 | Status           | Published                     |
 | Document owner   | Troy Leonardo Moreno Calderon |
@@ -11,11 +11,12 @@ Knowledge that applies to all indicators: the five hazards of spaceflight, how t
 
 ## Change history
 
-| Version | Date              | Change                                                                                                                                    |
-| ------- | ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| Draft   | November 14, 2026 | Document created.                                                                                                                         |
-| 1.0.0   | November 14, 2026 | First version published in the repository.                                                                                                |
-| 1.1.0   | November 14, 2026 | Mood uses the PHQ-2. On-board measurement sources added for vital signs and radiation. Bone density wording aligned with the NASA source. |
+| Version | Date              | Change                                                                                                                                       |
+| ------- | ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| Draft   | November 14, 2026 | Document created.                                                                                                                            |
+| 1.0.0   | November 14, 2026 | First version published in the repository.                                                                                                   |
+| 1.1.0   | November 14, 2026 | Mood uses the PHQ-2. On-board measurement sources added for vital signs and radiation. Bone density wording aligned with the NASA source.    |
+| 1.2.0   | November 15, 2026 | Radiation dose removed from the methods by indicator, since the team dropped it as an indicator. Radiation stays as one of the five hazards. |
 
 ---
 
@@ -121,7 +122,6 @@ How each indicator in the [MVP Scope](mvp-scope.md) is checked on board. Thresho
 | Behavioral               | Sleep hours       | Self-report or wearable | Hours reported on waking, or a wrist actigraphy device.                     |
 | Behavioral               | Mood              | Self-report             | The two PHQ-2 questions in the app, every two weeks.                        |
 | Musculoskeletal          | Exercise          | Log                     | Reminder to exercise and a log of minutes done, with progress for the day.  |
-| Cross-cutting            | Radiation dose    | Measurement             | The astronaut reads a personal dosimeter and logs the accumulated dose.     |
 
 Two indicators replace measurements the astronaut cannot take alone in a few minutes:
 
@@ -132,8 +132,7 @@ Two indicators replace measurements the astronaut cannot take alone in a few min
 
 - Blood pressure, oxygen saturation, and heart rate are vital signs that in-mission medical capabilities assess and store ([OCHMO-TB-033][tb-033]). NASA has tested non-invasive blood pressure, pulse oximetry, heart monitoring, and temperature with the Tempus Pro device ([NASA Glenn][glenn-mim]).
 - Sleep and mood are supported by NASA's use of actigraphy and behavioral surveys ([Standard Measures][standard-measures], [ARCHeR][archer]). Mood uses the PHQ-2, a validated two-question screener.
-- NASA requires programs to monitor each crewmember's radiation exposure ([OCHMO-TB-016][tb-016], quoting NASA-STD-3001 Volume 2).
-- **Still without a NASA source:** a glucometer on board, an astronaut reading their own dosimeter, and a symptom self-report checklist.
+- **Still without a NASA source:** a glucometer on board and a symptom self-report checklist.
 
 ---
 
@@ -146,7 +145,7 @@ nasa.gov returned "429 Too Many Requests" during the event. If a NASA link fails
 - NASA Human Research Program, [Risks of Human Spaceflight][risks]: [cardiovascular][risk-cardio], [nutrition][risk-nutrition], [bone][risk-bone], [fitness][risk-fitness], [immune][risk-immune], [sleep][risk-sleep], [behavioral][risk-behavioral]
 - NASA Human Research Program, [Ongoing HRP Research][ongoing]: [Standard Measures][standard-measures], [ARCHeR][archer], [Immune Biomarkers][immune-biomarkers], [Tempus Pro][tempus-pro]
 - NASA, [Monitoring Space Radiation][radiation-monitoring]
-- NASA Office of the Chief Health and Medical Officer: [OCHMO-TB-033 Spaceflight Experience and Medical Care][tb-033], [OCHMO-TB-016 Behavioral Health and Performance][tb-016]
+- NASA Office of the Chief Health and Medical Officer: [OCHMO-TB-033 Spaceflight Experience and Medical Care][tb-033]
 - NASA Glenn Research Center, [Multifunctional Integrated Medical Devices][glenn-mim]
 - CSA: [Monitoring Radiation for Astronaut Health][csa-radiation], [Why Do We Conduct Science Experiments in Space?][csa-science], [How does space affect the human body? (infographic)][csa-body]
 
@@ -172,7 +171,6 @@ nasa.gov returned "429 Too Many Requests" during the event. If a NASA link fails
 [tempus-pro]: https://www.nasa.gov/reference/tempus-pro/
 [radiation-monitoring]: https://www.nasa.gov/directorates/esdmd/hhp/space-radiation/
 [tb-033]: https://www.nasa.gov/wp-content/uploads/2023/12/ochmo-tb-033-spaceflight-experience-medical-care.pdf
-[tb-016]: https://www.nasa.gov/wp-content/uploads/2023/12/ochmo-tb-016-behavioral-health.pdf
 [glenn-mim]: https://www.nasa.gov/glenn/glenn-expertise-space-exploration/human-health-performance/exploration-medical-technologies/multifunctional-integrated-medical-devices
 [csa-radiation]: https://www.asc-csa.gc.ca/eng/news/articles/2026/2026-02-26-monitoring-radiation-astronaut-health.asp
 [csa-science]: https://www.asc-csa.gc.ca/eng/iss/science/why-do-we-conduct-science-experiments-in-space.asp

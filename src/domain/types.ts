@@ -49,7 +49,6 @@ export interface IndicatorSheet {
   unit: string | null
   input?: InputKind
   fields?: string[]
-  accumulation?: 'mission'
   measurement: {
     method: string | null
     interval: string | null
