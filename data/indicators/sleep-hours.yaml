@@ -28,8 +28,17 @@ measurement:
     a wrist actigraphy device. NASA collects sleep reports and wrist-sensor
     activity data in Standard Measures, and actigraphy in ARCHeR.
   sources: [hrp-standard-measures, hrp-archer, ochmo-tb-041]
-  interval: null
-  interval_note: One entry per sleep period. No NASA measurement interval was found.
+  interval: 1 day
+  interval_basis: source
+  interval_source: nasa-std-3001-v1
+  interval_note: NASA-STD-3001 schedules one sleep period a day, at a consistent time from one day to the next.
+
+valid_range:
+  value:
+    min: 0
+    max: 24
+    basis: definition
+    note: A day has 24 hours.
 
 baseline:
   value: null

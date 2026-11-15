@@ -30,8 +30,22 @@ measurement:
     assess and store. NASA has tested non-invasive blood pressure measurement with
     the Tempus Pro multi-functional medical device.
   sources: [ochmo-tb-033, glenn-mim]
-  interval: null
-  interval_note: No measurement interval found in the NASA sources consulted.
+  interval: 1 day
+  interval_basis: source
+  interval_source: aha-home-bp
+  interval_note: The AHA advises measuring at the same time every day.
+
+valid_range:
+  systolic:
+    min: 50
+    max: 300
+    basis: design
+    note: Input limit chosen by the team to catch typing errors. It is not a medical value.
+  diastolic:
+    min: 20
+    max: 200
+    basis: design
+    note: Input limit chosen by the team to catch typing errors. It is not a medical value.
 
 baseline:
   value: null
@@ -115,6 +129,10 @@ flight_surgeon:
   sources: [aha-bp-readings, aha-low-bp, nasa-std-3001-v1]
 
 astronaut_text:
+  how_to: >-
+    Rest quietly for at least five minutes first, with no caffeine or exercise in
+    the 30 minutes before. Measure at the same time every day, and take two
+    readings one minute apart.
   no_contact: If you cannot reach the flight surgeon, tell your Crew Medical Officer.
   missing: You have not logged your blood pressure yet.
 
@@ -154,6 +172,10 @@ sources:
     title: Low Blood Pressure - When Blood Pressure Is Too Low (last reviewed May 6, 2024)
     publisher: American Heart Association
     url: https://www.heart.org/en/health-topics/high-blood-pressure/the-facts-about-high-blood-pressure/low-blood-pressure-when-blood-pressure-is-too-low
+  - id: aha-home-bp
+    title: Home Blood Pressure Monitoring (last reviewed Aug 14, 2025)
+    publisher: American Heart Association
+    url: https://www.heart.org/en/health-topics/high-blood-pressure/understanding-blood-pressure-readings/monitoring-your-blood-pressure-at-home
 
 author: Troy Leonardo Moreno Calderon
 reviewer: null

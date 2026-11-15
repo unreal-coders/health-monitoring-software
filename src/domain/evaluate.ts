@@ -65,9 +65,34 @@ export function entryValues(sheet: IndicatorSheet, entry: Entry): Record<string,
   }
   const values: Record<string, number> = {}
   for (const name of conditionVariables(sheet)) {
-    values[name] = requireNumber(entry.values, name, sheet)
+    const value = requireNumber(entry.values, name, sheet)
+    const range = sheet.valid_range?.[name]
+    if (range && (value < range.min || (range.max !== null && value > range.max))) {
+      throw new OutOfRangeError(sheet, name, value, range.min, range.max)
+    }
+    values[name] = value
   }
   return values
+}
+
+/** An entry value outside the sheet's valid_range, most likely a typing error. */
+export class OutOfRangeError extends Error {
+  readonly indicatorId: string
+  readonly field: string
+  readonly value: number
+  readonly min: number
+  readonly max: number | null
+
+  constructor(sheet: IndicatorSheet, field: string, value: number, min: number, max: number | null) {
+    const accepted = max === null ? `${min} or more` : `${min} to ${max}`
+    super(`${sheet.name}: ${value} is outside the accepted values for "${field}" (${accepted}). Check the entry.`)
+    this.name = 'OutOfRangeError'
+    this.indicatorId = sheet.id
+    this.field = field
+    this.value = value
+    this.min = min
+    this.max = max
+  }
 }
 
 function sameLocalDay(a: Date, b: Date): boolean {

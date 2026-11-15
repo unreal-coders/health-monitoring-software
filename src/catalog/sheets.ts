@@ -12,6 +12,8 @@ const COLORS = new Set(['green', 'yellow', 'red'])
 const ENTRY_KINDS = new Set(['measurement', 'self-report', 'log'])
 const INPUTS = new Set(['number', 'checklist', 'questionnaire'])
 const CONTACT_FLAGS = new Set<unknown>([true, false, 'if-symptoms'])
+const INTERVAL_BASES = new Set<unknown>(['source', 'definition', 'design'])
+const RANGE_BASES = new Set<unknown>(['definition', 'design'])
 const REQUIRED = [
   'id',
   'name',
@@ -65,6 +67,31 @@ export function validateSheet(raw: unknown, file: string): IndicatorSheet {
   if (typed.input === 'checklist') check(typed.checklist?.length, file, 'a checklist needs items')
 
   const sourceIds = new Set((typed.sources ?? []).map((source) => source.id))
+
+  const { interval_basis: intervalBasis, interval_source: intervalSource } = typed.measurement
+  check(INTERVAL_BASES.has(intervalBasis), file, `unknown measurement.interval_basis "${intervalBasis}"`)
+  if (intervalBasis === 'source') {
+    check(intervalSource && sourceIds.has(intervalSource), file, `measurement.interval_source must name a listed source`)
+  }
+
+  const numberInput = typed.input === undefined || typed.input === 'number'
+  if (numberInput) check(typed.valid_range, file, 'a number input needs a valid_range')
+  if (typed.valid_range) {
+    const names = conditionVariables(typed)
+    check(
+      Object.keys(typed.valid_range).sort().join() === [...names].sort().join(),
+      file,
+      `valid_range must cover exactly: ${names.join(', ')}`,
+    )
+    for (const [name, range] of Object.entries(typed.valid_range)) {
+      const where = `valid_range.${name}`
+      check(typeof range?.min === 'number', file, `${where}.min must be a number`)
+      check(range.max === null || (typeof range.max === 'number' && range.max > range.min), file, `${where}.max must be null or above min`)
+      check(RANGE_BASES.has(range.basis), file, `${where}.basis must be "definition" or "design"`)
+      check(typeof range.note === 'string' && range.note.length > 0, file, `${where} needs a note`)
+    }
+  }
+
   const thresholds = typed.thresholds
   check(thresholds?.evaluation === 'first-match', file, 'thresholds.evaluation must be "first-match"')
   check(Array.isArray(thresholds.rules), file, 'thresholds.rules must be a list')

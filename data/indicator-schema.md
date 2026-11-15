@@ -13,9 +13,10 @@ This document describes the format the first ten sheets already use. Any change 
 
 ## Change history
 
-| Version | Date              | Change                                                              |
-| ------- | ----------------- | ------------------------------------------------------------------- |
-| Draft   | November 14, 2026 | Document created from the format of the first ten indicator sheets. |
+| Version | Date              | Change                                                                                                                                       |
+| ------- | ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| Draft   | November 14, 2026 | Document created from the format of the first ten indicator sheets.                                                                          |
+| Draft   | November 14, 2026 | Added measurement intervals, valid input ranges, the design-decision rule, and how the flight surgeon and Crew Medical Officers are reached. |
 
 ---
 
@@ -34,6 +35,7 @@ This document describes the format the first ten sheets already use. Any change 
 3. **Clinical guidelines when NASA gives no value.** The team agreed to use official clinical guidelines (for example AHA, CDC, MedlinePlus, or a validated questionnaire) only for thresholds NASA does not publish.
 4. **Nothing invented.** When no source gives a value, the field is `null` and a `*_note` field says so.
 5. **Project rule.** When no source supports an indication, the astronaut is referred to the flight surgeon. A sheet that uses this rule says so in its notes.
+6. **Design decisions.** Only two kinds of values may be set by the team without a source: measurement intervals and input limits for catching typing errors. They are marked `basis: design` and are never medical values (thresholds, actions, or countermeasures).
 
 ---
 
@@ -70,13 +72,28 @@ Why the indicator is measured and which spaceflight hazards affect it.
 
 How the indicator is checked on board.
 
-| Field           | Type           | Description                                                                                  |
-| --------------- | -------------- | -------------------------------------------------------------------------------------------- |
-| `method`        | string         | **(required)** What the astronaut does. `null` when no source gives a method.                |
-| `method_note`   | string         | What the sources do not cover about the method.                                              |
-| `sources`       | list of ids    | **(required)** Sources of the method. Empty when there is none.                              |
-| `interval`      | string or null | **(required)** How often to measure, for example `14 days`. `null` when no source gives one. |
-| `interval_note` | string         | **(required)** Where the interval comes from, or that no source gives one.                   |
+| Field             | Type           | Description                                                                                                                                                            |
+| ----------------- | -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `method`          | string         | **(required)** What the astronaut does. `null` when no source gives a method.                                                                                          |
+| `method_note`     | string         | What the sources do not cover about the method.                                                                                                                        |
+| `sources`         | list of ids    | **(required)** Sources of the method. Empty when there is none.                                                                                                        |
+| `interval`        | string or null | **(required)** How often to measure, as a number and `hour`, `hours`, `day`, or `days`, for example `1 day` or `14 days`. An entry older than this is marked outdated. |
+| `interval_basis`  | string         | **(required)** `source` (a source gives it), `definition` (it follows from what is measured), or `design` (the team chose it; see rule 6).                             |
+| `interval_source` | id             | Required when `interval_basis` is `source`.                                                                                                                            |
+| `interval_note`   | string         | **(required)** Where the interval comes from.                                                                                                                          |
+
+### 3.3.1 `valid_range`
+
+The values an entry can have. An entry outside this range is rejected as a typing error and never gets a color. Required for every indicator with `input: number` (the default); a checklist or a questionnaire is already limited by its items and scores.
+
+One entry per value name (`value`, or each name in `fields`), each with:
+
+| Field   | Type           | Description                                                                                        |
+| ------- | -------------- | -------------------------------------------------------------------------------------------------- |
+| `min`   | number         | **(required)** Lowest accepted value.                                                              |
+| `max`   | number or null | **(required)** Highest accepted value, or `null` when there is no upper limit.                     |
+| `basis` | string         | **(required)** `definition` (for example a percentage cannot exceed 100) or `design` (see rule 6). |
+| `note`  | string         | **(required)** Why the range is what it is.                                                        |
 
 ### 3.4 Input details (only for some entry kinds)
 
@@ -186,10 +203,14 @@ From the project principles in the README:
 
 ---
 
-## 5. Open items
+## 5. Who is notified
 
-Cases the MVP Scope (section 3) asks for that this format does not cover yet:
+The application has no backend (MVP Scope 1.3), so it cannot send a message to anyone. When a rule has `contact_flight_surgeon: true`, the application shows the escalation alert to the astronaut, who contacts the flight surgeon. NASA-STD-3001 puts in-mission medical care under the flight surgeon ([V1 3004]).
 
-- **Outdated measurement.** Most sheets have `interval: null`, because no source gives one, so the application cannot tell when a value is too old.
-- **Out-of-range value.** There is no field for the range of possible values, so an impossible entry (for example a typing error) is not detected.
-- **Who is notified.** Rules say whether to contact the flight surgeon, but not who else is notified for each status.
+When there is no real-time contact, the alert shows `astronaut_text.no_contact`: the astronaut reports to a Crew Medical Officer. NASA-STD-3001 requires at least two crewmembers per vehicle trained as Crew Medical Officers, the medical experts for the mission ([V1 3006], [V1 5003]).
+
+---
+
+## 6. Open items
+
+- **Immune symptoms.** No source was found to turn symptoms into a status, so the sheet has no rules and every entry is shared with the flight surgeon.

@@ -28,8 +28,9 @@ measurement:
     NASA tracks immune changes with blood, saliva, and urine samples, which need
     lab analysis. No NASA source was found for a symptom self-report method.
   sources: [hrp-risk-immune]
-  interval: null
-  interval_note: No measurement interval found in the NASA sources consulted.
+  interval: 1 day
+  interval_basis: design
+  interval_note: Interval chosen by the team; no source gives one.
 
 checklist:
   - id: cold-sores

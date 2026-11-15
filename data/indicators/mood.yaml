@@ -34,6 +34,8 @@ measurement:
     is 0 to 6.
   sources: [phq2-validation, phq-form]
   interval: 14 days
+  interval_basis: source
+  interval_source: phq-form
   interval_note: The PHQ-2 asks about the last 2 weeks.
 
 questionnaire:
