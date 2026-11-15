@@ -289,28 +289,7 @@
   gap: 0.75rem;
 }
 
-/* Buttons */
-.btn {
-  min-height: 44px;
-  padding: 0 1.25rem;
-  border-radius: 10px;
-  border: 1px solid var(--color-border);
-  font: inherit;
-  font-weight: var(--font-weight-medium);
-  cursor: pointer;
-}
-
-.btn-primary {
-  background: var(--color-text);
-  color: var(--color-bg);
-  border-color: transparent;
-}
-
-.btn-secondary {
-  background: var(--color-surface);
-  color: var(--color-text);
-}
-
+/* Buttons: .btn, .btn-primary, and .btn-secondary live in index.css */
 .btn-ghost {
   min-width: 44px;
   background: none;

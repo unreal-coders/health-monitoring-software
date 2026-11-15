@@ -1,39 +1,74 @@
 /*
- * Design tokens: colors and typography.
- * Source: Figma (styles exported by Kenan). Dark theme is the default.
+ * Design tokens: colors, typography, spacing, and shape.
+ * Source: redesign spec (docs/redesign-spec.md, section 1), inspired by the
+ * NASA Web Design System. Dark theme is the default.
  * Components must use these variables and never hardcode colors or fonts.
  */
 
 :root {
   color-scheme: dark;
 
-  /* Surfaces and text */
-  --color-bg: #0b0e14;
-  --color-surface: #161b22;
-  --color-border: #30363d;
-  --color-text: #f0f6fc;
-  --color-text-muted: #8b949e;
-  --color-focus: #0dcaf0;
+  /* Surfaces */
+  --color-bg: #111e2b;
+  --color-surface: #1b2b3c;
+  --color-footer: #0d1722;
+  --color-border: #2a3e52; /* decorative rules, card borders */
+  --color-border-strong: #5c768d; /* inputs, secondary buttons (>= 3:1) */
 
-  /* Status colors. Always shown with a label or icon too, never color alone. */
-  --color-status-normal: #2ea043;
-  --color-status-normal-text: #3fb950;
-  --color-status-caution: #d29922;
-  --color-status-critical: #f85149;
-  --color-status-missing: #8b949e;
+  /* Text */
+  --color-text: #e2e8f0;
+  --color-text-muted: #94a3b8;
+  --color-active: #cbd5e1; /* active tab, primary button (text: --color-bg) */
+  --color-focus: #cbd5e1;
 
-  /* Typography */
-  --font-family: 'Google Sans Flex', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  /* Status: fill/border/icon vs text */
+  --color-status-normal: #4ade80;
+  --color-status-normal-text: #4ade80;
+  --color-status-caution: #eab308;
+  --color-status-caution-text: #eab308;
+  --color-status-critical: #e05252; /* fills, borders, and icons only */
+  --color-status-critical-text: #f58a8a; /* red text (#e05252 fails AA as text) */
+  --color-status-missing: #5c768d;
+  --color-status-missing-text: #94a3b8;
+
+  /* Tints (wheel segments and center ring) */
+  --color-tint-normal: #1f3d3e;
+  --color-tint-caution: #33392f;
+  --color-tint-critical: #352b37;
+
+  /* Stars */
+  --color-star: #e2e8f0;
+  --color-meteor: #ffffff;
+
+  /* Type */
+  --font-display: 'Inter', 'Helvetica Neue', sans-serif; /* h1, h2 */
+  --font-family: 'Public Sans', system-ui, sans-serif; /* body, buttons */
+  --font-mono: 'DM Mono', 'IBM Plex Mono', monospace; /* numbers, labels, tags, nav */
   --font-size-xs: 0.75rem;
   --font-size-sm: 0.875rem;
   --font-size-md: 1rem;
   --font-size-lg: 1.25rem;
   --font-size-xl: 1.75rem;
+  --font-size-2xl: 2.25rem;
   --font-weight-regular: 400;
   --font-weight-medium: 500;
   --font-weight-bold: 700;
   --line-height-body: 1.5;
   --line-height-heading: 1.2;
+  --letter-spacing-label: 0.08em;
+
+  /* Spacing (8px base) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 16px;
+  --space-4: 24px;
+  --space-5: 32px;
+  --space-6: 48px;
+  --space-7: 64px;
+
+  /* Shape */
+  --radius: 2px; /* everything; 50% only on avatars and the status ring */
+  --max-width: 1200px;
 }
 
 *,
@@ -59,6 +94,11 @@ h3 {
   font-weight: var(--font-weight-bold);
 }
 
+h1,
+h2 {
+  font-family: var(--font-display);
+}
+
 h1 {
   font-size: var(--font-size-xl);
 }
@@ -67,20 +107,44 @@ h2 {
   font-size: var(--font-size-lg);
 }
 
+a {
+  color: var(--color-text);
+}
+
 :focus-visible {
-  outline: 2px solid var(--color-focus);
+  outline: 3px solid var(--color-focus);
   outline-offset: 2px;
+}
+
+/* Telemetry labels: CARDIOVASCULAR, BIOMETRIC LINK: SIMULATED */
+.label-mono {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: var(--letter-spacing-label);
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+/* Measurement numbers */
+.num {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
 }
 
 /* Inputs: same surface and border as the rest of the system */
 input[type='number'],
-input[type='datetime-local'] {
-  min-height: 40px;
-  padding: 0 0.75rem;
+input[type='text'],
+input[type='date'],
+input[type='time'],
+input[type='datetime-local'],
+select {
+  min-height: 44px;
+  padding: 0 var(--space-3);
   background: var(--color-bg);
   color: var(--color-text);
-  border: 1px solid var(--color-border);
-  border-radius: 8px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius);
   font: inherit;
 }
 
@@ -88,25 +152,112 @@ input[type='radio'],
 input[type='checkbox'] {
   width: 18px;
   height: 18px;
-  accent-color: var(--color-focus);
+  accent-color: var(--color-active);
 }
 
-/* Interactive states for buttons */
+/* Buttons */
 button {
+  font: inherit;
   transition: opacity 180ms ease-out, transform 180ms ease-out;
 }
 
-button:hover:not(:disabled) {
+button:disabled,
+button[aria-disabled='true'] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: 44px;
+  padding: 12px 20px;
+  border-radius: var(--radius);
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--color-active);
+  color: var(--color-bg);
+  border: 1px solid var(--color-active);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--color-text);
+  border: 1px solid var(--color-border-strong);
+}
+
+.btn:hover:not(:disabled) {
   opacity: 0.85;
 }
 
-button:active:not(:disabled) {
+.btn:active:not(:disabled) {
   transform: scale(0.98);
 }
 
-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+/* Action links end in " ->" */
+.link-action {
+  padding: 0;
+  background: none;
+  border: none;
+  color: var(--color-text);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  letter-spacing: var(--letter-spacing-label);
+  text-transform: uppercase;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  cursor: pointer;
+}
+
+.link-action::after {
+  content: ' ->';
+}
+
+/* Alerts: surface, 1px border, 4px left border in the status color */
+.alert {
+  padding: var(--space-3);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-left: 4px solid var(--color-status-missing);
+  border-radius: var(--radius);
+}
+
+.alert-normal {
+  border-left-color: var(--color-status-normal);
+}
+
+.alert-caution {
+  border-left-color: var(--color-status-caution);
+}
+
+.alert-critical {
+  border-left-color: var(--color-status-critical);
+}
+
+/* App shell: the starfield sits behind the content, the disclaimer sticks to the bottom */
+.app-shell {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.app-shell > :not(.starfield) {
+  position: relative;
+  z-index: 1;
+}
+
+.app-shell > .app-main {
+  flex: 1;
+  width: 100%;
 }
 
 /* Honor the user's motion preference */
@@ -117,4 +268,38 @@ button:disabled {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* Disclaimer footer: always visible at the bottom of every screen */
+.disclaimer {
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  background: var(--color-footer);
+  border-top: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+}
+
+.app-shell > .disclaimer {
+  z-index: 2;
+}
+
+.disclaimer-icon {
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.disclaimer-text {
+  margin: 0;
+  font-size: var(--font-size-xs);
+}
+
+.disclaimer-credit {
+  margin: 0;
+  font-size: 0.6875rem;
+  opacity: 0.85;
 }
