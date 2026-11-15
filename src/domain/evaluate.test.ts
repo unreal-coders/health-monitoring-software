@@ -85,18 +85,6 @@ describe('entry kinds', () => {
     expect(result.kind).toBe('missing')
   })
 
-  it('radiation dose adds up the whole mission and has no color below the limit', () => {
-    const sheet = getSheet('radiation-dose')
-    const low = evaluateStatus(sheet, [entry('radiation-dose', { value: 120 }), entry('radiation-dose', { value: 80 })], NOW)
-    expect(low.evaluated).toEqual({ value: 200 })
-    expect(low.kind).toBe('no-reference')
-    expect(low.contactFlightSurgeon).toBe(true)
-    expect(low.text).toBe(sheet.astronaut_text.no_reference)
-
-    const limit = evaluateStatus(sheet, [entry('radiation-dose', { value: 400 }), entry('radiation-dose', { value: 200 })], NOW)
-    expect(limit.kind).toBe('red')
-  })
-
   it('the PHQ-2 adds up both answers', () => {
     const sheet = getSheet('mood')
     expect(evaluateStatus(sheet, [entry('mood', { interest: 1, down: 1 })], NOW).kind).toBe('green')
@@ -150,7 +138,7 @@ describe('edge cases', () => {
     expect(reject('blood-pressure', { systolic: 120, diastolic: 10 })).toThrow(/"diastolic" \(20 to 200\)/)
     expect(reject('oxygen-saturation', { value: 101 })).toThrow(OutOfRangeError)
     expect(reject('sleep-hours', { value: 25 })).toThrow(OutOfRangeError)
-    expect(reject('radiation-dose', { value: -1 })).toThrow(/0 or more/)
+    expect(reject('body-temperature', { value: 50 })).toThrow(/25 to 45/)
     expect(reject('exercise', { value: 1441 })).toThrow(OutOfRangeError)
   })
 
@@ -160,7 +148,7 @@ describe('edge cases', () => {
   })
 
   it('gives every sheet a measurement interval', () => {
-    for (const id of ['blood-glucose', 'blood-pressure', 'body-temperature', 'exercise', 'heart-rate', 'immune-symptoms', 'mood', 'oxygen-saturation', 'radiation-dose', 'sleep-hours']) {
+    for (const id of ['blood-glucose', 'blood-pressure', 'body-temperature', 'exercise', 'heart-rate', 'immune-symptoms', 'mood', 'oxygen-saturation', 'sleep-hours']) {
       expect(parseInterval(getSheet(id).measurement.interval), id).not.toBeNull()
     }
   })

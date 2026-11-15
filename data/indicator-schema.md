@@ -1,15 +1,15 @@
 # Indicator Sheet Schema
 
-| Field            | Detail                                                                                  |
-| ---------------- | --------------------------------------------------------------------------------------- |
-| Document version | Draft                                                                                   |
-| Creation date    | November 14, 2026                                                                       |
-| Status           | Draft                                                                                   |
-| Written by       | Troy Leonardo Moreno Calderon, from the format of the first ten sheets in `indicators/` |
+| Field            | Detail                                                                        |
+| ---------------- | ----------------------------------------------------------------------------- |
+| Document version | Draft                                                                         |
+| Creation date    | November 14, 2026                                                             |
+| Status           | Draft                                                                         |
+| Written by       | Troy Leonardo Moreno Calderon, from the format of the sheets in `indicators/` |
 
 The format of every indicator sheet in `data/indicators/`. The sheets are the single source of medical data: the application loads them to decide each indicator's status and what guidance to show, and no medical value is defined in code (see the [MVP Scope](../docs/mvp-scope.md)).
 
-This document describes the format the first ten sheets already use. Any change to it must be applied to all sheets.
+This document describes the format the indicator sheets use. Any change to it must be applied to all sheets.
 
 ## Change history
 
@@ -17,6 +17,7 @@ This document describes the format the first ten sheets already use. Any change 
 | ------- | ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
 | Draft   | November 14, 2026 | Document created from the format of the first ten indicator sheets.                                                                          |
 | Draft   | November 14, 2026 | Added measurement intervals, valid input ranges, the design-decision rule, and how the flight surgeon and Crew Medical Officers are reached. |
+| Draft   | November 15, 2026 | Removed the `accumulation` field, used only by the radiation dose indicator, which the team dropped.                                         |
 
 ---
 
@@ -45,16 +46,15 @@ Required fields are marked **(required)**. Optional fields appear only in the sh
 
 ### 3.1 Identity
 
-| Field          | Type   | Description                                                                                                                                        |
-| -------------- | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `id`           | string | **(required)** Same as the file name, without `.yaml`.                                                                                             |
-| `name`         | string | **(required)** Name shown in the application.                                                                                                      |
-| `domain`       | string | **(required)** One of: `Cardiovascular`, `Metabolism and nutrition`, `Musculoskeletal`, `Immunity and temperature`, `Behavioral`, `Cross-cutting`. |
-| `entry_kind`   | string | **(required)** `measurement` (a device reading), `self-report` (an answer in the app), or `log` (an amount done toward a daily target).            |
-| `unit`         | string | **(required)** Unit of the value, or `null` when there is none (for example a checklist).                                                          |
-| `input`        | string | How the astronaut enters the value: `number` (default), `checklist`, or `questionnaire`.                                                           |
-| `fields`       | list   | Names of the values when an entry has more than one, for example `[systolic, diastolic]`. Without it, the entry has one `value`.                   |
-| `accumulation` | string | `mission` when the status uses the sum of all entries in the mission instead of the last entry.                                                    |
+| Field        | Type   | Description                                                                                                                                        |
+| ------------ | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `id`         | string | **(required)** Same as the file name, without `.yaml`.                                                                                             |
+| `name`       | string | **(required)** Name shown in the application.                                                                                                      |
+| `domain`     | string | **(required)** One of: `Cardiovascular`, `Metabolism and nutrition`, `Musculoskeletal`, `Immunity and temperature`, `Behavioral`, `Cross-cutting`. |
+| `entry_kind` | string | **(required)** `measurement` (a device reading), `self-report` (an answer in the app), or `log` (an amount done toward a daily target).            |
+| `unit`       | string | **(required)** Unit of the value, or `null` when there is none (for example a checklist).                                                          |
+| `input`      | string | How the astronaut enters the value: `number` (default), `checklist`, or `questionnaire`.                                                           |
+| `fields`     | list   | Names of the values when an entry has more than one, for example `[systolic, diastolic]`. Without it, the entry has one `value`.                   |
 
 ### 3.2 `mechanism` (required)
 
@@ -141,7 +141,7 @@ Each rule:
 - Operators: `<`, `<=`, `>`, `>=`.
 - Example: `"systolic > 180 or diastolic > 120"`.
 
-For a `log`, `value` is the sum of the day's entries. With `accumulation: mission`, `value` is the sum of the mission's entries.
+For a `log`, `value` is the sum of the day's entries.
 
 **When no rule matches**, the indicator has no color and shows `astronaut_text.no_reference`.
 
@@ -151,7 +151,7 @@ Other source values that inform the indicator but do not decide its color, each 
 
 ### 3.8 `profile_factors`
 
-Whether the thresholds depend on the astronaut's age or sex: `age_and_sex` (`true` or `false`), `note`, and `source`. Only present when a source states it. In the first ten sheets, no source gives different thresholds by age or sex.
+Whether the thresholds depend on the astronaut's age or sex: `age_and_sex` (`true` or `false`), `note`, and `source`. Only present when a source states it. In the current sheets, no source gives different thresholds by age or sex.
 
 ### 3.9 `countermeasures` (required)
 
