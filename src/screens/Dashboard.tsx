@@ -1,5 +1,5 @@
-// Health overview: the wheel of indicators with its keyboard chips, and a side
-// column with one card (global alert, indicators to review, selected indicator)
+// Health overview: the wheel of indicators (each segment is a keyboard-focusable
+// button), and a side column with one card (global alert, selected indicator)
 // above the space garden. Register and Charts float at the bottom left, above
 // the disclaimer. Each demo profile loads its own scenario when it is picked
 // (see App.tsx), so the dashboard has no scenario selector.
@@ -11,7 +11,6 @@ import { RadialHealth, type Segment } from '../components/RadialHealth.tsx'
 import { SpacePlant } from '../components/SpacePlant.tsx'
 import { StatusBadge } from '../components/StatusBadge.tsx'
 import { PhoneIcon, StatusIcon } from '../components/icons.tsx'
-import { KIND_TEXT } from '../components/statusText.ts'
 import { shortUnit } from '../components/format.ts'
 import { overallStatus, streakDays } from '../domain/health.ts'
 import type { StatusKind } from '../domain/types.ts'
@@ -33,7 +32,7 @@ const INDICATOR_IDS = [
   'mood',
 ] as const
 
-interface ReviewItem {
+interface CriticalItem {
   id: string
   name: string
   kind: StatusKind
@@ -58,11 +57,9 @@ export function Dashboard({ onOpenDetail, initialSelectedId = null }: DashboardP
   const overall = overallStatus(results)
   const streak = streakDays(entries, now)
 
-  const review: ReviewItem[] = indicators
-    .filter(({ result }) => result.kind === 'red' || result.kind === 'yellow')
-    .sort((a, b) => (a.result.kind === 'red' ? 0 : 1) - (b.result.kind === 'red' ? 0 : 1))
+  const critical: CriticalItem[] = indicators
+    .filter(({ result }) => result.kind === 'red')
     .map(({ sheet, result }) => ({ id: sheet.id, name: sheet.name, kind: result.kind }))
-  const critical = review.filter((item) => item.kind === 'red')
 
   const segments: Segment[] = indicators.map(({ sheet, result }) => ({
     id: sheet.id,
@@ -95,22 +92,6 @@ export function Dashboard({ onOpenDetail, initialSelectedId = null }: DashboardP
         <section className="dash-main" aria-label="Indicators">
           <RadialHealth segments={segments} selectedId={selected.sheet.id} overall={overall} onSelect={setSelectedId} />
 
-          <ul className="chips" aria-label="Select an indicator">
-            {indicators.map(({ sheet, result }) => (
-              <li key={sheet.id}>
-                <button
-                  type="button"
-                  className={`chip kind-${result.kind}`}
-                  aria-pressed={sheet.id === selected.sheet.id}
-                  onClick={() => setSelectedId(sheet.id)}
-                >
-                  <StatusIcon kind={result.kind} size={12} />
-                  {sheet.name}
-                  <span className="visually-hidden">, {KIND_TEXT[result.kind]}</span>
-                </button>
-              </li>
-            ))}
-          </ul>
         </section>
 
         <aside className="dash-side">
@@ -140,30 +121,7 @@ export function Dashboard({ onOpenDetail, initialSelectedId = null }: DashboardP
               </div>
             )}
 
-            {/* b) Indicators to review, critical first. */}
-            {review.length > 0 && (
-              <div className="review">
-                <p className="label-mono">Review</p>
-                <ul className="review-chips">
-                  {review.map((item) => (
-                    <li key={item.id}>
-                      <button
-                        type="button"
-                        className={`review-chip kind-${item.kind}`}
-                        aria-pressed={item.id === selected.sheet.id}
-                        onClick={() => setSelectedId(item.id)}
-                      >
-                        <StatusIcon kind={item.kind} size={12} />
-                        {item.name}
-                        <span className="visually-hidden">, {KIND_TEXT[item.kind]}</span>
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-
-            {/* c) The selected indicator. Everything comes from the sheet or the StatusResult. */}
+            {/* b) The selected indicator. Everything comes from the sheet or the StatusResult. */}
             <div className="selected" aria-live="polite">
               <p className="label-mono">{selected.sheet.domain}</p>
               <h2 id="selected-name" className="selected-name">
@@ -183,10 +141,10 @@ export function Dashboard({ onOpenDetail, initialSelectedId = null }: DashboardP
               )}
             </div>
 
-            {/* d) The selected indicator's escalation, when its status asks for it. */}
+            {/* c) The selected indicator's escalation, when its status asks for it. */}
             <EscalationAlert result={selected.result} noContactText={selected.sheet.astronaut_text.no_contact} />
 
-            {/* e) Actions. */}
+            {/* d) Actions. */}
             <div className="selected-actions">
               <button type="button" className="link-action" onClick={() => onOpenDetail(selected.sheet.id)}>
                 View details
