@@ -7,6 +7,8 @@ interface ProfileCardProps {
   role: string
   callSign: string
   avatar: AvatarKind
+  /** Computed from the date of birth; shown after the role when known (setup preview). */
+  age?: number | null
 }
 
 /** The square tile with the call sign and the avatar. */
@@ -22,12 +24,12 @@ export function ProfileTile({ callSign, avatar }: Pick<ProfileCardProps, 'callSi
 }
 
 /** Tile plus name and role. */
-export function ProfileCard({ name, role, callSign, avatar }: ProfileCardProps) {
+export function ProfileCard({ name, role, callSign, avatar, age = null }: ProfileCardProps) {
   return (
     <span className="profile-card">
       <ProfileTile callSign={callSign} avatar={avatar} />
       <span className="profile-card-name">{name || 'Crew member'}</span>
-      <span className="profile-card-role">{role}</span>
+      <span className="profile-card-role">{age === null ? role : `${role} · Age ${age}`}</span>
     </span>
   )
 }

@@ -47,13 +47,13 @@
   border: 0;
 }
 
-/* Header row: title on the left, scenario selector and actions on the right */
+/* Header, then the grid */
 .dash-root {
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
-  /* Room for the floating Register / Charts buttons, so they never cover content */
-  padding-bottom: calc(44px + var(--space-5));
+  /* Room for the floating Register / Charts buttons (56px tall), so they never cover content */
+  padding-bottom: calc(56px + var(--space-5));
 }
 
 .dash-header {
@@ -74,6 +74,15 @@
   z-index: 5;
   display: flex;
   gap: var(--space-2);
+}
+
+/* Larger pill buttons; --radius-pill is used only here */
+.fab .btn {
+  min-height: 56px;
+  padding: 16px 32px;
+  border-radius: var(--radius-pill);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
 }
 
 .fab .btn-secondary {
@@ -111,85 +120,54 @@
   color: var(--color-bg);
 }
 
-/* Two columns; the side column drops below on narrow screens */
+/* Wide: garden | wheel (the rest) | card, aligned at the top. Both side columns
+   share one width, --side-col.
+   Below ~1100px: the wheel on top at full width, then card and garden side by side.
+   Phones: one column, in DOM order: wheel, card, garden. */
 .dash {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
+  display: grid;
+  --side-col: 340px;
+  grid-template-columns: var(--side-col) minmax(0, 1fr) var(--side-col);
+  grid-template-areas: 'garden wheel card';
+  align-items: start;
   gap: var(--space-4);
 }
 
-.dash-main {
-  flex: 1 1 560px;
+.dash-wheel {
+  grid-area: wheel;
   min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
 }
 
-.dash-side {
-  flex: 1 1 300px;
+.dash-card {
+  grid-area: card;
   min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
 }
 
-@media (max-width: 900px) {
-  .dash-main,
-  .dash-side {
-    flex-basis: 100%;
+.dash-garden {
+  grid-area: garden;
+  min-width: 0;
+}
+
+@media (max-width: 1100px) {
+  .dash {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-areas:
+      'wheel wheel'
+      'card garden';
   }
 }
 
-/* Indicator chips under the wheel */
-.chips {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: var(--space-2);
-  margin: 0;
-  padding: 0;
-  list-style: none;
+@media (max-width: 640px) {
+  .dash {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      'wheel'
+      'card'
+      'garden';
+  }
 }
 
-.chip {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-1);
-  min-height: 36px;
-  padding: 0 var(--space-2);
-  background: transparent;
-  border: 1px solid var(--color-border-strong);
-  border-radius: var(--radius);
-  color: var(--color-text);
-  font-family: var(--font-family);
-  font-size: var(--font-size-xs);
-  cursor: pointer;
-}
-
-.chip svg {
-  color: var(--color-status-missing-text);
-}
-
-.chip.kind-green svg {
-  color: var(--color-status-normal-text);
-}
-
-.chip.kind-yellow svg {
-  color: var(--color-status-caution-text);
-}
-
-.chip.kind-red svg {
-  color: var(--color-status-critical-text);
-}
-
-.chip[aria-pressed='true'] {
-  border-color: var(--color-text);
-  background: var(--color-surface);
-}
-
-/* Card under the wheel: global alert, review chips, selected indicator, escalation, actions */
+/* Indicator card in the side column: global alert, selected indicator, escalation, actions */
 .selected-card {
   display: flex;
   flex-direction: column;
@@ -215,20 +193,13 @@
   font-weight: var(--font-weight-bold);
 }
 
-.global-alert-list,
-.review-chips {
+.global-alert-list {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-2);
   margin: 0;
   padding: 0;
   list-style: none;
-}
-
-.review {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
 }
 
 .review-chip {
@@ -306,12 +277,12 @@
   min-height: 44px;
 }
 
-/* On wide screens, size the wheel to the window height so the wheel and its
-   chips fit above the floating buttons on the first screen. */
-@media (min-width: 901px) {
+/* On wide screens, size the wheel to the window height so it fits above the
+   floating buttons on the first screen. */
+@media (min-width: 641px) {
   /* Size the wrapper (it holds the glass layers and the SVG), not the SVG alone */
-  .dash-main .radial-wrap {
-    max-width: clamp(320px, calc(100vh - 470px), 600px);
+  .dash-wheel .radial-wrap {
+    max-width: clamp(320px, calc(100vh - 340px), 600px);
   }
 }
 
@@ -417,24 +388,6 @@
 
   .selected-actions {
     gap: 0 var(--space-4);
-  }
-
-  /* One row of chips that slides sideways, so the wheel and chips fit above the floating buttons */
-  .chips {
-    flex-wrap: nowrap;
-    justify-content: flex-start;
-    overflow-x: auto;
-    margin: 0 calc(var(--space-3) * -1);
-    padding: var(--space-1) var(--space-3);
-    scrollbar-width: thin;
-  }
-
-  .chips li {
-    flex-shrink: 0;
-  }
-
-  .chip {
-    white-space: nowrap;
   }
 
   .dash-title {

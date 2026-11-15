@@ -1,5 +1,5 @@
-// Create a crew profile: validated form, computed age, avatar choice, and a live
-// preview of the card as it will look in the picker.
+// Create a crew profile: validated form, avatar choice, and a live preview of
+// the card, with the age computed from the date of birth.
 import { useRef, useState, type FormEvent } from 'react'
 import { AvatarIcon } from '../components/icons.tsx'
 import { ProfileCard } from '../components/ProfileCard.tsx'
@@ -132,32 +132,27 @@ export function ProfileSetup({ onBack }: ProfileSetupProps) {
                 )}
               </label>
 
-              <div className="form-row">
-                <label className="form-field">
-                  <span className="form-label">Date of birth *</span>
-                  <input
-                    ref={dateRef}
-                    type="date"
-                    max={today()}
-                    value={birthDate}
-                    aria-invalid={errors.birthDate ? true : undefined}
-                    aria-describedby={errors.birthDate ? 'birth-error' : undefined}
-                    onChange={(event) => {
-                      setBirthDate(event.target.value)
-                      clearError('birthDate')
-                    }}
-                  />
-                </label>
-                <label className="form-field">
-                  <span className="form-label">Age</span>
-                  <input type="text" className="num" value={age === null ? '' : String(age)} readOnly tabIndex={-1} />
-                </label>
-              </div>
-              {errors.birthDate && (
-                <span id="birth-error" className="field-error">
-                  {errors.birthDate}
-                </span>
-              )}
+              {/* No age field: the age is computed from the date and shown in the preview and the profile chip. */}
+              <label className="form-field setup-date">
+                <span className="form-label">Date of birth *</span>
+                <input
+                  ref={dateRef}
+                  type="date"
+                  max={today()}
+                  value={birthDate}
+                  aria-invalid={errors.birthDate ? true : undefined}
+                  aria-describedby={errors.birthDate ? 'birth-error' : undefined}
+                  onChange={(event) => {
+                    setBirthDate(event.target.value)
+                    clearError('birthDate')
+                  }}
+                />
+                {errors.birthDate && (
+                  <span id="birth-error" className="field-error">
+                    {errors.birthDate}
+                  </span>
+                )}
+              </label>
 
               <div className="form-row">
                 <label className="form-field">
@@ -221,7 +216,7 @@ export function ProfileSetup({ onBack }: ProfileSetupProps) {
 
             <aside className="setup-preview" aria-label="Preview">
               <p className="label-mono">Preview</p>
-              <ProfileCard name={name.trim()} role={role} callSign={previewCallSign} avatar={avatar} />
+              <ProfileCard name={name.trim()} role={role} callSign={previewCallSign} avatar={avatar} age={age} />
             </aside>
           </div>
         </div>

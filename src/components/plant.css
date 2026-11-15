@@ -3,7 +3,8 @@
 .plant-card {
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
+  /* Tighter than other cards so the garden stays no taller than the indicator card */
+  gap: var(--space-2);
 }
 
 .plant-card p {
@@ -25,7 +26,7 @@
 /* Grow chamber */
 .grow-chamber {
   position: relative;
-  height: 200px;
+  height: 150px;
   overflow: hidden;
   background: var(--color-footer);
   border: 1px solid var(--color-border);
@@ -55,8 +56,9 @@
   bottom: 0;
   left: 50%;
   z-index: 1;
-  width: 200px;
-  height: 190px;
+  /* Scaled down (viewBox 200 x 190) so every stage, In bloom too, fits the 150px chamber */
+  width: 148px;
+  height: 140px;
   transform: translateX(-50%);
 }
 
@@ -101,7 +103,7 @@
 .plant-info {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
+  gap: var(--space-1);
 }
 
 .plant-stage {

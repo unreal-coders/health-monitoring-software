@@ -1,7 +1,9 @@
 // Guidance from the sheet as an accordion. Every text comes from the sheet or
-// from the current StatusResult; the first section starts open.
+// from the current StatusResult. "What to do now" comes first, starts open, and
+// is highlighted with the current status color; the other sections start closed.
 import type { ReactNode } from 'react'
 import type { IndicatorSheet, StatusResult } from '../domain/types.ts'
+import { StatusBadge } from './StatusBadge.tsx'
 import { hazardName } from './format.ts'
 
 interface GuidancePanelProps {
@@ -9,9 +11,17 @@ interface GuidancePanelProps {
   result: StatusResult
 }
 
-function Section({ title, open = false, children }: { title: string; open?: boolean; children: ReactNode }) {
+interface SectionProps {
+  title: string
+  open?: boolean
+  /** Extra class, e.g. the highlighted "What to do now" section. */
+  className?: string
+  children: ReactNode
+}
+
+function Section({ title, open = false, className = '', children }: SectionProps) {
   return (
-    <details className="guide-section" open={open}>
+    <details className={`guide-section ${className}`.trim()} open={open}>
       <summary className="guide-summary">{title}</summary>
       <div className="guide-body">{children}</div>
     </details>
@@ -27,7 +37,20 @@ export function GuidancePanel({ sheet, result }: GuidancePanelProps) {
         Guidance
       </h2>
 
-      <Section title="Why we measure it" open>
+      <Section title="What to do now" open className={`guide-now kind-${result.kind}`}>
+        <div className="guide-now-status">
+          <span className="label-mono">Current status</span>
+          <StatusBadge kind={result.kind} outdated={result.outdated} />
+        </div>
+        <p className="guide-now-text">{result.text}</p>
+      </Section>
+
+      <Section title="How to measure on board">
+        {measurement.method && <p>{measurement.method}</p>}
+        {sheet.astronaut_text.how_to && <p>{sheet.astronaut_text.how_to}</p>}
+      </Section>
+
+      <Section title="Why we measure it">
         <p>{mechanism.summary}</p>
         {mechanism.detail?.map((item) => (
           <p key={item.text}>{item.text}</p>
@@ -44,15 +67,6 @@ export function GuidancePanel({ sheet, result }: GuidancePanelProps) {
             </ul>
           </div>
         )}
-      </Section>
-
-      <Section title="How to measure on board">
-        {measurement.method && <p>{measurement.method}</p>}
-        {sheet.astronaut_text.how_to && <p>{sheet.astronaut_text.how_to}</p>}
-      </Section>
-
-      <Section title="What to do now">
-        <p>{result.text}</p>
       </Section>
 
       <Section title="When to contact the flight surgeon">

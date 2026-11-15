@@ -226,6 +226,26 @@
   text-transform: uppercase;
 }
 
+/* ---------- Keyboard focus ---------- */
+
+/* The browser's box outline does not follow the segment shape, so a ring path drawn
+   around the segment shows focus instead: 3px in --color-focus. */
+.radial-segment:focus {
+  outline: none;
+}
+
+.radial-focus-ring {
+  fill: none;
+  stroke: var(--color-focus);
+  stroke-width: 3;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.radial-segment:focus-visible .radial-focus-ring {
+  opacity: 1;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .radial-wedge {
     transition: none;
