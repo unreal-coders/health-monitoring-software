@@ -6,7 +6,6 @@
 // Every status comes from the sheets through domain/ (see safeStatus.ts).
 import { useState, useSyncExternalStore } from 'react'
 import { getSheet } from '../catalog/sheets.ts'
-import { EscalationAlert } from '../components/EscalationAlert.tsx'
 import { RadialHealth, type Segment } from '../components/RadialHealth.tsx'
 import { SpacePlant } from '../components/SpacePlant.tsx'
 import { StatusBadge } from '../components/StatusBadge.tsx'
@@ -131,10 +130,10 @@ export function Dashboard({ onOpenDetail, initialSelectedId = null }: DashboardP
             )}
           </div>
 
-          {/* c) The selected indicator's escalation, when its status asks for it. */}
-          <EscalationAlert result={selected.result} noContactText={selected.sheet.astronaut_text.no_contact} />
+          {/* No escalation alert for the selected indicator here: on the dashboard the only alert is
+              the global one above. The register, charts, and guidance views keep theirs. */}
 
-          {/* d) Actions. */}
+          {/* c) Actions. */}
           <div className="selected-actions">
             <button type="button" className="link-action" onClick={() => onOpenDetail(selected.sheet.id, 'guidance')}>
               View details
