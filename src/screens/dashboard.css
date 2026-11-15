@@ -83,12 +83,13 @@
   }
 }
 
-/* Two-column dashboard: about 65% main, 35% side */
+/* Two-column dashboard: about 65% main, 35% side. Bottom padding keeps content clear of the floating bar. */
 .dash-root {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
   padding-top: 1rem;
+  padding-bottom: 6rem;
 }
 
 .dash {
@@ -181,13 +182,46 @@
   outline: none;
 }
 
+/* Wheel colors by group. The status is text, so color is never the only signal. */
 .radial-wedge {
   stroke-width: 1.5;
-  transition: filter 180ms ease-out, stroke-width 180ms ease-out;
+  transition: fill 180ms ease-out, stroke-width 180ms ease-out;
 }
 
-.radial-segment:hover .radial-wedge {
-  filter: brightness(1.25);
+.wedge-red {
+  fill: var(--wheel-red-fill);
+  stroke: var(--wheel-red-stroke);
+}
+
+.wedge-purple {
+  fill: var(--wheel-purple-fill);
+  stroke: var(--wheel-purple-stroke);
+}
+
+.wedge-green {
+  fill: var(--wheel-green-fill);
+  stroke: var(--wheel-green-stroke);
+}
+
+.wedge-yellow {
+  fill: var(--wheel-yellow-fill);
+  stroke: var(--wheel-yellow-stroke);
+}
+
+.radial-segment:hover .wedge-red {
+  fill: var(--wheel-red-hover);
+}
+
+.radial-segment:hover .wedge-purple {
+  fill: var(--wheel-purple-hover);
+}
+
+.radial-segment:hover .wedge-green {
+  fill: var(--wheel-green-hover);
+}
+
+.radial-segment:hover .wedge-yellow {
+  fill: var(--wheel-yellow-hover);
 }
 
 .radial-segment.is-selected .radial-wedge {
@@ -214,6 +248,12 @@
 }
 
 .radial-unit {
+  fill: var(--color-text-muted);
+  font-size: 10px;
+  text-anchor: middle;
+}
+
+.radial-status {
   fill: var(--color-text-muted);
   font-size: 10px;
   text-anchor: middle;
@@ -287,6 +327,20 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem;
+}
+
+/* Floating actions: always at the bottom left, above the content */
+.fab-bar {
+  position: fixed;
+  left: 1rem;
+  bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
+  z-index: 15;
+  display: flex;
+  gap: 0.75rem;
+}
+
+.fab-bar .btn {
+  box-shadow: 0 8px 24px -8px rgba(0, 0, 0, 0.6);
 }
 
 /* Buttons */
