@@ -19,7 +19,10 @@ export type KeyValueStorage = Pick<Storage, 'getItem' | 'setItem' | 'removeItem'
 export interface EntryStore {
   /** All saved entries, oldest first. Returns the same array until something changes. */
   getEntries(): readonly Entry[]
-  /** Checks the entry against its sheet, saves it, and returns it. Throws if it is invalid. */
+  /**
+   * Checks the entry against its sheet, saves it, and returns it. Throws if it is
+   * invalid, or a DuplicateDayError if the indicator already has an entry that day.
+   */
   addEntry(entry: Entry): Entry
   /** Replaces every saved entry, for example to load a demonstration scenario. */
   replaceEntries(entries: readonly Entry[]): void
@@ -46,6 +49,15 @@ function isEntry(value: unknown): value is Entry {
 export function validateEntry(entry: Entry): void {
   if (!isEntry(entry)) throw new Error('The entry needs an indicatorId, a valid takenAt date, and numeric values')
   entryValues(getSheet(entry.indicatorId), entry)
+}
+
+/** Thrown when an indicator already has an entry on the same local day. */
+export class DuplicateDayError extends Error {}
+
+function sameLocalDay(a: string, b: string): boolean {
+  const x = new Date(a)
+  const y = new Date(b)
+  return x.getFullYear() === y.getFullYear() && x.getMonth() === y.getMonth() && x.getDate() === y.getDate()
 }
 
 function byDate(a: Entry, b: Entry): number {
@@ -84,6 +96,12 @@ export function createEntryStore(storage: KeyValueStorage): EntryStore {
     getEntries: () => entries,
     addEntry(entry) {
       validateEntry(entry)
+      // One entry per indicator per day.
+      if (entries.some((other) => other.indicatorId === entry.indicatorId && sameLocalDay(other.takenAt, entry.takenAt))) {
+        throw new DuplicateDayError(
+          `${getSheet(entry.indicatorId).name} already has a reading on this day. Only one reading per day is allowed.`,
+        )
+      }
       const saved: Entry = { indicatorId: entry.indicatorId, takenAt: entry.takenAt, values: { ...entry.values } }
       commit([...entries, saved])
       return saved

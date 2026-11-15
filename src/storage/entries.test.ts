@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { createEntryStore, type KeyValueStorage, STORAGE_KEY, validateEntry } from './entries.ts'
+import { createEntryStore, DuplicateDayError, type KeyValueStorage, STORAGE_KEY, validateEntry } from './entries.ts'
 import type { Entry } from '../domain/types.ts'
 
 function fakeStorage(initial: Record<string, string> = {}) {
@@ -37,8 +37,8 @@ describe('createEntryStore', () => {
 
   it('keeps entries sorted by date, oldest first', () => {
     const store = createEntryStore(fakeStorage().storage)
-    store.addEntry(heartRate(80, '2026-11-15T10:00:00Z'))
-    store.addEntry(heartRate(70, '2026-11-15T06:00:00Z'))
+    store.addEntry(heartRate(80, '2026-11-15T12:00:00Z'))
+    store.addEntry(heartRate(70, '2026-11-13T12:00:00Z'))
     expect(store.getEntries().map((entry) => entry.values.value)).toEqual([70, 80])
   })
 
@@ -60,6 +60,17 @@ describe('createEntryStore', () => {
     unsubscribe()
     store.addEntry(heartRate(72))
     expect(listener).toHaveBeenCalledTimes(2)
+  })
+
+  it('allows only one entry per indicator per day', () => {
+    const store = createEntryStore(fakeStorage().storage)
+    store.addEntry(heartRate(72, '2026-11-15T12:00:00Z'))
+    expect(() => store.addEntry(heartRate(80, '2026-11-15T12:30:00Z'))).toThrow(DuplicateDayError)
+    expect(() => store.addEntry(heartRate(80, '2026-11-15T12:30:00Z'))).toThrow(/one reading per day/)
+    // Another day, or another indicator on the same day, is accepted.
+    store.addEntry(heartRate(75, '2026-11-17T12:00:00Z'))
+    store.addEntry({ indicatorId: 'oxygen-saturation', takenAt: '2026-11-15T12:30:00Z', values: { value: 98 } })
+    expect(store.getEntries()).toHaveLength(3)
   })
 
   it('clears every entry', () => {

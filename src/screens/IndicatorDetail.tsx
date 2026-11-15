@@ -31,7 +31,10 @@ const RANGES = [
 
 type RangeId = (typeof RANGES)[number]['id']
 
-const DAY = 24 * 60 * 60 * 1000
+/** Midnight (local time) of the day that is `daysBack` days before `now`. */
+function startOfDay(now: Date, daysBack: number): number {
+  return new Date(now.getFullYear(), now.getMonth(), now.getDate() - daysBack).getTime()
+}
 
 /** The chart plots the sheet's first field; name it when the sheet has several (e.g. "Systolic"). */
 function seriesLabel(sheet: IndicatorSheet): string | undefined {
@@ -147,7 +150,13 @@ function HistoryView({ sheet, now, headingRef }: HistoryViewProps) {
   const [rangeId, setRangeId] = useState<RangeId>('7')
   const range = RANGES.find((item) => item.id === rangeId) ?? RANGES[0]
   const allPoints = historyPoints(sheet, entries, now)
-  const points = range.days === null ? allPoints : allPoints.filter((p) => p.time >= now.getTime() - range.days * DAY)
+  // A range covers whole calendar days, today included, and the x axis spans the
+  // full range even when some days have no reading.
+  const start = range.days === null ? null : startOfDay(now, range.days - 1)
+  const end = startOfDay(now, -1) - 1
+  const points = start === null ? allPoints : allPoints.filter((p) => p.time >= start && p.time <= end)
+  const domain: [number, number] | undefined = start === null ? undefined : [start, end]
+  const ticks = range.days === null ? undefined : Array.from({ length: range.days }, (_, i) => startOfDay(now, range.days - 1 - i))
   const readings = latestReadings(sheet, entries, now)
 
   return (
@@ -172,7 +181,14 @@ function HistoryView({ sheet, now, headingRef }: HistoryViewProps) {
       </div>
 
       {points.length > 0 ? (
-        <HistoryChart points={points} unit={sheet.unit} label={`${sheet.name} history`} seriesLabel={seriesLabel(sheet)} />
+        <HistoryChart
+          points={points}
+          unit={sheet.unit}
+          label={`${sheet.name} history`}
+          seriesLabel={seriesLabel(sheet)}
+          domain={domain}
+          ticks={ticks}
+        />
       ) : (
         <p className="muted">{allPoints.length > 0 ? 'No readings in this time range.' : sheet.astronaut_text.missing}</p>
       )}

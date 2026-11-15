@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { OutOfRangeError } from '../domain/evaluate.ts'
 import type { IndicatorSheet } from '../domain/types.ts'
-import { entryStore } from '../storage/entries.ts'
+import { DuplicateDayError, entryStore } from '../storage/entries.ts'
 import './form.css'
 
 type RawValues = Record<string, string>
@@ -99,7 +99,8 @@ export function EntryForm({ sheet, autoFocus = false }: EntryFormProps) {
       setError(null)
       setSaved(true)
     } catch (caught) {
-      if (caught instanceof FormError || caught instanceof OutOfRangeError) setError(caught.message)
+      if (caught instanceof FormError || caught instanceof OutOfRangeError || caught instanceof DuplicateDayError)
+        setError(caught.message)
       else setError(FORM_ERROR)
     }
   }
