@@ -250,7 +250,7 @@ button[aria-disabled='true'] {
   overflow-x: hidden;
 }
 
-.app-shell > :not(.starfield) {
+.app-shell > :not(.starfield, .disclaimer, .topnav) {
   position: relative;
   z-index: 1;
 }
@@ -282,10 +282,6 @@ button[aria-disabled='true'] {
   background: var(--color-footer);
   border-top: 1px solid var(--color-border);
   color: var(--color-text-muted);
-}
-
-.app-shell > .disclaimer {
-  z-index: 2;
 }
 
 .disclaimer-icon {
