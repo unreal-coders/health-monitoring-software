@@ -90,7 +90,7 @@ If a nasa.gov link returns "429 Too Many Requests", the archived copy works: `ht
 
 ## Use of AI tools
 
-Following the NASA Space Apps rules on Super Intelligence (SI) tools, the team acknowledges that an AI assistant (Claude, by Anthropic) supported the research, documentation, and code of this project. Every medical value in the indicator sheets names its source so it can be checked.
+Following the NASA Space Apps rules on the use of Artificial Intelligence (AI) tools, the team acknowledges that an AI assistant (Claude, by Anthropic) supported the research, documentation, code, and data of this project, including the indicator sheets and the demonstration data. Every medical value in the indicator sheets names its source so it can be checked.
 
 ---
 
