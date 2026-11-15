@@ -1,0 +1,129 @@
+/* Status badge and escalation alert. Colors come from index.css tokens. */
+
+.badge-group {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 2px 8px;
+  border: 1px solid currentColor;
+  border-radius: var(--radius);
+  background: none;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: var(--font-weight-medium);
+  letter-spacing: var(--letter-spacing-label);
+  text-transform: uppercase;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+.badge-lg {
+  padding: 4px 12px;
+  font-size: var(--font-size-sm);
+}
+
+.badge-green {
+  color: var(--color-status-normal-text);
+  border-color: var(--color-status-normal);
+}
+
+.badge-yellow {
+  color: var(--color-status-caution-text);
+  border-color: var(--color-status-caution);
+}
+
+.badge-red {
+  color: var(--color-status-critical-text);
+  border-color: var(--color-status-critical);
+}
+
+.badge-missing {
+  color: var(--color-status-missing-text);
+  border-color: var(--color-status-missing);
+}
+
+.badge-no-reference {
+  color: var(--color-status-missing-text);
+  border-color: var(--color-status-missing);
+  border-style: dashed;
+}
+
+.badge-outdated {
+  color: var(--color-status-caution-text);
+  border-color: var(--color-status-caution);
+}
+
+/* Escalation alert */
+.escalation {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.escalation p {
+  margin: 0;
+}
+
+.escalation-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.escalation-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--font-size-md);
+}
+
+.escalation-critical {
+  border-left-color: var(--color-status-critical);
+}
+
+.escalation-critical .escalation-icon,
+.escalation-critical .escalation-title {
+  color: var(--color-status-critical-text);
+}
+
+.escalation-caution {
+  border-left-color: var(--color-status-caution);
+}
+
+.escalation-caution .escalation-icon,
+.escalation-caution .escalation-title {
+  color: var(--color-status-caution-text);
+}
+
+.escalation-neutral {
+  border-left-color: var(--color-status-missing);
+}
+
+.escalation-neutral .escalation-icon,
+.escalation-neutral .escalation-title {
+  color: var(--color-text);
+}
+
+.escalation-icon {
+  display: inline-flex;
+}
+
+.escalation-body {
+  font-size: var(--font-size-sm);
+}
+
+.escalation-fallback {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-2) var(--space-3);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  font-size: var(--font-size-sm);
+}

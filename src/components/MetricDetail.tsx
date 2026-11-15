@@ -27,13 +27,14 @@ export function MetricDetail({ sheet, result, trend, unit, selected, onOpenDetai
     <aside className="card detail-card" aria-label={`${sheet.name} details`}>
       <header className="detail-head">
         <h2 className="detail-title">{sheet.name}</h2>
-        <StatusBadge kind={result.kind} label={result.label} />
+        <StatusBadge kind={result.kind} outdated={result.outdated} />
       </header>
       {value !== null && (
         <p className="detail-value">
           {value} <span className="detail-unit">{unit}</span>
         </p>
       )}
+      {result.label && <p className="label-mono">{result.label}</p>}
       {optimal && <p className="muted">Optimal: {optimal}</p>}
       <p className="muted">{trend ? TREND_TEXT[trend] : 'Not enough readings to show a trend.'}</p>
       {result.outdated && <p className="note">Older than the recommended interval.</p>}

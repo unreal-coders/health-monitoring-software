@@ -1,43 +1,50 @@
-import type { CSSProperties } from 'react'
-import type { ContactFlag } from '../domain/types.ts'
+// Escalation alert, shown when the current status asks to contact the flight surgeon.
+// Style follows the status kind: red is critical, yellow is caution, and a value no
+// source can evaluate (no-reference) is a neutral box. All text comes from the
+// StatusResult and the sheet.
+import type { StatusResult } from '../domain/types.ts'
+import { PhoneIcon } from './icons.tsx'
+import './status.css'
 
 interface EscalationAlertProps {
-  contact: ContactFlag
+  result: StatusResult
   /** The sheet's astronaut_text.no_contact: what to do without real-time contact. */
   noContactText: string
 }
 
-/** Shown when the sheet says the flight surgeon must be contacted for the current status. */
-export function EscalationAlert({ contact, noContactText }: EscalationAlertProps) {
-  if (contact !== true) return null
+type Tone = 'critical' | 'caution' | 'neutral'
+
+function toneOf(result: StatusResult): Tone | null {
+  if (result.kind === 'missing' || result.contactFlightSurgeon === false) return null
+  if (result.kind === 'red') return 'critical'
+  if (result.kind === 'no-reference') return 'neutral'
+  // Yellow (or green) with contact: true, or 'if-symptoms', where the rule's text says when.
+  return 'caution'
+}
+
+export function EscalationAlert({ result, noContactText }: EscalationAlertProps) {
+  const tone = toneOf(result)
+  if (!tone) return null
 
   return (
-    <section role="alert" aria-labelledby="escalation-title" style={boxStyle}>
-      <h3 id="escalation-title" style={titleStyle}>
-        <span aria-hidden="true">!</span> Contact the flight surgeon
-      </h3>
-      <p style={textStyle}>{noContactText}</p>
+    <section
+      role={tone === 'neutral' ? 'status' : 'alert'}
+      aria-labelledby="escalation-title"
+      className={`escalation alert escalation-${tone}`}
+    >
+      <div className="escalation-head">
+        <span className="escalation-icon">
+          <PhoneIcon />
+        </span>
+        <h3 id="escalation-title" className="escalation-title">
+          Contact the flight surgeon
+        </h3>
+      </div>
+      <p className="escalation-body">{result.text}</p>
+      <div className="escalation-fallback">
+        <p className="label-mono">If there is no real-time contact</p>
+        <p>{noContactText}</p>
+      </div>
     </section>
   )
-}
-
-const boxStyle: CSSProperties = {
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '0.5rem',
-  padding: '1rem',
-  background: 'var(--color-surface)',
-  border: '1px solid var(--color-status-caution)',
-  borderRadius: '12px',
-}
-
-const titleStyle: CSSProperties = {
-  margin: 0,
-  fontSize: 'var(--font-size-md)',
-  fontWeight: 'var(--font-weight-medium)',
-}
-
-const textStyle: CSSProperties = {
-  margin: 0,
-  fontSize: 'var(--font-size-sm)',
 }

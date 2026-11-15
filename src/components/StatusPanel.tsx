@@ -10,18 +10,19 @@ const MESSAGE: Record<OverallKind, string> = {
 
 interface StatusPanelProps {
   overall: OverallKind
-  label: string
+  /** Kept for the dashboard's current call; the badge now shows the status word. */
+  label?: string
   flagged: readonly string[]
   contact: boolean
 }
 
-export function StatusPanel({ overall, label, flagged, contact }: StatusPanelProps) {
+export function StatusPanel({ overall, flagged, contact }: StatusPanelProps) {
   return (
     <section className={`card status-card status-${overall}`} aria-labelledby="status-title">
       <h2 id="status-title" className="card-title">
         Status
       </h2>
-      <StatusBadge kind={overall} label={label} />
+      <StatusBadge kind={overall} />
       <p className="muted">{MESSAGE[overall]}</p>
       {flagged.length > 0 && <p>Review: {flagged.join(', ')}.</p>}
       {contact && <p>Share the flagged readings with the flight surgeon.</p>}

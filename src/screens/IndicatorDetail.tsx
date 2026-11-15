@@ -27,7 +27,7 @@ export function IndicatorDetail({ sheet, onBack }: IndicatorDetailProps) {
 
       <IndicatorCard name={sheet.name} unit={sheet.unit} result={result} />
 
-      <EscalationAlert contact={result.contactFlightSurgeon} noContactText={sheet.astronaut_text.no_contact} />
+      <EscalationAlert result={result} noContactText={sheet.astronaut_text.no_contact} />
 
       <div style={columnsStyle}>
         <section aria-labelledby="log-title" style={panelStyle}>

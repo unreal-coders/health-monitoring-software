@@ -26,7 +26,7 @@ export function IndicatorCard({ name, unit, result, onOpen }: IndicatorCardProps
             name
           )}
         </h2>
-        <StatusBadge kind={result.kind} label={result.label} />
+        <StatusBadge kind={result.kind} outdated={result.outdated} />
       </header>
       {value !== null && (
         <p style={valueStyle}>
@@ -34,6 +34,7 @@ export function IndicatorCard({ name, unit, result, onOpen }: IndicatorCardProps
           {unit ? ` ${unit}` : ''}
         </p>
       )}
+      {result.label && <p className="label-mono" style={{ margin: 0 }}>{result.label}</p>}
       <p style={textStyle}>{result.text}</p>
       {result.outdated && <p style={noteStyle}>This reading is older than the recommended interval.</p>}
     </article>

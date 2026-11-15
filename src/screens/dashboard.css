@@ -33,55 +33,7 @@
   font-size: var(--font-size-xs);
 }
 
-/* Top navigation */
-.topnav {
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  background: var(--color-bg);
-  background: color-mix(in srgb, var(--color-bg) 72%, transparent);
-  backdrop-filter: saturate(160%) blur(12px);
-  border-bottom: 1px solid var(--color-border);
-}
-
-.topnav ul {
-  list-style: none;
-  margin: 0 auto;
-  padding: 0 1rem;
-  max-width: 1200px;
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 0.5rem;
-}
-
-.topnav button {
-  width: 100%;
-  min-height: 44px;
-  background: none;
-  border: 0;
-  border-bottom: 2px solid transparent;
-  color: var(--color-text-muted);
-  font: inherit;
-  font-size: var(--font-size-sm);
-  cursor: pointer;
-  transition: color 180ms ease-out, border-color 180ms ease-out;
-}
-
-.topnav button[aria-current='page'] {
-  color: var(--color-text);
-  border-bottom-color: var(--color-focus);
-}
-
-.topnav button:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-
-@media (max-width: 560px) {
-  .topnav ul {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
+/* Top navigation: see components/topnav.css */
 
 /* Two-column dashboard: about 65% main, 35% side */
 .dash-root {
