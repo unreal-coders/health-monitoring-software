@@ -2,7 +2,7 @@
 
 | Field            | Detail                        |
 | ---------------- | ----------------------------- |
-| Document version | 1.1.0                         |
+| Document version | 1.2.0                         |
 | Creation date    | November 14, 2026             |
 | Status           | In development                |
 | Document owner   | Mike Armando Montano Valencia |
@@ -16,6 +16,7 @@ This document defines what the MVP application does, what it is built with, and 
 | Draft   | November 14, 2026 | Document created with the must-have and nice-to-have features and the out-of-scope items. Pending: stack and code organization, and status evaluation. |
 | 1.0.0   | November 14, 2026 | First version published in the repository: features, stack and code organization, and deployment. Status evaluation (section 3) pending.               |
 | 1.1.0   | November 14, 2026 | Indicators covered expanded to the ten accepted by the team, with three kinds of entries. Section 3 lists the cases these entries add.                 |
+| 1.2.0   | November 14, 2026 | Section 3 written from the implemented status evaluation. Mood uses the PHQ-2. Bone density wording aligned with the NASA source.                      |
 
 ---
 
@@ -31,14 +32,14 @@ The minimum that must work in the demo. It follows from what the challenge state
 
 - **Indicator logging.** The astronaut manually enters an indicator, with date and time, through a form. Each field shows the unit and how to check the indicator on board, taken from its sheet. There are three kinds of entries:
   - **Measurement:** a reading taken with a device, such as blood pressure.
-  - **Self-report:** an answer given in the app, such as mood on a scale or a symptom checklist.
+  - **Self-report:** an answer given in the app, such as the two PHQ-2 mood questions or a symptom checklist.
   - **Log:** an amount done toward a daily target, such as minutes of exercise.
 - **Indicators covered.** Ten indicators that the astronaut can check alone, in about two minutes, with a small device or none, and with an immediate result. The selection criteria and on-board methods are in the [Research document](research.md).
   - **Cardiovascular:** heart rate, blood pressure, oxygen saturation.
   - **Metabolism and nutrition:** blood glucose.
   - **Immunity and temperature:** body temperature, immune symptoms.
   - **Behavioral:** sleep hours, mood.
-  - **Musculoskeletal:** exercise. Bone density cannot be measured on board, so the application tracks exercise, the main countermeasure against bone and muscle loss.
+  - **Musculoskeletal:** exercise. NASA measures bone density with scans before and after flight, so the application tracks exercise, the main countermeasure against bone and muscle loss.
   - **Cross-cutting:** radiation dose.
 
   Blood pressure, heart rate, glucose, body temperature, sleep hours, and mood are the indicators mentioned in the challenge statement.
@@ -119,16 +120,38 @@ The app is built with `npm run build` and the output folder is published on GitH
 
 ## 3. Status evaluation
 
-_Pending._ Owner: José Antonio Montoya García. It must cover the edge cases: missing data, out-of-range value, and outdated measurement.
+Implemented in `src/domain/` and `src/catalog/`. The sheet format is documented in [`data/indicator-schema.md`](../data/indicator-schema.md).
 
-It must also define how each kind of entry gets its status:
+### 3.1 Loading the sheets
 
-| Entry                   | Indicators                                                                     | Status comes from                                                        |
-| ----------------------- | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------ |
-| Measurement             | Heart rate, blood pressure, oxygen saturation, blood glucose, body temperature | The reading compared with the sheet's thresholds.                        |
-| Self-report, scale      | Sleep hours, mood                                                              | The answer compared with the sheet's thresholds.                         |
-| Self-report, checklist  | Immune symptoms                                                                | The sheet's rules for which symptoms, or how many, lead to each status.  |
-| Log                     | Exercise                                                                       | The day's total compared with the sheet's daily target.                  |
-| Accumulated measurement | Radiation dose                                                                 | The dose accumulated during the mission compared with the sheet's limit. |
+The sheets in `data/indicators/` are bundled at build time and checked against the schema when they load. A broken sheet (unknown color, malformed condition, missing value range, unknown source) fails the build and the tests instead of the application.
 
-For this, the sheet schema needs the entry kind, the unit, the measurement interval, and, for logs, the daily target.
+### 3.2 Value that is evaluated
+
+| Entry                   | Indicators                                                                     | Value compared with the rules          |
+| ----------------------- | ------------------------------------------------------------------------------ | -------------------------------------- |
+| Measurement             | Heart rate, blood pressure, oxygen saturation, blood glucose, body temperature | The latest reading.                    |
+| Self-report, number     | Sleep hours                                                                    | The latest answer.                     |
+| Self-report, PHQ-2      | Mood                                                                           | The sum of the two answers (0 to 6).   |
+| Self-report, checklist  | Immune symptoms                                                                | The number of symptoms checked.        |
+| Log                     | Exercise                                                                       | The sum of today's entries.            |
+| Accumulated measurement | Radiation dose                                                                 | The sum of every entry in the mission. |
+
+### 3.3 Rules
+
+Each sheet lists its rules in order. The first rule whose condition matches decides the status: its color, label, text for the astronaut, and whether to contact the flight surgeon. Color is always shown with the label or text.
+
+### 3.4 Edge cases
+
+- **Missing data.** With no entry (for a log, no entry today), the indicator has no color and shows the sheet's "missing" text.
+- **Out-of-range value.** An entry outside the sheet's valid range (for example a blood pressure of 900) is rejected as a typing error: it is not saved and never gets a color.
+- **Outdated measurement.** An entry older than the sheet's measurement interval is marked as outdated. The status is still shown, together with the outdated mark.
+- **No matching rule.** When no rule matches (for example a radiation dose below the career limit, or any immune symptoms entry), the indicator has no color and shows the sheet's "no reference" text, which refers the astronaut to the flight surgeon.
+
+### 3.5 Up to date
+
+For engagement tracking (section 1.2), an indicator is up to date while its latest entry is not outdated.
+
+### 3.6 Who is notified
+
+The application has no backend, so it does not send messages. When a rule calls for it, the escalation alert tells the astronaut to contact the flight surgeon and, if there is no real-time contact, to report to a Crew Medical Officer.
