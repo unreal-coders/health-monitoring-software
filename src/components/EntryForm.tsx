@@ -1,6 +1,10 @@
-import { useState, type CSSProperties, type FormEvent } from 'react'
+// Form to log a reading. Fields, unit, and the "how to measure" text come from
+// the sheet; validation of the value happens in storage/ against the sheet.
+import { useEffect, useRef, useState, type FormEvent } from 'react'
+import { OutOfRangeError } from '../domain/evaluate.ts'
 import type { IndicatorSheet } from '../domain/types.ts'
 import { entryStore } from '../storage/entries.ts'
+import './form.css'
 
 type RawValues = Record<string, string>
 
@@ -16,9 +20,8 @@ function fieldNames(sheet: IndicatorSheet): string[] {
 }
 
 function fieldLabel(sheet: IndicatorSheet, name: string): string {
-  const unit = sheet.unit ? ` (${sheet.unit})` : ''
-  if (name === 'value') return `${sheet.name}${unit}`
-  return `${name.charAt(0).toUpperCase()}${name.slice(1)}${unit}`
+  if (name === 'value') return sheet.name
+  return `${name.charAt(0).toUpperCase()}${name.slice(1)}`
 }
 
 /** Turns what the astronaut typed or selected into the values the sheet expects. */
@@ -37,17 +40,38 @@ function buildValues(sheet: IndicatorSheet, raw: RawValues): Record<string, numb
   return values
 }
 
-/** Local date and time formatted for <input type="datetime-local">. */
-function toLocalInput(date: Date): string {
-  const offset = date.getTimezoneOffset() * 60000
-  return new Date(date.getTime() - offset).toISOString().slice(0, 16)
+function pad(number: number): string {
+  return String(number).padStart(2, '0')
 }
 
-export function EntryForm({ sheet }: { sheet: IndicatorSheet }) {
-  const [takenAt, setTakenAt] = useState(() => toLocalInput(new Date()))
+function localDate(date: Date): string {
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`
+}
+
+function localTime(date: Date): string {
+  return `${pad(date.getHours())}:${pad(date.getMinutes())}`
+}
+
+interface EntryFormProps {
+  sheet: IndicatorSheet
+  /** Moves focus to the first value field when the form appears. */
+  autoFocus?: boolean
+}
+
+export function EntryForm({ sheet, autoFocus = false }: EntryFormProps) {
+  const formRef = useRef<HTMLFormElement>(null)
+  const [date, setDate] = useState(() => localDate(new Date()))
+  const [time, setTime] = useState(() => localTime(new Date()))
   const [raw, setRaw] = useState<RawValues>({})
   const [error, setError] = useState<string | null>(null)
   const [saved, setSaved] = useState(false)
+
+  useEffect(() => {
+    if (!autoFocus) return
+    const first = formRef.current?.querySelector<HTMLInputElement>('[data-first-field]')
+    first?.focus()
+    formRef.current?.scrollIntoView({ block: 'center' })
+  }, [autoFocus])
 
   const update = (name: string, value: string | null) => {
     setRaw((previous) => {
@@ -57,51 +81,82 @@ export function EntryForm({ sheet }: { sheet: IndicatorSheet }) {
       return next
     })
     setSaved(false)
+    setError(null)
   }
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     setSaved(false)
     try {
-      const time = Date.parse(takenAt)
-      if (Number.isNaN(time)) throw new FormError('Choose a valid date and time.')
+      const takenAt = new Date(`${date}T${time}`)
+      if (Number.isNaN(takenAt.getTime())) throw new FormError('Choose a valid date and time.')
       const values = buildValues(sheet, raw)
-      entryStore.addEntry({ indicatorId: sheet.id, takenAt: new Date(time).toISOString(), values })
+      entryStore.addEntry({ indicatorId: sheet.id, takenAt: takenAt.toISOString(), values })
+      const now = new Date()
       setRaw({})
-      setTakenAt(toLocalInput(new Date()))
+      setDate(localDate(now))
+      setTime(localTime(now))
       setError(null)
       setSaved(true)
     } catch (caught) {
-      setError(caught instanceof FormError ? caught.message : FORM_ERROR)
+      if (caught instanceof FormError || caught instanceof OutOfRangeError) setError(caught.message)
+      else setError(FORM_ERROR)
     }
   }
 
-  return (
-    <form onSubmit={handleSubmit} noValidate style={formStyle}>
-      {sheet.astronaut_text.how_to && <p style={hintStyle}>{sheet.astronaut_text.how_to}</p>}
-      {sheet.entry_kind === 'log' && sheet.astronaut_text.reminder && (
-        <p style={hintStyle}>{sheet.astronaut_text.reminder}</p>
-      )}
+  const howTo = sheet.astronaut_text.how_to ?? sheet.measurement.method
+  const reminder = sheet.entry_kind === 'log' ? sheet.astronaut_text.reminder : undefined
+  const numeric = sheet.input === undefined || sheet.input === 'number'
 
-      <label style={fieldStyle}>
-        <span>Date and time</span>
-        <input type="datetime-local" value={takenAt} onChange={(event) => setTakenAt(event.target.value)} />
-      </label>
+  return (
+    <form ref={formRef} className="entry-form" onSubmit={handleSubmit} noValidate>
+      <div className="form-row">
+        <label className="form-field">
+          <span className="form-label">Date</span>
+          <input type="date" value={date} onChange={(event) => setDate(event.target.value)} />
+        </label>
+        <label className="form-field">
+          <span className="form-label">Time</span>
+          <input type="time" value={time} onChange={(event) => setTime(event.target.value)} />
+        </label>
+      </div>
+
+      {numeric &&
+        fieldNames(sheet).map((name, index) => (
+          <label key={name} className="form-field">
+            <span className="form-label">{fieldLabel(sheet, name)}</span>
+            <span className="input-suffix">
+              <input
+                type="number"
+                inputMode="decimal"
+                step="any"
+                className="num"
+                value={raw[name] ?? ''}
+                aria-invalid={error ? true : undefined}
+                style={sheet.unit ? { paddingRight: `calc(${Math.min(sheet.unit.length, 18)}ch + 2rem)` } : undefined}
+                data-first-field={index === 0 ? '' : undefined}
+                onChange={(event) => update(name, event.target.value)}
+              />
+              {sheet.unit && <span className="input-suffix-unit">{sheet.unit}</span>}
+            </span>
+          </label>
+        ))}
 
       {sheet.input === 'questionnaire' && sheet.questionnaire && (
         <>
-          <p style={hintStyle}>{sheet.questionnaire.prompt}</p>
-          {sheet.questionnaire.items.map((item) => (
-            <fieldset key={item.id} style={fieldsetStyle}>
-              <legend style={legendStyle}>{item.text}</legend>
-              <div style={optionsStyle}>
-                {sheet.questionnaire?.options.map((option) => (
-                  <label key={option.score} style={optionStyle}>
+          <p className="form-prompt">{sheet.questionnaire.prompt}</p>
+          {sheet.questionnaire.items.map((item, itemIndex) => (
+            <fieldset key={item.id} className="form-fieldset">
+              <legend className="form-label">{item.text}</legend>
+              <div className="form-options">
+                {sheet.questionnaire?.options.map((option, optionIndex) => (
+                  <label key={option.score} className="form-option">
                     <input
                       type="radio"
                       name={`${sheet.id}-${item.id}`}
                       value={option.score}
                       checked={raw[item.id] === String(option.score)}
+                      data-first-field={itemIndex === 0 && optionIndex === 0 ? '' : undefined}
                       onChange={() => update(item.id, String(option.score))}
                     />
                     {option.label}
@@ -113,114 +168,48 @@ export function EntryForm({ sheet }: { sheet: IndicatorSheet }) {
         </>
       )}
 
-      {sheet.input === 'checklist' &&
-        sheet.checklist?.map((item) => (
-          <label key={item.id} style={optionStyle}>
-            <input
-              type="checkbox"
-              checked={raw[item.id] === 'on'}
-              onChange={(event) => update(item.id, event.target.checked ? 'on' : null)}
-            />
-            {item.label}
-          </label>
-        ))}
+      {sheet.input === 'checklist' && (
+        <fieldset className="form-fieldset">
+          <legend className="form-label">Symptoms you have now</legend>
+          <div className="form-options form-options-column">
+            {sheet.checklist?.map((item, index) => (
+              <label key={item.id} className="form-option">
+                <input
+                  type="checkbox"
+                  checked={raw[item.id] === 'on'}
+                  data-first-field={index === 0 ? '' : undefined}
+                  onChange={(event) => update(item.id, event.target.checked ? 'on' : null)}
+                />
+                {item.label}
+              </label>
+            ))}
+          </div>
+        </fieldset>
+      )}
 
-      {(sheet.input === undefined || sheet.input === 'number') &&
-        fieldNames(sheet).map((name) => (
-          <label key={name} style={fieldStyle}>
-            <span>{fieldLabel(sheet, name)}</span>
-            <input
-              type="number"
-              inputMode="decimal"
-              step="any"
-              value={raw[name] ?? ''}
-              onChange={(event) => update(name, event.target.value)}
-            />
-          </label>
-        ))}
+      {(howTo || reminder) && (
+        <div className="how-to">
+          <p className="label-mono">How to measure</p>
+          {howTo && <p>{howTo}</p>}
+          {reminder && <p>{reminder}</p>}
+        </div>
+      )}
 
       {error && (
-        <p role="alert" style={errorStyle}>
+        <p role="alert" className="form-error">
           {error}
         </p>
       )}
+
+      <button type="submit" className="btn btn-primary form-submit">
+        Save reading
+      </button>
+
       {saved && (
-        <p role="status" style={hintStyle}>
-          Entry saved.
+        <p role="status" className="alert alert-normal form-saved">
+          ✓ Reading saved. Status updated.
         </p>
       )}
-      <button type="submit" style={buttonStyle}>
-        Save entry
-      </button>
     </form>
   )
-}
-
-const formStyle: CSSProperties = {
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '0.75rem',
-}
-
-const fieldStyle: CSSProperties = {
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '0.375rem',
-  fontSize: 'var(--font-size-sm)',
-  fontWeight: 'var(--font-weight-medium)',
-}
-
-const fieldsetStyle: CSSProperties = {
-  margin: 0,
-  padding: 0,
-  border: 0,
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '0.375rem',
-}
-
-const legendStyle: CSSProperties = {
-  padding: 0,
-  marginBottom: '0.375rem',
-  fontSize: 'var(--font-size-sm)',
-  fontWeight: 'var(--font-weight-medium)',
-}
-
-const optionsStyle: CSSProperties = {
-  display: 'flex',
-  flexWrap: 'wrap',
-  gap: '0.5rem',
-}
-
-const optionStyle: CSSProperties = {
-  minHeight: '44px',
-  display: 'inline-flex',
-  alignItems: 'center',
-  gap: '0.5rem',
-  fontSize: 'var(--font-size-sm)',
-}
-
-const hintStyle: CSSProperties = {
-  margin: 0,
-  color: 'var(--color-text-muted)',
-  fontSize: 'var(--font-size-sm)',
-}
-
-const errorStyle: CSSProperties = {
-  margin: 0,
-  color: 'var(--color-status-critical)',
-  fontSize: 'var(--font-size-sm)',
-}
-
-const buttonStyle: CSSProperties = {
-  minHeight: '44px',
-  alignSelf: 'flex-start',
-  padding: '0 1rem',
-  background: 'var(--color-text)',
-  color: 'var(--color-bg)',
-  border: 0,
-  borderRadius: '8px',
-  font: 'inherit',
-  fontWeight: 'var(--font-weight-medium)',
-  cursor: 'pointer',
 }

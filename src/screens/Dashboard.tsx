@@ -1,19 +1,18 @@
 // Health overview: the wheel of indicators, the selected indicator, the overall
 // status with the indicators to review, and the demo scenario selector.
 // Every status comes from the sheets through domain/ (see safeStatus.ts).
-import { useCallback, useState, useSyncExternalStore } from 'react'
+import { useEffect, useRef, useState, useSyncExternalStore } from 'react'
 import { getSheet } from '../catalog/sheets.ts'
-import { EntryForm } from '../components/EntryForm.tsx'
-import { HistoryChart } from '../components/HistoryChart.tsx'
-import { Modal } from '../components/Modal.tsx'
 import { RadialHealth, type Segment } from '../components/RadialHealth.tsx'
 import { SpacePlant } from '../components/SpacePlant.tsx'
 import { StatusBadge } from '../components/StatusBadge.tsx'
 import { StatusIcon } from '../components/icons.tsx'
 import { StatusPanel, type ReviewItem } from '../components/StatusPanel.tsx'
 import { KIND_TEXT } from '../components/statusText.ts'
+import { shortUnit } from '../components/format.ts'
 import { overallStatus, plantGrowth, streakDays } from '../domain/health.ts'
 import { entryStore } from '../storage/entries.ts'
+import type { DetailFocus } from './IndicatorDetail.tsx'
 import { buildEntries, SCENARIOS } from './quickScenarios.ts'
 import { safeStatus, valueText } from './safeStatus.ts'
 import './dashboard.css'
@@ -31,25 +30,23 @@ const INDICATOR_IDS = [
   'mood',
 ] as const
 
-type ModalKind = 'charts' | 'register' | null
-
 interface DashboardProps {
-  onOpenDetail: (id: string) => void
+  onOpenDetail: (id: string, focus?: DetailFocus) => void
+  /** Indicator selected when the screen opens, e.g. the one the user came back from. */
+  initialSelectedId?: string | null
 }
 
-export function Dashboard({ onOpenDetail }: DashboardProps) {
+export function Dashboard({ onOpenDetail, initialSelectedId = null }: DashboardProps) {
   const entries = useSyncExternalStore(entryStore.subscribe, entryStore.getEntries)
   const [now, setNow] = useState(() => new Date())
-  const [selectedId, setSelectedId] = useState<string>(INDICATOR_IDS[0])
+  const [selectedId, setSelectedId] = useState<string>(initialSelectedId ?? INDICATOR_IDS[0])
   const [scenarioId, setScenarioId] = useState<string | null>(null)
-  const [modal, setModal] = useState<ModalKind>(null)
-  const [modalId, setModalId] = useState<string>(INDICATOR_IDS[0])
+  const [confirmClear, setConfirmClear] = useState(false)
+  const confirmRef = useRef<HTMLDivElement>(null)
 
-  const closeModal = useCallback(() => setModal(null), [])
-  const openModal = (kind: Exclude<ModalKind, null>, id: string) => {
-    setModalId(id)
-    setModal(kind)
-  }
+  useEffect(() => {
+    if (confirmClear) confirmRef.current?.focus()
+  }, [confirmClear])
 
   const indicators = INDICATOR_IDS.map((id) => {
     const sheet = getSheet(id)
@@ -70,7 +67,7 @@ export function Dashboard({ onOpenDetail }: DashboardProps) {
     id: sheet.id,
     name: sheet.name,
     valueText: valueText(result),
-    unit: sheet.unit,
+    unit: shortUnit(sheet.unit),
     kind: result.kind,
   }))
 
@@ -106,10 +103,10 @@ export function Dashboard({ onOpenDetail }: DashboardProps) {
               </button>
             ))}
           </div>
-          <button type="button" className="btn btn-primary" onClick={() => openModal('register', selected.sheet.id)}>
+          <button type="button" className="btn btn-primary" onClick={() => onOpenDetail(selected.sheet.id, 'form')}>
             Register
           </button>
-          <button type="button" className="btn btn-secondary" onClick={() => openModal('charts', selected.sheet.id)}>
+          <button type="button" className="btn btn-secondary" onClick={() => onOpenDetail(selected.sheet.id, 'chart')}>
             Charts
           </button>
         </div>
@@ -154,7 +151,7 @@ export function Dashboard({ onOpenDetail }: DashboardProps) {
               <button type="button" className="link-action" onClick={() => onOpenDetail(selected.sheet.id)}>
                 View details
               </button>
-              <button type="button" className="link-action" onClick={() => openModal('register', selected.sheet.id)}>
+              <button type="button" className="link-action" onClick={() => onOpenDetail(selected.sheet.id, 'form')}>
                 Log this indicator
               </button>
             </div>
@@ -164,38 +161,37 @@ export function Dashboard({ onOpenDetail }: DashboardProps) {
         <aside className="dash-side">
           <StatusPanel overall={overall} review={review} onSelect={setSelectedId} />
           <SpacePlant growth={growth} streak={streak} overall={overall} />
-          <button
-            type="button"
-            className="btn btn-secondary dash-clear"
-            onClick={() => {
-              entryStore.clearEntries()
-              setScenarioId(null)
-            }}
-          >
-            Clear all readings
-          </button>
+          {confirmClear ? (
+            <div ref={confirmRef} tabIndex={-1} className="alert alert-caution clear-confirm" role="alertdialog" aria-labelledby="clear-title">
+              <p id="clear-title" className="clear-title">
+                Delete all saved readings?
+              </p>
+              <p className="muted">This removes every reading on this device. It cannot be undone.</p>
+              <div className="clear-actions">
+                <button
+                  type="button"
+                  className="btn btn-secondary btn-danger"
+                  onClick={() => {
+                    entryStore.clearEntries()
+                    setScenarioId(null)
+                    setConfirmClear(false)
+                  }}
+                >
+                  Delete readings
+                </button>
+                <button type="button" className="btn btn-secondary" onClick={() => setConfirmClear(false)}>
+                  Cancel
+                </button>
+              </div>
+            </div>
+          ) : (
+            <button type="button" className="btn btn-secondary dash-clear" onClick={() => setConfirmClear(true)}>
+              Clear all readings
+            </button>
+          )}
         </aside>
       </div>
 
-      {modal && (
-        <Modal title={modal === 'charts' ? 'History' : 'Register a reading'} onClose={closeModal}>
-          <label className="field">
-            <span>Indicator</span>
-            <select value={modalId} onChange={(event) => setModalId(event.target.value)}>
-              {INDICATOR_IDS.map((id) => (
-                <option key={id} value={id}>
-                  {getSheet(id).name}
-                </option>
-              ))}
-            </select>
-          </label>
-          {modal === 'charts' ? (
-            <HistoryChart sheet={getSheet(modalId)} entries={entries} now={now} />
-          ) : (
-            <EntryForm key={modalId} sheet={getSheet(modalId)} />
-          )}
-        </Modal>
-      )}
     </div>
   )
 }

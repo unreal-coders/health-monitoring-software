@@ -1,98 +1,102 @@
-import type { CSSProperties } from 'react'
-import type { IndicatorSheet } from '../domain/types.ts'
+// Guidance from the sheet as an accordion. Every text comes from the sheet or
+// from the current StatusResult; the first section starts open.
+import type { ReactNode } from 'react'
+import type { IndicatorSheet, StatusResult } from '../domain/types.ts'
+import { hazardName } from './format.ts'
 
-/** Explains the indicator from its sheet: why it is measured, countermeasures, limits, and sources. */
-export function GuidancePanel({ sheet }: { sheet: IndicatorSheet }) {
+interface GuidancePanelProps {
+  sheet: IndicatorSheet
+  result: StatusResult
+}
+
+function Section({ title, open = false, children }: { title: string; open?: boolean; children: ReactNode }) {
   return (
-    <section aria-labelledby="guidance-title" style={panelStyle}>
-      <h3 id="guidance-title" style={titleStyle}>
-        About this indicator
-      </h3>
-      <p style={textStyle}>{sheet.mechanism.summary}</p>
+    <details className="guide-section" open={open}>
+      <summary className="guide-summary">{title}</summary>
+      <div className="guide-body">{children}</div>
+    </details>
+  )
+}
+
+export function GuidancePanel({ sheet, result }: GuidancePanelProps) {
+  const { mechanism, measurement, flight_surgeon: surgeon } = sheet
+
+  return (
+    <section className="card guide" aria-labelledby="guidance-title">
+      <h2 id="guidance-title" className="card-title">
+        Guidance
+      </h2>
+
+      <Section title="Why we measure it" open>
+        <p>{mechanism.summary}</p>
+        {mechanism.detail?.map((item) => (
+          <p key={item.text}>{item.text}</p>
+        ))}
+        {mechanism.hazards.length > 0 && (
+          <div className="guide-tags">
+            <span className="label-mono">Spaceflight hazards</span>
+            <ul>
+              {mechanism.hazards.map((hazard) => (
+                <li key={hazard} className="guide-tag">
+                  {hazardName(hazard)}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </Section>
+
+      <Section title="How to measure on board">
+        {measurement.method && <p>{measurement.method}</p>}
+        {sheet.astronaut_text.how_to && <p>{sheet.astronaut_text.how_to}</p>}
+      </Section>
+
+      <Section title="What to do now">
+        <p>{result.text}</p>
+      </Section>
+
+      <Section title="When to contact the flight surgeon">
+        <p>{surgeon.when_to_contact}</p>
+      </Section>
+
+      <Section title="If there is no real-time contact">
+        <p>{surgeon.if_no_real_time_contact}</p>
+      </Section>
 
       {sheet.countermeasures.length > 0 && (
-        <>
-          <h4 style={subtitleStyle}>What helps</h4>
-          <ul style={listStyle}>
+        <Section title="Countermeasures">
+          <ul>
             {sheet.countermeasures.map((item) => (
               <li key={item.text}>{item.text}</li>
             ))}
           </ul>
-        </>
+        </Section>
       )}
 
       {sheet.limitations.length > 0 && (
-        <>
-          <h4 style={subtitleStyle}>Limits of this guidance</h4>
-          <ul style={listStyle}>
+        <Section title="Limitations">
+          <ul>
             {sheet.limitations.map((item) => (
               <li key={item}>{item}</li>
             ))}
           </ul>
-        </>
+        </Section>
       )}
 
-      <details>
-        <summary style={summaryStyle}>Sources ({sheet.sources.length})</summary>
-        <ul style={listStyle}>
+      <Section title={`Sources (${sheet.sources.length})`}>
+        <ul>
           {sheet.sources.map((source) => (
             <li key={source.id}>
-              <a href={source.url} target="_blank" rel="noreferrer" style={linkStyle}>
+              <a href={source.url} target="_blank" rel="noreferrer">
                 {source.title}
               </a>
-              {` · ${source.publisher}${source.locator ? ` (${source.locator})` : ''}`}
+              <span className="guide-source-meta">
+                {` · ${source.publisher}${source.locator ? ` (${source.locator})` : ''}`}
+              </span>
             </li>
           ))}
         </ul>
-      </details>
+      </Section>
     </section>
   )
-}
-
-const panelStyle: CSSProperties = {
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '0.75rem',
-  padding: '1rem',
-  background: 'var(--color-surface)',
-  border: '1px solid var(--color-border)',
-  borderRadius: '12px',
-}
-
-const titleStyle: CSSProperties = {
-  margin: 0,
-  fontSize: 'var(--font-size-md)',
-  fontWeight: 'var(--font-weight-medium)',
-}
-
-const subtitleStyle: CSSProperties = {
-  margin: '0.5rem 0 0',
-  fontSize: 'var(--font-size-sm)',
-  fontWeight: 'var(--font-weight-medium)',
-}
-
-const textStyle: CSSProperties = {
-  margin: 0,
-  color: 'var(--color-text-muted)',
-  fontSize: 'var(--font-size-sm)',
-}
-
-const listStyle: CSSProperties = {
-  margin: 0,
-  paddingLeft: '1.25rem',
-  color: 'var(--color-text-muted)',
-  fontSize: 'var(--font-size-sm)',
-}
-
-const summaryStyle: CSSProperties = {
-  minHeight: '44px',
-  display: 'flex',
-  alignItems: 'center',
-  fontSize: 'var(--font-size-sm)',
-  fontWeight: 'var(--font-weight-medium)',
-  cursor: 'pointer',
-}
-
-const linkStyle: CSSProperties = {
-  color: 'var(--color-focus)',
 }
