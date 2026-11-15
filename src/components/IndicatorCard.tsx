@@ -6,16 +6,26 @@ interface IndicatorCardProps {
   name: string
   unit?: string | null
   result: StatusResult
+  /** When given, the name becomes a button that opens the indicator's detail. */
+  onOpen?: () => void
 }
 
 /** Shows one indicator. It renders the StatusResult it receives and decides nothing itself. */
-export function IndicatorCard({ name, unit, result }: IndicatorCardProps) {
+export function IndicatorCard({ name, unit, result, onOpen }: IndicatorCardProps) {
   const value = result.evaluated ? Object.values(result.evaluated).join(' / ') : null
 
   return (
     <article style={cardStyle}>
       <header style={headerStyle}>
-        <h2 style={titleStyle}>{name}</h2>
+        <h2 style={titleStyle}>
+          {onOpen ? (
+            <button type="button" onClick={onOpen} style={titleButtonStyle}>
+              {name}
+            </button>
+          ) : (
+            name
+          )}
+        </h2>
         <StatusBadge kind={result.kind} label={result.label} />
       </header>
       {value !== null && (
@@ -54,10 +64,24 @@ const titleStyle: CSSProperties = {
   fontWeight: 'var(--font-weight-medium)',
 }
 
+const titleButtonStyle: CSSProperties = {
+  display: 'inline-flex',
+  alignItems: 'center',
+  minHeight: '44px',
+  padding: 0,
+  background: 'none',
+  border: 0,
+  color: 'inherit',
+  font: 'inherit',
+  textAlign: 'left',
+  cursor: 'pointer',
+}
+
 const valueStyle: CSSProperties = {
   margin: 0,
   fontSize: 'var(--font-size-xl)',
   fontWeight: 'var(--font-weight-bold)',
+  fontVariantNumeric: 'tabular-nums',
 }
 
 const textStyle: CSSProperties = {

@@ -41,6 +41,18 @@ export interface QuestionnaireOption {
   score: number
 }
 
+export interface Mechanism {
+  summary: string
+  hazards: string[]
+  detail?: { text: string; source: string | string[] }[]
+  sources: string[]
+}
+
+export interface Countermeasure {
+  text: string
+  source: string | string[]
+}
+
 export interface IndicatorSheet {
   id: string
   name: string
@@ -49,10 +61,14 @@ export interface IndicatorSheet {
   unit: string | null
   input?: InputKind
   fields?: string[]
+  /** `mission` when the status uses the sum of all entries instead of the last one. */
+  accumulation?: 'mission'
+  mechanism: Mechanism
   measurement: {
     method: string | null
+    sources?: string[]
     interval: string | null
-    interval_basis: 'source' | 'definition' | 'design'
+    interval_basis?: 'source' | 'definition' | 'design'
     interval_source?: string
     interval_note: string
   }
@@ -72,6 +88,8 @@ export interface IndicatorSheet {
     rules: Rule[]
     note: string
   }
+  countermeasures: Countermeasure[]
+  limitations: string[]
   flight_surgeon: {
     when_to_contact: string
     if_no_real_time_contact: string
