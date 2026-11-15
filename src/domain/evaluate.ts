@@ -117,7 +117,6 @@ function noEntry(sheet: IndicatorSheet): StatusResult {
  *
  * - Most indicators use their latest entry.
  * - A `log` (e.g. exercise) uses the sum of today's entries.
- * - `accumulation: mission` (e.g. radiation dose) uses the sum of all entries.
  *
  * The rules are checked in order and the first that matches decides the status.
  * When none matches, the result is `no-reference` with the sheet's text.
@@ -137,10 +136,7 @@ export function evaluateStatus(sheet: IndicatorSheet, entries: readonly Entry[],
   } else {
     const latest = own.at(-1)
     if (!latest) return noEntry(sheet)
-    evaluated =
-      sheet.accumulation === 'mission'
-        ? { value: own.reduce((sum, entry) => sum + entryValues(sheet, entry).value, 0) }
-        : entryValues(sheet, latest)
+    evaluated = entryValues(sheet, latest)
     const interval = parseInterval(sheet.measurement.interval)
     outdated = interval !== null && now.getTime() - Date.parse(latest.takenAt) > interval
   }

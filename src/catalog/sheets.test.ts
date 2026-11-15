@@ -37,7 +37,7 @@ function withChange(find: string, replace: string): string {
 }
 
 describe('the bundled catalog', () => {
-  it('loads the ten sheets of the MVP Scope', () => {
+  it('loads the nine sheets of the MVP Scope', () => {
     expect(sheets.map((sheet) => sheet.id)).toEqual([
       'blood-glucose',
       'blood-pressure',
@@ -47,7 +47,6 @@ describe('the bundled catalog', () => {
       'immune-symptoms',
       'mood',
       'oxygen-saturation',
-      'radiation-dose',
       'sleep-hours',
     ])
   })
