@@ -3,9 +3,9 @@
 | Field  | Detail                                                       |
 | ------ | ------------------------------------------------------------ |
 | Branch | `feat/redesign` (local, not pushed)                          |
-| Spec   | [`redesign-spec.md`](redesign-spec.md)                       |
+| Spec   | Team redesign spec (kept outside the repository)             |
 | Date   | November 14, 2026                                            |
-| Status | Ready for team review                                        |
+| Status | Approved by the team; in review as a pull request            |
 
 This document summarizes the front-end redesign, what was checked, and what the team still has to decide. The redesign follows the spec's NASA Web Design System–inspired look: dark navy surfaces, 2px corners, 1px rules, mono telemetry labels, and status shown by color, icon, and text together.
 
@@ -82,7 +82,7 @@ Every medical value and text still comes from the sheets through `domain/`.
 7. **Unused files.** `components/Modal.tsx`, `components/MetricDetail.tsx`, `components/IndicatorCard.tsx`, and `screens/Overview.tsx` are no longer used by any screen. Old MetricDetail styles remain in `screens/dashboard.css`.
 8. **Texts written in the UI, not in a sheet.** They name no medical value, but the team should approve them: "Contact the flight surgeon. Share the flagged readings." (status panel), "Your plant is asking for attention. Contact the flight surgeon." (garden), the fallback "This reading could not be evaluated. Share it with the flight surgeon." (`safeStatus.ts`, used only when a sheet has no `no_reference` text), and "Symptoms you have now" (checklist legend).
 9. **Demo data.** `data/demo/` is still empty; the scenarios live in `screens/quickScenarios.ts`. Exercise values (95, 60, and 20 minutes) were added because the scenarios had none.
-10. **Spec language.** `docs/redesign-spec.md` is in Spanish. The repository rule is English only; translate it or keep it out of the pull request.
+10. **Spec kept local.** The redesign spec was written in Spanish, so it is not in the repository (English-only rule). The team keeps it outside git.
 11. **Fonts load from Google Fonts.** Without internet the app falls back to system fonts.
 
 ---
@@ -115,7 +115,7 @@ Checked with a headless browser at 320, 375, 768, and 1280 px, all three scenari
 
 > ## Summary
 >
-> Redesigns the front end following `docs/redesign-spec.md`: a dark, NASA Web Design System–inspired look; a status wheel on the dashboard; a rebuilt indicator detail screen; a space garden with growth stages; and crew profile selection and setup.
+> Redesigns the front end following the team's redesign spec: a dark, NASA Web Design System–inspired look; a status wheel on the dashboard; a rebuilt indicator detail screen; a space garden with growth stages; and crew profile selection and setup.
 >
 > ## What changed
 >
