@@ -94,7 +94,7 @@ flight_surgeon:
   if_no_real_time_contact: >-
     Each vehicle has at least two crewmembers trained as Crew Medical Officers,
     the medical experts for the mission. The astronaut reports to them.
-  sources: [nasa-std-3001-v1]
+  sources: [aha-heart-rate, nasa-std-3001-v1]
 
 astronaut_text:
   how_to: Measure while sitting or lying down, calm, and feeling well.
@@ -134,4 +134,4 @@ sources:
     url: https://www.heart.org/en/health-topics/high-blood-pressure/the-facts-about-high-blood-pressure/all-about-heart-rate-pulse
 
 author: Troy Leonardo Moreno Calderon
-reviewer: null
+reviewer: Mike Armando Montano Valencia

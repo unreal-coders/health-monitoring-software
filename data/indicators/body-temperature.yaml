@@ -73,7 +73,7 @@ flight_surgeon:
   if_no_real_time_contact: >-
     Each vehicle has at least two crewmembers trained as Crew Medical Officers,
     the medical experts for the mission. The astronaut reports to them.
-  sources: [nasa-std-3001-v1]
+  sources: [nasa-std-3001-v1, cdc-fever]
 
 astronaut_text:
   no_contact: If you cannot reach the flight surgeon, tell your Crew Medical Officer.
@@ -101,4 +101,4 @@ sources:
     url: https://www.cdc.gov/quarantine/maritime/definitions-signs-symptoms-conditions-ill-travelers.html
 
 author: Troy Leonardo Moreno Calderon
-reviewer: null
+reviewer: Mike Armando Montano Valencia
