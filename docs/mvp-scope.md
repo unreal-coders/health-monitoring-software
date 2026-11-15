@@ -17,7 +17,7 @@ This document defines what the MVP application does, what it is built with, and 
 | 1.0.0   | November 14, 2026 | First version published in the repository: features, stack and code organization, and deployment. Status evaluation (section 3) pending.               |
 | 1.1.0   | November 14, 2026 | Indicators covered expanded to the ten accepted by the team, with three kinds of entries. Section 3 lists the cases these entries add.                 |
 | 1.2.0   | November 14, 2026 | Section 3 written from the implemented status evaluation. Mood uses the PHQ-2. Bone density wording aligned with the NASA source.                      |
-| 1.3.0   | November 15, 2026 | Radiation dose removed from the indicators covered: nine indicators.                                                                                   |
+| 1.3.0   | November 15, 2026 | Radiation dose removed from the indicators covered: nine indicators, split into the six the challenge requires and the three the team added.           |
 
 ---
 
@@ -36,13 +36,15 @@ The minimum that must work in the demo. It follows from what the challenge state
   - **Self-report:** an answer given in the app, such as the two PHQ-2 mood questions or a symptom checklist.
   - **Log:** an amount done toward a daily target, such as minutes of exercise.
 - **Indicators covered.** Nine indicators that the astronaut can check alone, in about two minutes, with a small device or none, and with an immediate result. The selection criteria and on-board methods are in the [Research document](research.md).
-  - **Cardiovascular:** heart rate, blood pressure, oxygen saturation.
-  - **Metabolism and nutrition:** blood glucose.
-  - **Immunity and temperature:** body temperature, immune symptoms.
-  - **Behavioral:** sleep hours, mood.
-  - **Musculoskeletal:** exercise. NASA measures bone density with scans before and after flight, so the application tracks exercise, the main countermeasure against bone and muscle loss.
-
-  Blood pressure, heart rate, glucose, body temperature, sleep hours, and mood are the indicators mentioned in the challenge statement.
+  - **Required by the challenge.** The six indicators the challenge statement names:
+    - **Cardiovascular:** heart rate, blood pressure.
+    - **Metabolism and nutrition:** blood glucose.
+    - **Immunity and temperature:** body temperature.
+    - **Behavioral:** sleep hours, mood.
+  - **Added by the team.** Three indicators the challenge does not name:
+    - **Oxygen saturation** (cardiovascular). NASA lists a risk of hypoxia, and it is read with the same pulse oximeter as heart rate.
+    - **Immune symptoms** (immunity and temperature). Immune biomarkers need lab analysis, while the symptoms reported on the ISS can be checked in seconds. It has no color rules yet, so every entry is shared with the flight surgeon.
+    - **Exercise** (musculoskeletal). NASA measures bone density with scans before and after flight, so the application tracks exercise, the main countermeasure against bone and muscle loss.
 - **Status per indicator.** Each indicator shows green, yellow, or red according to the rules and thresholds in its sheet. Color is accompanied by text or an icon so that status does not rely on color alone. No threshold is defined outside the sheet.
 - **Overview.** One screen shows the current status of all covered indicators at a glance.
 - **Indicator detail and guidance.** Presents, from the sheet: why it is measured and which spaceflight hazards affect it, how it is measured, baseline value, what the current status means, actions and countermeasures, when to contact the flight surgeon, what the crew does if there is no real-time contact, and limitations. Texts are short, free of jargon, and do not diagnose.

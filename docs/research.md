@@ -11,12 +11,12 @@ Knowledge that applies to all indicators: the five hazards of spaceflight, how t
 
 ## Change history
 
-| Version | Date              | Change                                                                                                                                       |
-| ------- | ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| Draft   | November 14, 2026 | Document created.                                                                                                                            |
-| 1.0.0   | November 14, 2026 | First version published in the repository.                                                                                                   |
-| 1.1.0   | November 14, 2026 | Mood uses the PHQ-2. On-board measurement sources added for vital signs and radiation. Bone density wording aligned with the NASA source.    |
-| 1.2.0   | November 15, 2026 | Radiation dose removed from the methods by indicator, since the team dropped it as an indicator. Radiation stays as one of the five hazards. |
+| Version | Date              | Change                                                                                                                                                                                                                                  |
+| ------- | ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Draft   | November 14, 2026 | Document created.                                                                                                                                                                                                                       |
+| 1.0.0   | November 14, 2026 | First version published in the repository.                                                                                                                                                                                              |
+| 1.1.0   | November 14, 2026 | Mood uses the PHQ-2. On-board measurement sources added for vital signs and radiation. Bone density wording aligned with the NASA source.                                                                                               |
+| 1.2.0   | November 15, 2026 | Radiation dose removed from the methods by indicator, since the team dropped it as an indicator; radiation stays as one of the five hazards. Methods split into the six indicators the challenge requires and the three the team added. |
 
 ---
 
@@ -111,19 +111,26 @@ The six indicators named in the challenge (blood pressure, heart rate, blood sug
 
 How each indicator in the [MVP Scope](mvp-scope.md) is checked on board. Thresholds, targets, and measurement intervals are in each sheet.
 
-| Domain                   | Indicator         | Kind                    | How it is done on board                                                     |
-| ------------------------ | ----------------- | ----------------------- | --------------------------------------------------------------------------- |
-| Cardiovascular           | Heart rate        | Measurement             | Finger pulse oximeter or wrist wearable, under one minute.                  |
-| Cardiovascular           | Blood pressure    | Measurement             | Automatic arm cuff, about one minute.                                       |
-| Cardiovascular           | Oxygen saturation | Measurement             | The same pulse oximeter used for heart rate, no extra time.                 |
-| Metabolism and nutrition | Blood glucose     | Measurement             | Fingerstick glucometer, about one minute.                                   |
-| Immunity and temperature | Body temperature  | Measurement             | Forehead or ear thermometer, seconds.                                       |
-| Immunity and temperature | Immune symptoms   | Self-report             | Short checklist: cold sores, rashes, unusual allergies, signs of infection. |
-| Behavioral               | Sleep hours       | Self-report or wearable | Hours reported on waking, or a wrist actigraphy device.                     |
-| Behavioral               | Mood              | Self-report             | The two PHQ-2 questions in the app, every two weeks.                        |
-| Musculoskeletal          | Exercise          | Log                     | Reminder to exercise and a log of minutes done, with progress for the day.  |
+**Required by the challenge** (the six indicators the challenge statement names):
 
-Two indicators replace measurements the astronaut cannot take alone in a few minutes:
+| Domain                   | Indicator        | Kind                    | How it is done on board                                            |
+| ------------------------ | ---------------- | ----------------------- | ------------------------------------------------------------------ |
+| Cardiovascular           | Heart rate       | Measurement             | Finger pulse oximeter or wrist wearable, under one minute.         |
+| Cardiovascular           | Blood pressure   | Measurement             | Automatic arm cuff, about one minute.                              |
+| Metabolism and nutrition | Blood glucose    | Measurement             | Fingerstick glucometer, about one minute, after an overnight fast. |
+| Immunity and temperature | Body temperature | Measurement             | Forehead or ear thermometer, seconds.                              |
+| Behavioral               | Sleep hours      | Self-report or wearable | Hours reported on waking, or a wrist actigraphy device.            |
+| Behavioral               | Mood             | Self-report             | The two PHQ-2 questions in the app, every two weeks.               |
+
+**Added by the team** (three indicators the challenge does not name):
+
+| Domain                   | Indicator         | Kind        | How it is done on board                                                     | Why it was added                                     |
+| ------------------------ | ----------------- | ----------- | --------------------------------------------------------------------------- | ---------------------------------------------------- |
+| Cardiovascular           | Oxygen saturation | Measurement | The same pulse oximeter used for heart rate, no extra time.                 | NASA lists a risk of hypoxia ([NASA: risks][risks]). |
+| Immunity and temperature | Immune symptoms   | Self-report | Short checklist: cold sores, rashes, unusual allergies, signs of infection. | Replaces immune biomarkers (see below).              |
+| Musculoskeletal          | Exercise          | Log         | Reminder to exercise and a log of minutes done, with progress for the day.  | Replaces bone density (see below).                   |
+
+Two of the added indicators replace measurements the astronaut cannot take alone in a few minutes:
 
 - **Exercise instead of bone density.** NASA measures bone density with scans before and after flight ([NASA: bone risk][risk-bone]), and exercise is NASA's main countermeasure against bone and muscle loss ([NASA: fitness risk][risk-fitness]). Helping the astronaut keep up with it is the most useful thing the application can do for this domain.
 - **Immune symptoms instead of biomarkers.** Biomarkers need lab analysis, while the symptoms astronauts have reported can be checked in seconds ([NASA: immune risk][risk-immune]).

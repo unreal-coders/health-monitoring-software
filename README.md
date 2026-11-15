@@ -34,14 +34,17 @@ The exact MVP features are defined in the [MVP Scope](docs/mvp-scope.md).
 
 ## Indicators by domain
 
-| Domain                   | Indicators or topics                                                      |
-| ------------------------ | ------------------------------------------------------------------------- |
-| Cardiovascular           | Heart rate, blood pressure, oxygen saturation                             |
-| Metabolism and nutrition | Blood glucose                                                             |
-| Musculoskeletal          | Exercise                                                                  |
-| Immunity and temperature | Body temperature, immune symptoms                                         |
-| Behavioral               | Sleep hours, mood                                                         |
-| Cross-cutting            | The five spaceflight hazards and on-board measurement (Research document) |
+The six indicators the challenge names, plus three the team added:
+
+| Domain                   | Required by the challenge  | Added by the team |
+| ------------------------ | -------------------------- | ----------------- |
+| Cardiovascular           | Heart rate, blood pressure | Oxygen saturation |
+| Metabolism and nutrition | Blood glucose              | —                 |
+| Musculoskeletal          | —                          | Exercise          |
+| Immunity and temperature | Body temperature           | Immune symptoms   |
+| Behavioral               | Sleep hours, mood          | —                 |
+
+Why each added indicator is there is explained in the [MVP Scope](docs/mvp-scope.md). The cross-cutting research (the five spaceflight hazards and on-board measurement) is in the [Research document](docs/research.md).
 
 ---
 
