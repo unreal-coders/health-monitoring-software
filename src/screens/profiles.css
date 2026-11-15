@@ -198,6 +198,10 @@
   width: 100%;
 }
 
+.setup-date {
+  max-width: 280px;
+}
+
 .setup-form input[readonly] {
   color: var(--color-text-muted);
   border-style: dashed;

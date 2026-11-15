@@ -47,13 +47,13 @@
   border: 0;
 }
 
-/* Header row: title on the left, scenario selector and actions on the right */
+/* Header, then the grid */
 .dash-root {
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
-  /* Room for the floating Register / Charts buttons, so they never cover content */
-  padding-bottom: calc(44px + var(--space-5));
+  /* Room for the floating Register / Charts buttons (56px tall), so they never cover content */
+  padding-bottom: calc(56px + var(--space-5));
 }
 
 .dash-header {
@@ -74,6 +74,15 @@
   z-index: 5;
   display: flex;
   gap: var(--space-2);
+}
+
+/* Larger pill buttons; --radius-pill is used only here */
+.fab .btn {
+  min-height: 56px;
+  padding: 16px 32px;
+  border-radius: var(--radius-pill);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
 }
 
 .fab .btn-secondary {
@@ -111,34 +120,48 @@
   color: var(--color-bg);
 }
 
-/* Two columns; the side column drops below on narrow screens */
+/* Wide: garden (~260px) | wheel (the rest) | card (~340px), aligned at the top.
+   Below ~1100px: the wheel on top at full width, then card and garden side by side.
+   Phones: one column, in DOM order: wheel, card, garden. */
 .dash {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr) 340px;
+  grid-template-areas: 'garden wheel card';
+  align-items: start;
   gap: var(--space-4);
 }
 
-.dash-main {
-  flex: 1 1 560px;
+.dash-wheel {
+  grid-area: wheel;
   min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
 }
 
-.dash-side {
-  flex: 1 1 300px;
+.dash-card {
+  grid-area: card;
   min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
 }
 
-@media (max-width: 900px) {
-  .dash-main,
-  .dash-side {
-    flex-basis: 100%;
+.dash-garden {
+  grid-area: garden;
+  min-width: 0;
+}
+
+@media (max-width: 1100px) {
+  .dash {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-areas:
+      'wheel wheel'
+      'card garden';
+  }
+}
+
+@media (max-width: 640px) {
+  .dash {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      'wheel'
+      'card'
+      'garden';
   }
 }
 
@@ -254,9 +277,9 @@
 
 /* On wide screens, size the wheel to the window height so it fits above the
    floating buttons on the first screen. */
-@media (min-width: 901px) {
+@media (min-width: 641px) {
   /* Size the wrapper (it holds the glass layers and the SVG), not the SVG alone */
-  .dash-main .radial-wrap {
+  .dash-wheel .radial-wrap {
     max-width: clamp(320px, calc(100vh - 340px), 600px);
   }
 }

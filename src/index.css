@@ -68,6 +68,7 @@
 
   /* Shape */
   --radius: 2px; /* everything; 50% only on avatars and the status ring */
+  --radius-pill: 999px; /* only the floating Register / Charts buttons */
   --max-width: 1200px;
 }
 

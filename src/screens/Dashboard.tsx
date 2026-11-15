@@ -68,7 +68,7 @@ export function Dashboard({ onOpenDetail, initialSelectedId = null }: DashboardP
         <h1 className="dash-title">Health overview</h1>
       </header>
 
-      {/* In the DOM right after the title, so the tab order is unchanged; shown fixed at the bottom right. */}
+      {/* In the DOM right after the title, so the tab order is unchanged; shown fixed at the bottom left. */}
       <div className="fab" role="group" aria-label="Quick actions">
         <button type="button" className="btn btn-primary" onClick={() => onOpenDetail(selected.sheet.id, 'register')}>
           Register
@@ -78,72 +78,73 @@ export function Dashboard({ onOpenDetail, initialSelectedId = null }: DashboardP
         </button>
       </div>
 
+      {/* Grid: garden | wheel | card on wide screens. The DOM order (wheel, card, garden)
+          is the reading, tab, and phone order. */}
       <div className="dash">
-        <section className="dash-main" aria-label="Indicators">
+        <section className="dash-wheel" aria-label="Indicators">
           <RadialHealth segments={segments} selectedId={selected.sheet.id} overall={overall} onSelect={setSelectedId} />
-
         </section>
 
-        <aside className="dash-side">
-          <article className="card selected-card" aria-labelledby="selected-name">
-            {/* a) Global alert: shown whenever any indicator is critical, whatever is selected. */}
-            {critical.length > 0 && (
-              <div role="alert" className="alert alert-critical global-alert">
-                <p className="global-alert-title">
-                  <PhoneIcon size={18} />
-                  Contact the flight surgeon
-                </p>
-                <ul className="global-alert-list" aria-label="Critical indicators">
-                  {critical.map((item) => (
-                    <li key={item.id}>
-                      <button
-                        type="button"
-                        className="review-chip kind-red"
-                        aria-pressed={item.id === selected.sheet.id}
-                        onClick={() => setSelectedId(item.id)}
-                      >
-                        <StatusIcon kind="red" size={12} />
-                        {item.name}
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+        <article className="card selected-card dash-card" aria-labelledby="selected-name">
+          {/* a) Global alert: shown whenever any indicator is critical, whatever is selected. */}
+          {critical.length > 0 && (
+            <div role="alert" className="alert alert-critical global-alert">
+              <p className="global-alert-title">
+                <PhoneIcon size={18} />
+                Contact the flight surgeon
+              </p>
+              <ul className="global-alert-list" aria-label="Critical indicators">
+                {critical.map((item) => (
+                  <li key={item.id}>
+                    <button
+                      type="button"
+                      className="review-chip kind-red"
+                      aria-pressed={item.id === selected.sheet.id}
+                      onClick={() => setSelectedId(item.id)}
+                    >
+                      <StatusIcon kind="red" size={12} />
+                      {item.name}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {/* b) The selected indicator. Everything comes from the sheet or the StatusResult. */}
+          <div className="selected" aria-live="polite">
+            <p className="label-mono">{selected.sheet.domain}</p>
+            <h2 id="selected-name" className="selected-name">
+              {selected.sheet.name}
+            </h2>
+            <StatusBadge kind={selected.result.kind} outdated={selected.result.outdated} />
+            {selected.result.evaluated && (
+              <p className="selected-value">
+                <span className="num">{valueText(selected.result)}</span>
+                {selected.sheet.unit && <span className="selected-unit">{selected.sheet.unit}</span>}
+              </p>
             )}
+            {selected.result.label && <p className="selected-label">{selected.result.label}</p>}
+            <p className="selected-text">{selected.result.text}</p>
+            {selected.result.kind === 'missing' && selected.sheet.astronaut_text.how_to && (
+              <p className="muted">{selected.sheet.astronaut_text.how_to}</p>
+            )}
+          </div>
 
-            {/* b) The selected indicator. Everything comes from the sheet or the StatusResult. */}
-            <div className="selected" aria-live="polite">
-              <p className="label-mono">{selected.sheet.domain}</p>
-              <h2 id="selected-name" className="selected-name">
-                {selected.sheet.name}
-              </h2>
-              <StatusBadge kind={selected.result.kind} outdated={selected.result.outdated} />
-              {selected.result.evaluated && (
-                <p className="selected-value">
-                  <span className="num">{valueText(selected.result)}</span>
-                  {selected.sheet.unit && <span className="selected-unit">{selected.sheet.unit}</span>}
-                </p>
-              )}
-              {selected.result.label && <p className="selected-label">{selected.result.label}</p>}
-              <p className="selected-text">{selected.result.text}</p>
-              {selected.result.kind === 'missing' && selected.sheet.astronaut_text.how_to && (
-                <p className="muted">{selected.sheet.astronaut_text.how_to}</p>
-              )}
-            </div>
+          {/* c) The selected indicator's escalation, when its status asks for it. */}
+          <EscalationAlert result={selected.result} noContactText={selected.sheet.astronaut_text.no_contact} />
 
-            {/* c) The selected indicator's escalation, when its status asks for it. */}
-            <EscalationAlert result={selected.result} noContactText={selected.sheet.astronaut_text.no_contact} />
+          {/* d) Actions. */}
+          <div className="selected-actions">
+            <button type="button" className="link-action" onClick={() => onOpenDetail(selected.sheet.id, 'guidance')}>
+              View details
+            </button>
+          </div>
+        </article>
 
-            {/* d) Actions. */}
-            <div className="selected-actions">
-              <button type="button" className="link-action" onClick={() => onOpenDetail(selected.sheet.id, 'guidance')}>
-                View details
-              </button>
-            </div>
-          </article>
-
+        <div className="dash-garden">
           <SpacePlant readings={entries.length} streak={streak} hasCritical={critical.length > 0} />
-        </aside>
+        </div>
       </div>
     </div>
   )
