@@ -24,6 +24,13 @@ export interface Source {
   locator?: string
 }
 
+export interface ValidRange {
+  min: number
+  max: number | null
+  basis: 'definition' | 'design'
+  note: string
+}
+
 export interface QuestionnaireItem {
   id: string
   text: string
@@ -46,8 +53,12 @@ export interface IndicatorSheet {
   measurement: {
     method: string | null
     interval: string | null
+    interval_basis: 'source' | 'definition' | 'design'
+    interval_source?: string
     interval_note: string
   }
+  /** Accepted values per value name; entries outside are rejected as typing errors. */
+  valid_range?: Record<string, ValidRange>
   checklist?: { id: string; label: string }[]
   questionnaire?: {
     prompt: string

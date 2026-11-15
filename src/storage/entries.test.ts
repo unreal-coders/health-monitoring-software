@@ -89,6 +89,7 @@ describe('createEntryStore', () => {
     )
     expect(() => store.addEntry(heartRate(72, 'yesterday'))).toThrow(/valid takenAt/)
     expect(() => store.addEntry(heartRate(Number.NaN))).toThrow(/numeric values/)
+    expect(() => store.addEntry(heartRate(900))).toThrow(/outside the accepted values/)
     expect(() => store.replaceEntries([heartRate(72), heartRate(Number.NaN)])).toThrow()
     expect(store.getEntries()).toEqual([])
     expect(data.has(STORAGE_KEY)).toBe(false)

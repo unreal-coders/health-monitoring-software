@@ -21,8 +21,16 @@ measurement:
     galactic cosmic rays, solar energetic particles, and trapped radiation.
   method_note: No NASA source was found for astronauts reading and logging their own dosimeter.
   sources: [nasa-std-3001-v2, ochmo-tb-044]
-  interval: null
-  interval_note: No measurement interval found in the NASA sources consulted.
+  interval: 1 day
+  interval_basis: design
+  interval_note: Interval chosen by the team; no source gives one.
+
+valid_range:
+  value:
+    min: 0
+    max: null
+    basis: definition
+    note: A dose cannot be negative.
 
 baseline:
   value: null

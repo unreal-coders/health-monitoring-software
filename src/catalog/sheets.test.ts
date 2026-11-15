@@ -10,7 +10,9 @@ domain: Cardiovascular
 entry_kind: measurement
 unit: bpm
 mechanism: {summary: x, hazards: [], hazards_note: x, sources: []}
-measurement: {method: x, sources: [], interval: null, interval_note: x}
+measurement: {method: x, sources: [], interval: 1 day, interval_basis: design, interval_note: x}
+valid_range:
+  value: {min: 0, max: 10, basis: design, note: x}
 baseline: {value: null, type: null, note: x}
 thresholds:
   evaluation: first-match
@@ -88,7 +90,34 @@ describe('parseSheet', () => {
   })
 
   it('rejects an unknown measurement interval', () => {
-    expect(() => parseSheet(withChange('interval: null', 'interval: weekly'), FILE)).toThrow(/Unknown measurement interval/)
+    expect(() => parseSheet(withChange('interval: 1 day', 'interval: weekly'), FILE)).toThrow(/Unknown measurement interval/)
+  })
+
+  it('rejects an unknown interval basis', () => {
+    expect(() => parseSheet(withChange('interval_basis: design', 'interval_basis: guess'), FILE)).toThrow(/interval_basis/)
+  })
+
+  it('requires a listed source when the interval comes from a source', () => {
+    expect(() => parseSheet(withChange('interval_basis: design', 'interval_basis: source'), FILE)).toThrow(
+      /interval_source/,
+    )
+    expect(
+      parseSheet(withChange('interval_basis: design', 'interval_basis: source, interval_source: s1'), FILE).id,
+    ).toBe('test-indicator')
+  })
+
+  it('requires a valid range for a number input', () => {
+    expect(() => parseSheet(withChange('  value: {min: 0, max: 10, basis: design, note: x}', ''), FILE)).toThrow(
+      /needs a valid_range/,
+    )
+    expect(() => parseSheet(withChange('  value: {min: 0', '  systolic: {min: 0'), FILE)).toThrow(
+      /valid_range must cover exactly: value/,
+    )
+  })
+
+  it('rejects a valid range with max below min or an unknown basis', () => {
+    expect(() => parseSheet(withChange('max: 10', 'max: -1'), FILE)).toThrow(/max must be null or above min/)
+    expect(() => parseSheet(withChange('basis: design, note', 'basis: hunch, note'), FILE)).toThrow(/basis/)
   })
 
   it('requires a daily target for a log', () => {

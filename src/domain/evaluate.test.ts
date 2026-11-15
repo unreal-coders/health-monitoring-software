@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { getSheet } from '../catalog/sheets.ts'
-import { evaluateStatus, parseInterval } from './evaluate.ts'
+import { evaluateStatus, OutOfRangeError, parseInterval } from './evaluate.ts'
 import type { Entry } from './types.ts'
 
 const NOW = new Date('2026-11-15T12:00:00')
@@ -137,9 +137,32 @@ describe('edge cases', () => {
     expect(old.kind).toBe('green')
   })
 
-  it('never marks an entry outdated when the sheet has no interval', () => {
-    const result = evaluateStatus(getSheet('heart-rate'), [entry('heart-rate', { value: 70 }, '2020-01-01T00:00:00')], NOW)
-    expect(result.outdated).toBe(false)
+  it('marks a daily indicator outdated after one day', () => {
+    const sheet = getSheet('heart-rate')
+    expect(evaluateStatus(sheet, [entry('heart-rate', { value: 70 }, '2026-11-15T08:00:00')], NOW).outdated).toBe(false)
+    expect(evaluateStatus(sheet, [entry('heart-rate', { value: 70 }, '2026-11-14T08:00:00')], NOW).outdated).toBe(true)
+  })
+
+  it('rejects values outside the valid range as typing errors', () => {
+    const reject = (id: string, values: Record<string, number>) => () =>
+      evaluateStatus(getSheet(id), [entry(id, values)], NOW)
+    expect(reject('blood-pressure', { systolic: 900, diastolic: 80 })).toThrow(OutOfRangeError)
+    expect(reject('blood-pressure', { systolic: 120, diastolic: 10 })).toThrow(/"diastolic" \(20 to 200\)/)
+    expect(reject('oxygen-saturation', { value: 101 })).toThrow(OutOfRangeError)
+    expect(reject('sleep-hours', { value: 25 })).toThrow(OutOfRangeError)
+    expect(reject('radiation-dose', { value: -1 })).toThrow(/0 or more/)
+    expect(reject('exercise', { value: 1441 })).toThrow(OutOfRangeError)
+  })
+
+  it('accepts values at the edges of the valid range', () => {
+    expect(statusOf('oxygen-saturation', { value: 100 })).toBe('green: Normal')
+    expect(statusOf('sleep-hours', { value: 0 })).toBe('yellow: Below the recommended amount')
+  })
+
+  it('gives every sheet a measurement interval', () => {
+    for (const id of ['blood-glucose', 'blood-pressure', 'body-temperature', 'exercise', 'heart-rate', 'immune-symptoms', 'mood', 'oxygen-saturation', 'radiation-dose', 'sleep-hours']) {
+      expect(parseInterval(getSheet(id).measurement.interval), id).not.toBeNull()
+    }
   })
 
   it('rejects an entry without the values the sheet needs', () => {

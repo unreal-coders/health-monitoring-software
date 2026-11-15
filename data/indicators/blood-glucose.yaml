@@ -22,8 +22,16 @@ measurement:
     No NASA source was found for how blood glucose is measured on board. The
     fasting condition comes from the CDC ranges used below.
   sources: [cdc-diabetes-testing]
-  interval: null
-  interval_note: No measurement interval found in the sources consulted.
+  interval: 1 day
+  interval_basis: design
+  interval_note: Interval chosen by the team; no source gives one. One fasting reading each morning.
+
+valid_range:
+  value:
+    min: 10
+    max: 600
+    basis: design
+    note: Input limit chosen by the team to catch typing errors. It is not a medical value.
 
 baseline:
   value: null

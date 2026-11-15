@@ -25,8 +25,16 @@ measurement:
     capabilities assess and store. NASA has tested pulse oximetry with the Tempus
     Pro multi-functional medical device.
   sources: [ochmo-tb-033, glenn-mim]
-  interval: null
-  interval_note: No measurement interval found in the NASA sources consulted.
+  interval: 1 day
+  interval_basis: design
+  interval_note: Interval chosen by the team; no source gives one.
+
+valid_range:
+  value:
+    min: 0
+    max: 100
+    basis: definition
+    note: A percentage cannot be below 0 or above 100.
 
 baseline:
   value: null

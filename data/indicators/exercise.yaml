@@ -35,8 +35,10 @@ measurement:
     adds them up for the day.
   method_note: No NASA source was found for an exercise self-log method.
   sources: []
-  interval: null
-  interval_note: One log per exercise session. No NASA measurement interval was found.
+  interval: 1 day
+  interval_basis: source
+  interval_source: hrp-risk-fitness
+  interval_note: The target is per day, since ISS astronauts exercise 1.5 hours per day.
 
 daily_target:
   value: 90
@@ -45,6 +47,13 @@ daily_target:
     Six to seven days a week, astronauts on the ISS do resistance training and
     aerobic exercise for 1.5 hours per day.
   source: hrp-risk-fitness
+
+valid_range:
+  value:
+    min: 0
+    max: 1440
+    basis: definition
+    note: One entry cannot exceed the 1,440 minutes in a day.
 
 baseline:
   value: null
