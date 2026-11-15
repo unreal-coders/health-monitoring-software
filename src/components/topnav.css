@@ -12,9 +12,9 @@
 
 .topnav-inner {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
-  gap: var(--space-2) var(--space-4);
+  justify-content: space-between;
+  gap: var(--space-3);
   max-width: var(--max-width);
   margin: 0 auto;
   padding: var(--space-2) var(--space-3);
@@ -30,55 +30,26 @@
   white-space: nowrap;
 }
 
-.topnav-tabs {
-  flex: 1;
+/* The brand is a button back to the dashboard */
+.topnav-home {
   min-width: 0;
-}
-
-.topnav-tabs ul {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0 var(--space-3);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.topnav-tab {
-  display: inline-flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: center;
   min-height: 44px;
-  padding: 0 2px;
+  padding: var(--space-1) var(--space-2) var(--space-1) 0;
   background: none;
   border: 0;
-  border-bottom: 2px solid transparent;
-  color: var(--color-text-muted);
-  font-family: var(--font-mono);
-  font-size: 13px;
-  letter-spacing: var(--letter-spacing-label);
-  text-transform: uppercase;
+  border-radius: var(--radius);
+  color: var(--color-text);
+  text-align: left;
   cursor: pointer;
 }
 
-.topnav-tab[aria-current='page'] {
-  color: var(--color-text);
-  border-bottom-color: var(--color-active);
+.topnav-home svg {
+  flex-shrink: 0;
 }
 
-.topnav-tab:hover:not([aria-disabled='true']) {
-  color: var(--color-text);
-}
-
-.topnav-tab[aria-disabled='true'] {
-  opacity: 0.55;
-}
-
-.topnav-soon {
-  font-size: 9px;
-  line-height: 1;
-  letter-spacing: var(--letter-spacing-label);
+.topnav-home:hover .topnav-brand-name {
+  text-decoration: underline;
+  text-underline-offset: 4px;
 }
 
 /* Profile chip */
@@ -86,6 +57,7 @@
   display: flex;
   align-items: center;
   gap: var(--space-2);
+  flex-shrink: 0;
   margin-left: auto;
   padding: var(--space-1);
   background: none;
@@ -135,29 +107,24 @@
 }
 
 @media (max-width: 640px) {
-  /* The bar wraps to several rows on phones; let it scroll away instead of covering the screen */
+  /* Keep the whole screen for content on phones: the bar scrolls away */
   .topnav {
     position: static;
   }
 
-  .topnav-tabs {
-    order: 3;
-    flex-basis: 100%;
+  /* The name may wrap to two lines so it never runs into the profile chip */
+  .topnav-brand {
+    white-space: normal;
+    font-size: var(--font-size-sm);
+    line-height: 1.2;
   }
 
-  /* Tabs in one row that slides sideways instead of wrapping to two rows */
-  .topnav-tabs ul {
-    flex-wrap: nowrap;
-    gap: 0 var(--space-3);
-    overflow-x: auto;
-    scrollbar-width: none;
+  .profile-chip-name {
+    font-size: var(--font-size-sm);
   }
 
-  .topnav-tabs li {
-    flex-shrink: 0;
-  }
-
-  .topnav-tab {
-    font-size: 11px;
+  .profile-chip-avatar {
+    width: 40px;
+    height: 40px;
   }
 }

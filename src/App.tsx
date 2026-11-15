@@ -65,8 +65,10 @@ function App() {
       <Starfield />
       {profile && (
         <TopNav
-          activeId="dashboard"
-          onNavigate={() => setScreen('dashboard')}
+          onHome={() => {
+            if (current === 'detail' && detail) setLastId(detail.id)
+            setScreen('dashboard')
+          }}
           profile={{
             name: profile.name,
             callSign: callSignOf(profile),

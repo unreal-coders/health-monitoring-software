@@ -1,53 +1,28 @@
-// Top navigation: brand, tabs, and the active crew profile.
-// Only the dashboard is in the MVP scope; the other tabs are visible but marked "Coming soon".
+// Top navigation: the brand on the left, which returns to the dashboard from any
+// view, and the active crew profile on the right.
 import { OrbitIcon } from './icons.tsx'
 import { ProfileChip, type ProfileChipProps } from './ProfileChip.tsx'
 import './topnav.css'
 
 interface TopNavProps {
-  activeId: string
   profile: ProfileChipProps
-  onNavigate?: (id: string) => void
+  /** Goes back to the dashboard. */
+  onHome: () => void
 }
 
-const ITEMS = [
-  { id: 'dashboard', label: 'Dashboard', enabled: true },
-  { id: 'log', label: 'Medical log', enabled: false },
-  { id: 'missions', label: 'Mission and habits', enabled: false },
-  { id: 'settings', label: 'Settings', enabled: false },
-] as const
-
-export function TopNav({ activeId, profile, onNavigate }: TopNavProps) {
+export function TopNav({ profile, onHome }: TopNavProps) {
   return (
     <header className="topnav">
       <div className="topnav-inner">
-        <div className="topnav-brand">
+        <button
+          type="button"
+          className="topnav-brand topnav-home"
+          aria-label="Astronaut Health Monitor, go to dashboard"
+          onClick={onHome}
+        >
           <OrbitIcon />
-          <span>Astronaut Health Monitor</span>
-        </div>
-
-        <nav aria-label="Main" className="topnav-tabs">
-          <ul>
-            {ITEMS.map((item) => (
-              <li key={item.id}>
-                <button
-                  type="button"
-                  className="topnav-tab"
-                  aria-current={item.id === activeId ? 'page' : undefined}
-                  aria-disabled={item.enabled ? undefined : 'true'}
-                  aria-describedby={item.enabled ? undefined : 'topnav-soon'}
-                  onClick={item.enabled ? () => onNavigate?.(item.id) : undefined}
-                >
-                  {item.label}
-                  {!item.enabled && <span className="topnav-soon">Coming soon</span>}
-                </button>
-              </li>
-            ))}
-          </ul>
-          <span id="topnav-soon" hidden>
-            Coming soon. Not in the MVP scope yet.
-          </span>
-        </nav>
+          <span className="topnav-brand-name">Astronaut Health Monitor</span>
+        </button>
 
         <ProfileChip {...profile} />
       </div>
