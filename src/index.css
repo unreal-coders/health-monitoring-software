@@ -71,3 +71,50 @@ h2 {
   outline: 2px solid var(--color-focus);
   outline-offset: 2px;
 }
+
+/* Inputs: same surface and border as the rest of the system */
+input[type='number'],
+input[type='datetime-local'] {
+  min-height: 40px;
+  padding: 0 0.75rem;
+  background: var(--color-bg);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  font: inherit;
+}
+
+input[type='radio'],
+input[type='checkbox'] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--color-focus);
+}
+
+/* Interactive states for buttons */
+button {
+  transition: opacity 180ms ease-out, transform 180ms ease-out;
+}
+
+button:hover:not(:disabled) {
+  opacity: 0.85;
+}
+
+button:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Honor the user's motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
