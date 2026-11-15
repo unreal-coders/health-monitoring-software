@@ -2,7 +2,7 @@
 
 | Field            | Detail                        |
 | ---------------- | ----------------------------- |
-| Document version | 1.3.0                         |
+| Document version | 1.4.0                         |
 | Creation date    | November 14, 2026             |
 | Status           | In development                |
 | Document owner   | Mike Armando Montano Valencia |
@@ -18,6 +18,7 @@ This document defines what the MVP application does, what it is built with, and 
 | 1.1.0   | November 14, 2026 | Indicators covered expanded to the ten accepted by the team, with three kinds of entries. Section 3 lists the cases these entries add.                 |
 | 1.2.0   | November 14, 2026 | Section 3 written from the implemented status evaluation. Mood uses the PHQ-2. Bone density wording aligned with the NASA source.                      |
 | 1.3.0   | November 15, 2026 | Radiation dose removed from the indicators covered: nine indicators, split into the six the challenge requires and the three the team added.           |
+| 1.4.0   | November 15, 2026 | Crew profiles added: the three demonstration scenarios are now reached through three demo profiles. Tests and code organization updated.               |
 
 ---
 
@@ -50,7 +51,8 @@ The minimum that must work in the demo. It follows from what the challenge state
 - **Indicator detail and guidance.** Presents, from the sheet: why it is measured and which spaceflight hazards affect it, how it is measured, baseline value, what the current status means, actions and countermeasures, when to contact the flight surgeon, what the crew does if there is no real-time contact, and limitations. Texts are short, free of jargon, and do not diagnose.
 - **Escalation alert.** When the sheet indicates it for the current status, the application warns that the flight surgeon must be contacted and shows what to do if there is no real-time contact.
 - **History and trend.** Each indicator shows a chart of its values over time, with the status of each point, so that a gradual deterioration is visible. For logs, each point is the daily total. Entries are kept when the application is reloaded.
-- **Demonstration data.** The application loads the three synthetic scenarios (normal, gradual deterioration, and acute event) from `data/demo/` and allows switching between them.
+- **Crew profiles.** The astronaut chooses a profile when the application starts. Each profile keeps its own entries, stored on the device.
+- **Demonstration data.** The application includes three synthetic crew profiles, one per scenario: normal, gradual change, and acute event. Choosing a profile shows its scenario, loaded from `data/demo/`.
 - **Visible sources.** Each indicator allows consulting the sources that support its values and actions.
 
 ### 1.2 Nice-to-have
@@ -59,6 +61,7 @@ Features that add value to the demo but are not required to meet the challenge. 
 
 - **Interactive human figure.** A body figure whose regions can be clicked. Each region opens the detail of the indicators related to it and shows their current status.
 - **Measurement reminders.** An indicator shows when a new measurement is due or overdue, based on the interval defined in its sheet. For exercise, it reminds the astronaut to exercise and to log the minutes.
+- **Profile creation.** A form to add a crew profile: name, date of birth, crew role, call sign, and avatar. A new profile starts with no entries.
 - **Flight surgeon report.** A summary of the current status and recent values of the indicators, ready to be copied or printed and sent to the flight surgeon.
 - **Engagement tracking.** The application rewards keeping up with the measurement routine, not the values measured. It shows how many of the covered indicators are up to date, and for each indicator the number of consecutive measurements logged on time. What "on time" means is defined in the status evaluation (section 3), from the measurement interval in the indicator's sheet. Progress never depends on the status of an indicator, so nothing encourages hiding or altering a reading. It is computed from the logged entries and stores no additional data.
 
@@ -94,7 +97,7 @@ Taken from the Project Submission Guide and the Judging & Awards Guide (November
 | Charts       | Recharts                                                                           |
 | Data         | YAML sheets from `data/`, bundled at build time and parsed with the `yaml` package |
 | Persistence  | Browser `localStorage` (no backend, no accounts)                                   |
-| Tests        | Vitest, for the status evaluator only                                              |
+| Tests        | Vitest, for the code outside screens and components                                |
 | Hosting      | Static site on GitHub Pages, deployed by GitHub Actions                            |
 
 The application is a static single-page app. It reads the indicator sheets and the demonstration scenarios from `data/` at build time, so no server is needed and no medical value is defined in code.
@@ -106,8 +109,9 @@ The application is a static single-page app. It reads the indicator sheets and t
       App.tsx
       domain/        types and status evaluation (no React, no browser APIs)
       catalog/       loads and parses the sheets and demo scenarios from data/
-      storage/       saves and reads logged entries in localStorage
-      screens/       Overview, IndicatorDetail
+      storage/       saves and reads logged entries in localStorage, per profile
+      profiles/      saves and reads crew profiles and the active profile in localStorage
+      screens/       ProfilePicker, ProfileSetup, Dashboard, IndicatorDetail
       components/    status badge, entry form, chart, guidance panel, escalation alert
 
 Rules:
