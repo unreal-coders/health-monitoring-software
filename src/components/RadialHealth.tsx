@@ -1,126 +1,95 @@
-import type { CSSProperties } from 'react'
+// Health wheel: one segment per indicator, colored ONLY by that indicator's
+// status kind (never by domain). The center shows the overall status.
+// Keyboard users select indicators with the chips under the wheel, so the
+// segments are pointer-only and the SVG is hidden from assistive tech.
 import type { OverallKind } from '../domain/health.ts'
-
-export type Tone = 'green' | 'yellow' | 'red' | 'none'
+import type { StatusKind } from '../domain/types.ts'
+import { KIND_SYMBOL, KIND_TEXT } from './statusText.ts'
+import './radial.css'
 
 export interface Segment {
   id: string
   name: string
   valueText: string
-  unit: string
-  tone: Tone
+  unit: string | null
+  kind: StatusKind
 }
 
 interface RadialHealthProps {
   segments: readonly Segment[]
   selectedId: string | null
   overall: OverallKind
-  overallLabel: string
   onSelect: (id: string) => void
-  onHover: (id: string | null) => void
 }
 
-const SIZE = 400
-const CENTER = SIZE / 2
-const R_CORE = 96
-const R_IN = 110
-const R_OUT = 196
-const R_LABEL = 153
-const HALF_SPAN = 21 // degrees on each side of a wedge's center, leaving a small gap
+const SIZE = 600
+const C = SIZE / 2
+const R_OUT = 290
+const R_IN = 150
+const R_TEXT = 222
+const START = -110 // degrees, SVG convention (0 = right, clockwise): the first segment is centered at the top
+const GAP = 1.6
 
-const TONE_COLOR: Record<Tone, string> = {
-  green: 'var(--color-status-normal)',
-  yellow: 'var(--color-status-caution)',
-  red: 'var(--color-status-critical)',
-  none: 'var(--color-status-missing)',
-}
-
-const OVERALL_COLOR: Record<OverallKind, string> = {
-  green: 'var(--color-status-normal)',
-  yellow: 'var(--color-status-caution)',
-  red: 'var(--color-status-critical)',
-  missing: 'var(--color-status-missing)',
-}
-
-/** Point at radius r, angle in degrees clockwise from the top. */
-function polar(radius: number, degrees: number): { x: number; y: number } {
+function point(radius: number, degrees: number): [number, number] {
   const radians = (degrees * Math.PI) / 180
-  return { x: CENTER + radius * Math.sin(radians), y: CENTER - radius * Math.cos(radians) }
+  return [C + radius * Math.cos(radians), C + radius * Math.sin(radians)]
 }
 
-function wedgePath(center: number): string {
-  const start = polar(R_OUT, center - HALF_SPAN)
-  const end = polar(R_OUT, center + HALF_SPAN)
-  const innerEnd = polar(R_IN, center + HALF_SPAN)
-  const innerStart = polar(R_IN, center - HALF_SPAN)
-  return [
-    `M ${start.x} ${start.y}`,
-    `A ${R_OUT} ${R_OUT} 0 0 1 ${end.x} ${end.y}`,
-    `L ${innerEnd.x} ${innerEnd.y}`,
-    `A ${R_IN} ${R_IN} 0 0 0 ${innerStart.x} ${innerStart.y}`,
-    'Z',
-  ].join(' ')
+function segmentPath(from: number, to: number): string {
+  const [x1, y1] = point(R_OUT, from)
+  const [x2, y2] = point(R_OUT, to)
+  const [x3, y3] = point(R_IN, to)
+  const [x4, y4] = point(R_IN, from)
+  return `M ${x1} ${y1} A ${R_OUT} ${R_OUT} 0 0 1 ${x2} ${y2} L ${x3} ${y3} A ${R_IN} ${R_IN} 0 0 0 ${x4} ${y4} Z`
 }
 
-/** Eight wedges, one per metric. Each wedge shows its own status; the core shows the overall one. */
-export function RadialHealth({ segments, selectedId, overall, overallLabel, onSelect, onHover }: RadialHealthProps) {
-  const overallColor = OVERALL_COLOR[overall]
-  const coreStyle = {
-    '--glow': overallColor,
-    fill: `color-mix(in srgb, ${overallColor} 18%, var(--color-surface))`,
-    stroke: overallColor,
-    strokeWidth: 2,
-  } as CSSProperties
+export function RadialHealth({ segments, selectedId, overall, onSelect }: RadialHealthProps) {
+  const span = 360 / Math.max(segments.length, 1)
 
   return (
-    <svg className="radial" viewBox={`0 0 ${SIZE} ${SIZE}`} role="group" aria-label="Health indicators">
+    <svg className="radial" viewBox={`0 0 ${SIZE} ${SIZE}`} aria-hidden="true">
       {segments.map((segment, index) => {
-        const center = index * 45
-        const label = polar(R_LABEL, center)
-        const color = TONE_COLOR[segment.tone]
+        const from = START + index * span + GAP / 2
+        const to = START + (index + 1) * span - GAP / 2
+        const [x, y] = point(R_TEXT, (from + to) / 2)
         const selected = segment.id === selectedId
         return (
           <g
             key={segment.id}
-            role="button"
-            tabIndex={0}
-            aria-pressed={selected}
-            aria-label={`${segment.name}: ${segment.valueText} ${segment.unit}`}
-            className={selected ? 'radial-segment is-selected' : 'radial-segment'}
+            className={`radial-segment kind-${segment.kind}${selected ? ' is-selected' : ''}`}
             onClick={() => onSelect(segment.id)}
-            onKeyDown={(event) => {
-              if (event.key === 'Enter' || event.key === ' ') {
-                event.preventDefault()
-                onSelect(segment.id)
-              }
-            }}
-            onMouseEnter={() => onHover(segment.id)}
-            onMouseLeave={() => onHover(null)}
-            onFocus={() => onHover(segment.id)}
-            onBlur={() => onHover(null)}
           >
-            <path
-              className="radial-wedge"
-              d={wedgePath(center)}
-              style={{ fill: `color-mix(in srgb, ${color} 22%, var(--color-surface))`, stroke: color }}
-            />
-            <text className="radial-name" x={label.x} y={label.y - 10}>
+            <path className="radial-wedge" d={segmentPath(from, to)} />
+            <text className="radial-name" x={x} y={y - 38}>
               {segment.name}
             </text>
-            <text className="radial-value" x={label.x} y={label.y + 8}>
+            <text className="radial-value" x={x} y={y - 12}>
               {segment.valueText}
             </text>
-            <text className="radial-unit" x={label.x} y={label.y + 24}>
-              {segment.unit}
+            {segment.unit && segment.kind !== 'missing' && (
+              <text className="radial-unit" x={x} y={y + 11}>
+                {segment.unit}
+              </text>
+            )}
+            <text className="radial-status" x={x} y={y + 34}>
+              <tspan className="radial-symbol">{KIND_SYMBOL[segment.kind]}</tspan>
+              <tspan className="radial-word" dx="6">
+                {KIND_TEXT[segment.kind]}
+              </tspan>
             </text>
           </g>
         )
       })}
-      <circle className="radial-core" cx={CENTER} cy={CENTER} r={R_CORE} style={coreStyle} />
-      <text className="radial-core-label" x={CENTER} y={CENTER}>
-        {overallLabel}
+
+      <circle className="radial-core-outer" cx={C} cy={C} r={142} />
+      <circle className={`radial-core kind-${overall}`} cx={C} cy={C} r={128} />
+      <text className={`radial-core-icon kind-${overall}`} x={C} y={C - 30}>
+        {KIND_SYMBOL[overall]}
       </text>
-      <text className="radial-core-sub" x={CENTER} y={CENTER + 22}>
+      <text className={`radial-core-label kind-${overall}`} x={C} y={C + 14}>
+        {KIND_TEXT[overall]}
+      </text>
+      <text className="radial-core-sub" x={C} y={C + 44}>
         Overall status
       </text>
     </svg>

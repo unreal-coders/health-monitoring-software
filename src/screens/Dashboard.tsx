@@ -1,56 +1,37 @@
+// Health overview: the wheel of indicators, the selected indicator, the overall
+// status with the indicators to review, and the demo scenario selector.
+// Every status comes from the sheets through domain/ (see safeStatus.ts).
 import { useCallback, useState, useSyncExternalStore } from 'react'
 import { getSheet } from '../catalog/sheets.ts'
 import { EntryForm } from '../components/EntryForm.tsx'
 import { HistoryChart } from '../components/HistoryChart.tsx'
-import { MetricDetail, type Trend } from '../components/MetricDetail.tsx'
 import { Modal } from '../components/Modal.tsx'
 import { RadialHealth, type Segment } from '../components/RadialHealth.tsx'
 import { SpacePlant } from '../components/SpacePlant.tsx'
-import { StatusPanel } from '../components/StatusPanel.tsx'
-import { evaluateStatus } from '../domain/evaluate.ts'
-import { toPoints } from '../domain/history.ts'
-import { overallStatus, plantGrowth, streakDays, type OverallKind } from '../domain/health.ts'
-import type { Entry, IndicatorSheet, StatusResult } from '../domain/types.ts'
+import { StatusBadge } from '../components/StatusBadge.tsx'
+import { StatusIcon } from '../components/icons.tsx'
+import { StatusPanel, type ReviewItem } from '../components/StatusPanel.tsx'
+import { KIND_TEXT } from '../components/statusText.ts'
+import { overallStatus, plantGrowth, streakDays } from '../domain/health.ts'
 import { entryStore } from '../storage/entries.ts'
 import { buildEntries, SCENARIOS } from './quickScenarios.ts'
+import { safeStatus, valueText } from './safeStatus.ts'
 import './dashboard.css'
 
-// The eight metrics of the dashboard, in clockwise order from the top.
-const METRICS = [
-  { id: 'heart-rate', unit: 'bpm' },
-  { id: 'blood-pressure', unit: 'mmHg' },
-  { id: 'oxygen-saturation', unit: '%' },
-  { id: 'blood-glucose', unit: 'mg/dL' },
-  { id: 'body-temperature', unit: '°C' },
-  { id: 'immune-symptoms', unit: 'signs' },
-  { id: 'sleep-hours', unit: 'hours' },
-  { id: 'mood', unit: 'points of 6' },
+// The wheel's order, clockwise from the top.
+const INDICATOR_IDS = [
+  'heart-rate',
+  'blood-pressure',
+  'oxygen-saturation',
+  'blood-glucose',
+  'body-temperature',
+  'immune-symptoms',
+  'exercise',
+  'sleep-hours',
+  'mood',
 ] as const
 
-type MetricId = (typeof METRICS)[number]['id']
 type ModalKind = 'charts' | 'register' | null
-
-const OVERALL_LABEL: Record<OverallKind, string> = {
-  green: 'Optimal',
-  yellow: 'Caution',
-  red: 'Critical',
-  missing: 'No data',
-}
-
-function valueOf(result: StatusResult): string {
-  return result.evaluated ? Object.values(result.evaluated).join('/') : '—'
-}
-
-/** Direction of the last change, from the chart's points. Null when there are fewer than two. */
-function trendOf(sheet: IndicatorSheet, entries: readonly Entry[], now: Date): Trend {
-  const points = toPoints(sheet, entries, now)
-  const last = points.at(-1)
-  const previous = points.at(-2)
-  if (!last || !previous) return null
-  const difference = last.value - previous.value
-  if (Math.abs(difference) < 1e-9) return 'stable'
-  return difference > 0 ? 'up' : 'down'
-}
 
 interface DashboardProps {
   onOpenDetail: (id: string) => void
@@ -58,154 +39,161 @@ interface DashboardProps {
 
 export function Dashboard({ onOpenDetail }: DashboardProps) {
   const entries = useSyncExternalStore(entryStore.subscribe, entryStore.getEntries)
-  const [now] = useState(() => new Date())
-  const [selectedId, setSelectedId] = useState<string | null>(null)
-  const [hoverId, setHoverId] = useState<string | null>(null)
+  const [now, setNow] = useState(() => new Date())
+  const [selectedId, setSelectedId] = useState<string>(INDICATOR_IDS[0])
+  const [scenarioId, setScenarioId] = useState<string | null>(null)
   const [modal, setModal] = useState<ModalKind>(null)
-  const [chartId, setChartId] = useState<MetricId>('heart-rate')
-  const [registerId, setRegisterId] = useState<MetricId>('heart-rate')
+  const [modalId, setModalId] = useState<string>(INDICATOR_IDS[0])
 
   const closeModal = useCallback(() => setModal(null), [])
-  const selectSegment = useCallback(
-    (id: string) => setSelectedId((current) => (current === id ? null : id)),
-    [],
-  )
+  const openModal = (kind: Exclude<ModalKind, null>, id: string) => {
+    setModalId(id)
+    setModal(kind)
+  }
 
-  const metrics = METRICS.map((metric) => {
-    const sheet = getSheet(metric.id)
-    return { ...metric, sheet, result: evaluateStatus(sheet, entries, now) }
+  const indicators = INDICATOR_IDS.map((id) => {
+    const sheet = getSheet(id)
+    return { sheet, result: safeStatus(sheet, entries, now) }
   })
-  const results = metrics.map((metric) => metric.result)
+  const results = indicators.map((indicator) => indicator.result)
   const overall = overallStatus(results)
   const covered = results.filter((result) => result.kind !== 'missing' && !result.outdated).length
   const streak = streakDays(entries, now)
-  const growth = plantGrowth(covered, METRICS.length, streak)
-  const flagged = metrics
-    .filter((metric) => metric.result.color === 'yellow' || metric.result.color === 'red')
-    .map((metric) => metric.sheet.name)
-  const contact = results.some((result) => result.contactFlightSurgeon === true)
+  const growth = plantGrowth(covered, indicators.length, streak)
 
-  const segments: Segment[] = metrics.map((metric) => ({
-    id: metric.sheet.id,
-    name: metric.sheet.name,
-    valueText: valueOf(metric.result),
-    unit: metric.unit,
-    tone: metric.result.color ?? 'none',
+  const review: ReviewItem[] = indicators
+    .filter(({ result }) => result.kind === 'red' || result.kind === 'yellow')
+    .sort((a, b) => (a.result.kind === 'red' ? 0 : 1) - (b.result.kind === 'red' ? 0 : 1))
+    .map(({ sheet, result }) => ({ id: sheet.id, name: sheet.name, kind: result.kind }))
+
+  const segments: Segment[] = indicators.map(({ sheet, result }) => ({
+    id: sheet.id,
+    name: sheet.name,
+    valueText: valueText(result),
+    unit: sheet.unit,
+    kind: result.kind,
   }))
 
-  // Hovering or focusing a segment previews it; clicking keeps it selected.
-  const focusId = hoverId ?? selectedId
-  const focused = metrics.find((metric) => metric.sheet.id === focusId)
+  const selected = indicators.find(({ sheet }) => sheet.id === selectedId) ?? indicators[0]
+
+  const loadScenario = (id: string) => {
+    const scenario = SCENARIOS.find((candidate) => candidate.id === id)
+    if (!scenario) return
+    const at = new Date()
+    entryStore.replaceEntries(buildEntries(scenario, at))
+    setNow(at)
+    setScenarioId(id)
+  }
 
   return (
     <div className="dash-root">
+      <header className="dash-header">
+        <div>
+          <p className="label-mono">Biometric link: simulated</p>
+          <h1 className="dash-title">Health overview</h1>
+        </div>
+        <div className="dash-toolbar">
+          <div className="segmented" role="group" aria-label="Demo scenario">
+            {SCENARIOS.map((scenario) => (
+              <button
+                key={scenario.id}
+                type="button"
+                className="segmented-option"
+                aria-pressed={scenario.id === scenarioId}
+                onClick={() => loadScenario(scenario.id)}
+              >
+                {scenario.label}
+              </button>
+            ))}
+          </div>
+          <button type="button" className="btn btn-primary" onClick={() => openModal('register', selected.sheet.id)}>
+            Register
+          </button>
+          <button type="button" className="btn btn-secondary" onClick={() => openModal('charts', selected.sheet.id)}>
+            Charts
+          </button>
+        </div>
+      </header>
+
       <div className="dash">
-        <section className="dash-main" aria-label="Crew status">
-          <div className="dash-profile">
-            <div className="avatar" tabIndex={0} aria-label="Crew member profile">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <circle cx="12" cy="8" r="4" />
-                <path d="M4 21c0-4 3.6-6 8-6s8 2 8 6" />
-              </svg>
-              <span className="avatar-tip">Crew member · rank pending</span>
-            </div>
-            <div>
-              <p className="dash-name">Crew member</p>
-              <p className="muted">Biometric link: simulated</p>
-            </div>
-          </div>
+        <section className="dash-main" aria-label="Indicators">
+          <RadialHealth segments={segments} selectedId={selected.sheet.id} overall={overall} onSelect={setSelectedId} />
 
-          <RadialHealth
-            segments={segments}
-            selectedId={selectedId}
-            overall={overall}
-            overallLabel={OVERALL_LABEL[overall]}
-            onSelect={selectSegment}
-            onHover={setHoverId}
-          />
+          <ul className="chips" aria-label="Select an indicator">
+            {indicators.map(({ sheet, result }) => (
+              <li key={sheet.id}>
+                <button
+                  type="button"
+                  className={`chip kind-${result.kind}`}
+                  aria-pressed={sheet.id === selected.sheet.id}
+                  onClick={() => setSelectedId(sheet.id)}
+                >
+                  <StatusIcon kind={result.kind} size={12} />
+                  {sheet.name}
+                  <span className="visually-hidden">, {KIND_TEXT[result.kind]}</span>
+                </button>
+              </li>
+            ))}
+          </ul>
 
-          <div className="detail-slot">
-            {focused ? (
-              <MetricDetail
-                sheet={focused.sheet}
-                result={focused.result}
-                trend={trendOf(focused.sheet, entries, now)}
-                unit={focused.unit}
-                selected={focused.sheet.id === selectedId}
-                onOpenDetail={() => onOpenDetail(focused.sheet.id)}
-              />
-            ) : (
-              <p className="muted">Hover or select a segment to see its details.</p>
+          <article className="card selected-card" aria-live="polite" aria-labelledby="selected-name">
+            <p className="label-mono">{selected.sheet.domain}</p>
+            <h2 id="selected-name" className="selected-name">
+              {selected.sheet.name}
+            </h2>
+            <StatusBadge kind={selected.result.kind} outdated={selected.result.outdated} />
+            {selected.result.label && <p className="selected-label">{selected.result.label}</p>}
+            {selected.result.evaluated && (
+              <p className="selected-value">
+                <span className="num">{valueText(selected.result)}</span>
+                {selected.sheet.unit && <span className="selected-unit">{selected.sheet.unit}</span>}
+              </p>
             )}
-          </div>
-
-          <div className="dash-actions">
-            <button type="button" className="btn btn-secondary" onClick={() => setModal('charts')}>
-              Charts
-            </button>
-            <button type="button" className="btn btn-primary" onClick={() => setModal('register')}>
-              Register
-            </button>
-          </div>
+            <p className="selected-text">{selected.result.text}</p>
+            <div className="selected-actions">
+              <button type="button" className="link-action" onClick={() => onOpenDetail(selected.sheet.id)}>
+                View details
+              </button>
+              <button type="button" className="link-action" onClick={() => openModal('register', selected.sheet.id)}>
+                Log this indicator
+              </button>
+            </div>
+          </article>
         </section>
 
         <aside className="dash-side">
-          <StatusPanel overall={overall} label={OVERALL_LABEL[overall]} flagged={flagged} contact={contact} />
+          <StatusPanel overall={overall} review={review} onSelect={setSelectedId} />
           <SpacePlant growth={growth} streak={streak} overall={overall} />
+          <button
+            type="button"
+            className="btn btn-secondary dash-clear"
+            onClick={() => {
+              entryStore.clearEntries()
+              setScenarioId(null)
+            }}
+          >
+            Clear all readings
+          </button>
         </aside>
       </div>
 
-      <details className="card dash-sim">
-        <summary>Test panel</summary>
-        <p className="muted">
-          Replaces the saved entries with a test scenario. Use it for demonstrations only.
-        </p>
-        <div className="dash-actions">
-          {SCENARIOS.map((scenario) => (
-            <button
-              key={scenario.id}
-              type="button"
-              className="btn btn-secondary"
-              onClick={() => entryStore.replaceEntries(buildEntries(scenario, new Date()))}
-            >
-              {scenario.label}
-            </button>
-          ))}
-          <button type="button" className="btn btn-secondary" onClick={() => entryStore.clearEntries()}>
-            Clear
-          </button>
-        </div>
-      </details>
-
-      {modal === 'charts' && (
-        <Modal title="History" onClose={closeModal}>
+      {modal && (
+        <Modal title={modal === 'charts' ? 'History' : 'Register a reading'} onClose={closeModal}>
           <label className="field">
             <span>Indicator</span>
-            <select value={chartId} onChange={(event) => setChartId(event.target.value as MetricId)}>
-              {METRICS.map((metric) => (
-                <option key={metric.id} value={metric.id}>
-                  {getSheet(metric.id).name}
+            <select value={modalId} onChange={(event) => setModalId(event.target.value)}>
+              {INDICATOR_IDS.map((id) => (
+                <option key={id} value={id}>
+                  {getSheet(id).name}
                 </option>
               ))}
             </select>
           </label>
-          <HistoryChart sheet={getSheet(chartId)} entries={entries} now={now} />
-        </Modal>
-      )}
-
-      {modal === 'register' && (
-        <Modal title="Register a reading" onClose={closeModal}>
-          <label className="field">
-            <span>Indicator</span>
-            <select value={registerId} onChange={(event) => setRegisterId(event.target.value as MetricId)}>
-              {METRICS.map((metric) => (
-                <option key={metric.id} value={metric.id}>
-                  {getSheet(metric.id).name}
-                </option>
-              ))}
-            </select>
-          </label>
-          <EntryForm key={registerId} sheet={getSheet(registerId)} />
+          {modal === 'charts' ? (
+            <HistoryChart sheet={getSheet(modalId)} entries={entries} now={now} />
+          ) : (
+            <EntryForm key={modalId} sheet={getSheet(modalId)} />
+          )}
         </Modal>
       )}
     </div>
