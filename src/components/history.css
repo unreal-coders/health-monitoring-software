@@ -1,0 +1,126 @@
+/* History chart and readings list. Recharts draws SVG attributes, so its colors
+   are set here with CSS, which overrides them, using index.css tokens. */
+
+.history-chart {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.history-series {
+  margin: 0;
+}
+
+.history-chart-plot {
+  width: 100%;
+  height: 240px;
+}
+
+.history-chart .recharts-cartesian-grid line {
+  stroke: var(--color-border);
+}
+
+.history-chart .recharts-cartesian-axis-line {
+  stroke: var(--color-border);
+}
+
+.history-chart .recharts-cartesian-axis-tick-value {
+  fill: var(--color-text-muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+.history-chart .recharts-line-curve {
+  stroke: var(--color-active);
+}
+
+.history-chart .recharts-tooltip-cursor {
+  stroke: var(--color-border-strong);
+}
+
+/* Status markers: color and shape */
+.dot {
+  stroke: var(--color-bg);
+  stroke-width: 2;
+}
+
+.dot-green {
+  fill: var(--color-status-normal);
+}
+
+.dot-yellow {
+  fill: var(--color-status-caution);
+}
+
+.dot-red {
+  fill: var(--color-status-critical);
+}
+
+.dot-hollow {
+  fill: var(--color-bg);
+  stroke: var(--color-status-missing-text);
+}
+
+.history-legend svg .dot {
+  stroke-width: 1;
+}
+
+.history-legend svg .dot-hollow {
+  stroke-width: 1.5;
+}
+
+.history-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-3);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+}
+
+.history-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+/* Tooltip */
+.chart-tooltip {
+  padding: var(--space-2) var(--space-3);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+}
+
+.chart-tooltip p {
+  margin: 0;
+}
+
+.chart-tooltip-value {
+  font-size: var(--font-size-lg);
+}
+
+.chart-tooltip-unit {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+}
+
+.chart-tooltip-status {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: var(--letter-spacing-label);
+  text-transform: uppercase;
+  color: var(--color-status-missing-text);
+}
+
+.chart-tooltip-status.kind-green {
+  color: var(--color-status-normal-text);
+}
+
+.chart-tooltip-status.kind-yellow {
+  color: var(--color-status-caution-text);
+}
+
+.chart-tooltip-status.kind-red {
+  color: var(--color-status-critical-text);
+}

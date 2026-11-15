@@ -1,0 +1,87 @@
+/* Starfield: decorative layer behind each screen. Colors come from index.css tokens. */
+
+.starfield {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.star {
+  position: absolute;
+  border-radius: 50%;
+  background: var(--color-star);
+}
+
+.star-twinkle {
+  animation: twinkle 4s ease-in-out infinite;
+}
+
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.2;
+  }
+}
+
+/* Shooting star: a bar fading to transparent, with a bright round head */
+.meteor {
+  position: absolute;
+  height: 2px;
+  background: linear-gradient(90deg, var(--color-meteor), transparent);
+  border-radius: 2px;
+  opacity: 0;
+  transform-origin: left center;
+  transform: rotate(-35deg);
+  animation-name: shoot;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+.meteor::before {
+  content: '';
+  position: absolute;
+  left: -2px;
+  top: -2px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-meteor);
+  box-shadow: 0 0 8px 2px var(--color-meteor);
+}
+
+/* The meteor travels down-left during the first 12% of the cycle, then stays hidden */
+@keyframes shoot {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0) rotate(-35deg);
+  }
+  2% {
+    opacity: 1;
+  }
+  10% {
+    opacity: 1;
+  }
+  12% {
+    opacity: 0;
+    transform: translate3d(-640px, 450px, 0) rotate(-35deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(-640px, 450px, 0) rotate(-35deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .meteor {
+    display: none;
+  }
+
+  .star-twinkle {
+    animation: none;
+  }
+}

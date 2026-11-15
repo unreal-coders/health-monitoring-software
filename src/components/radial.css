@@ -1,0 +1,166 @@
+/* Health wheel. Segment colors come only from the status kind. */
+
+.radial {
+  display: block;
+  width: 100%;
+  max-width: 600px;
+  height: auto;
+  margin: 0 auto;
+  user-select: none;
+}
+
+.radial text {
+  text-anchor: middle;
+  dominant-baseline: middle;
+  pointer-events: none;
+}
+
+.radial-segment {
+  cursor: pointer;
+}
+
+.radial-wedge {
+  fill: var(--color-surface);
+  stroke: var(--color-status-missing);
+  stroke-width: 1.5;
+  transition: stroke-width 180ms ease-out;
+}
+
+.radial-segment:hover .radial-wedge {
+  stroke-width: 2.5;
+}
+
+.radial-segment.kind-green .radial-wedge {
+  fill: var(--color-tint-normal);
+  stroke: var(--color-status-normal);
+}
+
+.radial-segment.kind-yellow .radial-wedge {
+  fill: var(--color-tint-caution);
+  stroke: var(--color-status-caution);
+}
+
+.radial-segment.kind-red .radial-wedge {
+  fill: var(--color-tint-critical);
+  stroke: var(--color-status-critical);
+}
+
+.radial-segment.kind-no-reference .radial-wedge {
+  stroke-dasharray: 6 4;
+}
+
+.radial-segment.is-selected .radial-wedge {
+  stroke: var(--color-text);
+  stroke-width: 3;
+}
+
+.radial-name {
+  fill: var(--color-text);
+  font-family: var(--font-family);
+  font-size: 13px;
+  font-weight: var(--font-weight-medium);
+}
+
+.radial-value {
+  fill: var(--color-text);
+  font-family: var(--font-mono);
+  font-size: 22px;
+  font-variant-numeric: tabular-nums;
+}
+
+.radial-unit {
+  fill: var(--color-text-muted);
+  font-family: var(--font-family);
+  font-size: 11px;
+}
+
+.radial-status {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: var(--letter-spacing-label);
+  text-transform: uppercase;
+  fill: var(--color-status-missing-text);
+}
+
+.kind-green .radial-status,
+.radial-core-icon.kind-green,
+.radial-core-label.kind-green {
+  fill: var(--color-status-normal-text);
+}
+
+.kind-yellow .radial-status,
+.radial-core-icon.kind-yellow,
+.radial-core-label.kind-yellow {
+  fill: var(--color-status-caution-text);
+}
+
+.kind-red .radial-status,
+.radial-core-icon.kind-red,
+.radial-core-label.kind-red {
+  fill: var(--color-status-critical-text);
+}
+
+.radial-core-icon.kind-missing,
+.radial-core-label.kind-missing {
+  fill: var(--color-status-missing-text);
+}
+
+/* Center */
+.radial-core-outer {
+  fill: var(--color-footer);
+}
+
+.radial-core {
+  fill: var(--color-surface);
+  stroke: var(--color-status-missing);
+  stroke-width: 2;
+}
+
+.radial-core.kind-green {
+  fill: var(--color-tint-normal);
+  stroke: var(--color-status-normal);
+}
+
+.radial-core.kind-yellow {
+  fill: var(--color-tint-caution);
+  stroke: var(--color-status-caution);
+}
+
+.radial-core.kind-red {
+  fill: var(--color-tint-critical);
+  stroke: var(--color-status-critical);
+}
+
+.radial-core-icon {
+  font-family: var(--font-mono);
+  font-size: 40px;
+}
+
+.radial-core-label {
+  font-family: var(--font-display);
+  font-size: 34px;
+  font-weight: var(--font-weight-bold);
+}
+
+.radial-core-sub {
+  fill: var(--color-text-muted);
+  font-family: var(--font-mono);
+  font-size: 14px;
+  letter-spacing: var(--letter-spacing-label);
+  text-transform: uppercase;
+}
+
+/* Small screens: the wheel keeps only the status symbol; chips and the card carry the details */
+@media (max-width: 640px) {
+  .radial-name,
+  .radial-value,
+  .radial-unit,
+  .radial-word {
+    display: none;
+  }
+
+  .radial-status {
+    font-size: 44px;
+    transform: translateY(-34px);
+  }
+}

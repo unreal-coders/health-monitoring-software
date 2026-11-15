@@ -1,24 +1,12 @@
-import type { CSSProperties } from 'react'
+// Values over time. Each point shows its status by color AND shape:
+// circle = normal, diamond = caution, square = critical, hollow circle = no status.
+// No reference bands: thresholds stay in the sheets.
 import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
-import { toPoints, type Point } from '../domain/history.ts'
-import type { Entry, IndicatorSheet, StatusKind } from '../domain/types.ts'
-
-const DOT_COLOR: Record<StatusKind, string> = {
-  green: 'var(--color-status-normal)',
-  yellow: 'var(--color-status-caution)',
-  red: 'var(--color-status-critical)',
-  'no-reference': 'var(--color-status-missing)',
-  missing: 'var(--color-status-missing)',
-}
-
-function formatTime(time: number): string {
-  return new Date(time).toLocaleString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  })
-}
+import type { Point } from '../domain/history.ts'
+import type { StatusKind } from '../domain/types.ts'
+import { formatDateTime, formatDay } from './format.ts'
+import { KIND_TEXT } from './statusText.ts'
+import './history.css'
 
 interface DotProps {
   cx?: number
@@ -26,83 +14,118 @@ interface DotProps {
   payload?: Point
 }
 
+/** One status marker, also used by the legend. */
+export function StatusShape({ kind, cx, cy, size = 6 }: { kind: StatusKind; cx: number; cy: number; size?: number }) {
+  const className = `dot dot-${kind}`
+  if (kind === 'green') return <circle className={className} cx={cx} cy={cy} r={size} />
+  if (kind === 'yellow') {
+    const r = size * 1.3
+    return <polygon className={className} points={`${cx},${cy - r} ${cx + r},${cy} ${cx},${cy + r} ${cx - r},${cy}`} />
+  }
+  if (kind === 'red') return <rect className={className} x={cx - size} y={cy - size} width={size * 2} height={size * 2} />
+  return <circle className={`${className} dot-hollow`} cx={cx} cy={cy} r={size - 1} />
+}
+
 function StatusDot({ cx, cy, payload }: DotProps) {
   if (cx === undefined || cy === undefined || !payload) return null
+  return <StatusShape kind={payload.kind} cx={cx} cy={cy} />
+}
+
+interface TooltipProps {
+  active?: boolean
+  payload?: { payload: Point }[]
+  unit: string | null
+  seriesLabel?: string
+}
+
+function ChartTooltip({ active, payload, unit, seriesLabel }: TooltipProps) {
+  const point = payload?.[0]?.payload
+  if (!active || !point) return null
   return (
-    <circle
-      cx={cx}
-      cy={cy}
-      r={5}
-      style={{ fill: DOT_COLOR[payload.kind], stroke: 'var(--color-bg)', strokeWidth: 2 }}
-    />
+    <div className="chart-tooltip">
+      <p className="label-mono">{formatDateTime(point.time)}</p>
+      <p>
+        {seriesLabel && <span className="chart-tooltip-unit">{seriesLabel} </span>}
+        <span className="num chart-tooltip-value">{point.value}</span>
+        {unit && <span className="chart-tooltip-unit"> {unit}</span>}
+      </p>
+      <p className={`chart-tooltip-status kind-${point.kind}`}>{KIND_TEXT[point.kind]}</p>
+    </div>
   )
 }
 
 interface HistoryChartProps {
-  sheet: IndicatorSheet
-  entries: readonly Entry[]
-  now: Date
+  points: readonly Point[]
+  unit: string | null
+  /** Accessible name, e.g. "Blood glucose history". */
+  label: string
+  /** Which value is plotted when the sheet has several, e.g. "Systolic". */
+  seriesLabel?: string
 }
 
-/** Values over time. Each dot is colored by the status of that reading. */
-export function HistoryChart({ sheet, entries, now }: HistoryChartProps) {
-  const points = toPoints(sheet, entries, now)
-  if (points.length === 0) return <p style={mutedStyle}>{sheet.astronaut_text.missing}</p>
+const LEGEND: { kind: StatusKind; text: string }[] = [
+  { kind: 'green', text: 'Normal (circle)' },
+  { kind: 'yellow', text: 'Caution (diamond)' },
+  { kind: 'red', text: 'Critical (square)' },
+]
+
+export function HistoryChart({ points, unit, label, seriesLabel }: HistoryChartProps) {
+  const hasNoStatus = points.some((point) => point.kind === 'no-reference' || point.kind === 'missing')
 
   return (
-    <figure style={figureStyle}>
-      <figcaption style={captionStyle}>
-        History of {sheet.name}
-        {sheet.unit ? ` (${sheet.unit})` : ''}
-      </figcaption>
-      <div style={{ width: '100%', height: 220 }}>
+    <figure className="history-chart">
+      {seriesLabel && (
+        <p className="label-mono history-series">
+          {seriesLabel}
+          {unit ? ` (${unit})` : ''}
+        </p>
+      )}
+      <div className="history-chart-plot" role="img" aria-label={`${label}: ${points.length} readings`}>
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={points}>
-            <CartesianGrid stroke="currentColor" strokeOpacity={0.15} vertical={false} />
+          <LineChart data={points as Point[]} margin={{ top: 12, right: 12, bottom: 4, left: 0 }}>
+            <CartesianGrid vertical={false} />
             <XAxis
               dataKey="time"
               type="number"
+              scale="time"
               domain={['dataMin', 'dataMax']}
-              tickFormatter={(value) => formatTime(Number(value))}
-              stroke="currentColor"
-              fontSize={12}
+              tickFormatter={(value) => formatDay(Number(value))}
+              tickLine={false}
+              minTickGap={24}
             />
-            <YAxis stroke="currentColor" fontSize={12} width={48} />
-            <Tooltip labelFormatter={(label) => formatTime(Number(label))} contentStyle={tooltipStyle} />
+            <YAxis width={44} tickLine={false} axisLine={false} domain={['auto', 'auto']} />
+            <Tooltip content={<ChartTooltip unit={unit} seriesLabel={seriesLabel} />} cursor={{ strokeDasharray: '4 4' }} />
             <Line
               type="monotone"
               dataKey="value"
-              stroke="currentColor"
               strokeWidth={2}
               isAnimationActive={false}
-              dot={(props) => <StatusDot {...props} />}
+              dot={(props: DotProps & { index?: number }) => (
+                <StatusDot key={props.index} cx={props.cx} cy={props.cy} payload={props.payload} />
+              )}
+              activeDot={false}
             />
           </LineChart>
         </ResponsiveContainer>
       </div>
+      <figcaption className="history-legend">
+        {LEGEND.map((item) => (
+          <span key={item.kind} className="history-legend-item">
+            <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+              <StatusShape kind={item.kind} cx={8} cy={8} size={4.5} />
+            </svg>
+            {item.text}
+          </span>
+        ))}
+        {hasNoStatus && (
+          <span className="history-legend-item">
+            <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+              <StatusShape kind="no-reference" cx={8} cy={8} size={4.5} />
+            </svg>
+            No status (hollow circle)
+          </span>
+        )}
+      </figcaption>
     </figure>
   )
-}
-
-const figureStyle: CSSProperties = {
-  margin: 0,
-  color: 'var(--color-text-muted)',
-}
-
-const captionStyle: CSSProperties = {
-  marginBottom: '0.5rem',
-  fontSize: 'var(--font-size-sm)',
-}
-
-const mutedStyle: CSSProperties = {
-  margin: 0,
-  color: 'var(--color-text-muted)',
-  fontSize: 'var(--font-size-sm)',
-}
-
-const tooltipStyle: CSSProperties = {
-  background: 'var(--color-surface)',
-  border: '1px solid var(--color-border)',
-  borderRadius: '8px',
-  color: 'var(--color-text)',
 }

@@ -1,0 +1,184 @@
+/* Space garden. Colors come from index.css tokens. */
+
+.plant-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.plant-card p {
+  margin: 0;
+}
+
+.plant-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.plant-level {
+  color: var(--color-text);
+  border-color: var(--color-border-strong);
+}
+
+/* Grow chamber */
+.grow-chamber {
+  position: relative;
+  height: 200px;
+  overflow: hidden;
+  background: var(--color-footer);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+}
+
+.grow-light {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1;
+  height: 4px;
+  background: color-mix(in srgb, var(--color-active) 50%, transparent);
+}
+
+.grow-label {
+  position: absolute;
+  top: var(--space-2);
+  left: var(--space-2);
+  z-index: 1;
+  font-size: 11px;
+}
+
+.plant-svg {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  z-index: 1;
+  width: 200px;
+  height: 190px;
+  transform: translateX(-50%);
+}
+
+.plant-pot {
+  fill: var(--color-surface);
+  stroke: var(--color-border-strong);
+  stroke-width: 1.5;
+}
+
+.plant-soil {
+  stroke: var(--color-border-strong);
+  stroke-width: 3;
+}
+
+.plant-seed {
+  fill: var(--color-tint-normal);
+  stroke: var(--color-status-normal);
+  stroke-width: 1.5;
+}
+
+.plant-stem {
+  stroke: var(--color-status-normal);
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.plant-leaf {
+  fill: var(--color-tint-normal);
+  stroke: var(--color-status-normal);
+  stroke-width: 1.5;
+}
+
+.plant-petal {
+  fill: var(--color-text);
+}
+
+.plant-flower-center {
+  fill: var(--color-status-caution);
+}
+
+/* Info under the chamber */
+.plant-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.plant-stage {
+  font-family: var(--font-display);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+}
+
+.progress {
+  height: 8px;
+  overflow: hidden;
+  background: var(--color-border);
+  border-radius: var(--radius);
+}
+
+.progress-bar {
+  height: 100%;
+  background: var(--color-status-normal);
+}
+
+.plant-alert {
+  color: var(--color-status-critical-text);
+  font-size: var(--font-size-sm);
+}
+
+/* Growth transition, only when the user has not asked for reduced motion */
+@media (prefers-reduced-motion: no-preference) {
+  .plant-stem {
+    animation: plant-grow 600ms ease-out;
+    transform-box: fill-box;
+    transform-origin: bottom;
+  }
+
+  .plant-leaf {
+    animation: plant-unfold 600ms ease-out;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  .plant-flower {
+    animation: plant-bloom 700ms ease-out;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  .progress-bar {
+    transition: width 400ms ease-out;
+  }
+}
+
+@keyframes plant-grow {
+  from {
+    transform: scaleY(0.6);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
+@keyframes plant-unfold {
+  from {
+    opacity: 0;
+    transform: scale(0.2);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes plant-bloom {
+  from {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

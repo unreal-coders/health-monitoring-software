@@ -1,0 +1,316 @@
+/* Profile picker and profile setup. Colors come from index.css tokens. */
+
+.simple-header {
+  justify-content: space-between;
+  min-height: 64px;
+}
+
+.profiles-main p {
+  margin: 0;
+}
+
+/* Picker */
+.picker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: calc(100vh - 220px);
+  text-align: center;
+}
+
+.picker-title {
+  margin: 0;
+  font-size: 44px;
+}
+
+.picker-subtitle {
+  color: var(--color-text-muted);
+}
+
+.picker-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-5);
+  margin: var(--space-5) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.picker-option {
+  padding: 0;
+  background: none;
+  border: 0;
+  color: inherit;
+  cursor: pointer;
+}
+
+.picker-option:focus-visible {
+  outline-offset: 6px;
+}
+
+/* Card: tile + name + role */
+.profile-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  width: 140px;
+}
+
+.profile-tile {
+  position: relative;
+  display: block;
+  width: 140px;
+  height: 140px;
+  margin-bottom: var(--space-2);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-top: 4px solid var(--color-border-strong);
+  border-radius: var(--radius);
+  transition: transform 180ms ease-out, border-color 180ms ease-out;
+}
+
+.picker-option:hover .profile-tile,
+.picker-option:focus-visible .profile-tile {
+  border-color: var(--color-text);
+  transform: translateY(-4px);
+}
+
+.profile-tile-callsign {
+  position: absolute;
+  top: var(--space-2);
+  left: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  letter-spacing: var(--letter-spacing-label);
+  color: var(--color-text-muted);
+}
+
+.profile-tile-avatar {
+  position: absolute;
+  bottom: var(--space-3);
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--color-text);
+}
+
+.profile-tile-add {
+  border-style: dashed;
+  border-top-width: 1px;
+  border-color: var(--color-border-strong);
+  background: transparent;
+}
+
+.profile-add-plus {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: var(--color-text-muted);
+  font-family: var(--font-mono);
+  font-size: 44px;
+}
+
+.profile-card-name {
+  max-width: 100%;
+  font-size: 17px;
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.profile-card-role {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: var(--letter-spacing-label);
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+/* Setup */
+.back-link {
+  align-self: flex-start;
+  min-height: 44px;
+}
+
+.back-link::after {
+  content: none;
+}
+
+.back-link::before {
+  content: '<- ';
+}
+
+.setup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.setup-title {
+  margin: 0;
+  font-size: var(--font-size-2xl);
+}
+
+.setup-success {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-1);
+  margin-top: var(--space-3);
+}
+
+.setup-success-title {
+  color: var(--color-status-normal-text);
+}
+
+.setup-columns {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--space-4);
+  margin-top: var(--space-3);
+}
+
+.setup-form {
+  flex: 1 1 480px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.setup-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin: calc(var(--space-4) * -1) calc(var(--space-4) * -1) 0;
+  padding: var(--space-2) var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.setup-form select,
+.setup-form input {
+  width: 100%;
+}
+
+.setup-form input[readonly] {
+  color: var(--color-text-muted);
+  border-style: dashed;
+}
+
+.setup-form input[aria-invalid='true'] {
+  border-color: var(--color-status-critical);
+}
+
+.field-error {
+  color: var(--color-status-critical-text);
+  font-size: var(--font-size-sm);
+}
+
+.callsign-input {
+  font-family: var(--font-mono);
+  letter-spacing: var(--letter-spacing-label);
+  text-transform: uppercase;
+}
+
+.avatar-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.avatar-option {
+  display: grid;
+  place-items: center;
+  width: 72px;
+  height: 72px;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius);
+  color: var(--color-text-muted);
+  cursor: pointer;
+}
+
+.avatar-option[aria-pressed='true'] {
+  border: 2px solid var(--color-active);
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+.setup-note {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+.setup-lock {
+  flex-shrink: 0;
+}
+
+.setup-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.setup-preview {
+  flex: 0 1 220px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius);
+}
+
+@media (max-width: 640px) {
+  .picker-title {
+    font-size: var(--font-size-xl);
+  }
+
+  .picker-list {
+    display: grid;
+    grid-template-columns: repeat(2, 140px);
+    gap: var(--space-4);
+  }
+
+  .setup-title {
+    font-size: var(--font-size-xl);
+  }
+
+  .setup-preview {
+    flex-basis: 100%;
+  }
+
+  .setup-meta {
+    margin: calc(var(--space-3) * -1) calc(var(--space-3) * -1) 0;
+    padding: var(--space-2) var(--space-3);
+  }
+}
+
+@media (max-width: 340px) {
+  .picker-list {
+    grid-template-columns: repeat(2, 130px);
+    gap: var(--space-3);
+  }
+
+  .profile-card,
+  .profile-tile {
+    width: 130px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .picker-option:hover .profile-tile,
+  .picker-option:focus-visible .profile-tile {
+    transform: none;
+  }
+}

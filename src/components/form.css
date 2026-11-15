@@ -1,0 +1,135 @@
+/* Entry form. Colors come from index.css tokens. */
+
+.entry-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.entry-form p {
+  margin: 0;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-2);
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.form-field input {
+  width: 100%;
+  min-width: 0;
+}
+
+.form-label {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+/* Unit shown inside the input, on the right */
+.input-suffix {
+  position: relative;
+  display: flex;
+}
+
+.input-suffix input {
+  font-size: var(--font-size-lg);
+}
+
+.input-suffix-unit {
+  position: absolute;
+  top: 50%;
+  right: var(--space-3);
+  max-width: 60%;
+  overflow: hidden;
+  transform: translateY(-50%);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.input-suffix input[aria-invalid='true'] {
+  border-color: var(--color-status-critical);
+}
+
+.form-prompt {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+.form-fieldset {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.form-fieldset legend {
+  margin-bottom: var(--space-1);
+  padding: 0;
+}
+
+.form-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--space-3);
+}
+
+.form-options-column {
+  flex-direction: column;
+}
+
+.form-option {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 44px;
+  font-size: var(--font-size-sm);
+}
+
+.how-to {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-3);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  font-size: var(--font-size-sm);
+}
+
+.form-error {
+  color: var(--color-status-critical-text);
+  font-size: var(--font-size-sm);
+}
+
+.form-submit {
+  align-self: flex-start;
+}
+
+.form-saved {
+  font-size: var(--font-size-sm);
+}
+
+/* Hide the number spinners so they do not cover the unit */
+.input-suffix input[type='number'] {
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+.input-suffix input[type='number']::-webkit-inner-spin-button,
+.input-suffix input[type='number']::-webkit-outer-spin-button {
+  margin: 0;
+  -webkit-appearance: none;
+}
