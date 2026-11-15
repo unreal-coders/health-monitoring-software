@@ -35,15 +35,17 @@ interface TooltipProps {
   active?: boolean
   payload?: { payload: Point }[]
   unit: string | null
+  seriesLabel?: string
 }
 
-function ChartTooltip({ active, payload, unit }: TooltipProps) {
+function ChartTooltip({ active, payload, unit, seriesLabel }: TooltipProps) {
   const point = payload?.[0]?.payload
   if (!active || !point) return null
   return (
     <div className="chart-tooltip">
       <p className="label-mono">{formatDateTime(point.time)}</p>
       <p>
+        {seriesLabel && <span className="chart-tooltip-unit">{seriesLabel} </span>}
         <span className="num chart-tooltip-value">{point.value}</span>
         {unit && <span className="chart-tooltip-unit"> {unit}</span>}
       </p>
@@ -57,6 +59,8 @@ interface HistoryChartProps {
   unit: string | null
   /** Accessible name, e.g. "Blood glucose history". */
   label: string
+  /** Which value is plotted when the sheet has several, e.g. "Systolic". */
+  seriesLabel?: string
 }
 
 const LEGEND: { kind: StatusKind; text: string }[] = [
@@ -65,11 +69,17 @@ const LEGEND: { kind: StatusKind; text: string }[] = [
   { kind: 'red', text: 'Critical (square)' },
 ]
 
-export function HistoryChart({ points, unit, label }: HistoryChartProps) {
+export function HistoryChart({ points, unit, label, seriesLabel }: HistoryChartProps) {
   const hasNoStatus = points.some((point) => point.kind === 'no-reference' || point.kind === 'missing')
 
   return (
     <figure className="history-chart">
+      {seriesLabel && (
+        <p className="label-mono history-series">
+          {seriesLabel}
+          {unit ? ` (${unit})` : ''}
+        </p>
+      )}
       <div className="history-chart-plot" role="img" aria-label={`${label}: ${points.length} readings`}>
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={points as Point[]} margin={{ top: 12, right: 12, bottom: 4, left: 0 }}>
@@ -84,7 +94,7 @@ export function HistoryChart({ points, unit, label }: HistoryChartProps) {
               minTickGap={24}
             />
             <YAxis width={44} tickLine={false} axisLine={false} domain={['auto', 'auto']} />
-            <Tooltip content={<ChartTooltip unit={unit} />} cursor={{ strokeDasharray: '4 4' }} />
+            <Tooltip content={<ChartTooltip unit={unit} seriesLabel={seriesLabel} />} cursor={{ strokeDasharray: '4 4' }} />
             <Line
               type="monotone"
               dataKey="value"

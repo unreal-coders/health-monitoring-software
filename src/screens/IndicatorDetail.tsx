@@ -27,6 +27,12 @@ type RangeId = (typeof RANGES)[number]['id']
 
 const DAY = 24 * 60 * 60 * 1000
 
+/** The chart plots the sheet's first field; name it when the sheet has several (e.g. "Systolic"). */
+function seriesLabel(sheet: IndicatorSheet): string | undefined {
+  const first = sheet.fields && sheet.fields.length > 1 ? sheet.fields[0] : undefined
+  return first ? first.charAt(0).toUpperCase() + first.slice(1) : undefined
+}
+
 interface IndicatorDetailProps {
   sheet: IndicatorSheet
   /** Where to start: the entry form (Register) or the chart (Charts). */
@@ -106,7 +112,12 @@ export function IndicatorDetail({ sheet, focus = null, onBack }: IndicatorDetail
             </div>
 
             {points.length > 0 ? (
-              <HistoryChart points={points} unit={sheet.unit} label={`${sheet.name} history`} />
+              <HistoryChart
+                points={points}
+                unit={sheet.unit}
+                label={`${sheet.name} history`}
+                seriesLabel={seriesLabel(sheet)}
+              />
             ) : (
               <p className="muted">{allPoints.length > 0 ? 'No readings in this time range.' : sheet.astronaut_text.missing}</p>
             )}

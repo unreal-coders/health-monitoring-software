@@ -10,7 +10,7 @@ import { StatusIcon } from '../components/icons.tsx'
 import { StatusPanel, type ReviewItem } from '../components/StatusPanel.tsx'
 import { KIND_TEXT } from '../components/statusText.ts'
 import { shortUnit } from '../components/format.ts'
-import { overallStatus, plantGrowth, streakDays } from '../domain/health.ts'
+import { overallStatus, streakDays } from '../domain/health.ts'
 import { entryStore } from '../storage/entries.ts'
 import type { DetailFocus } from './IndicatorDetail.tsx'
 import { buildEntries, SCENARIOS } from './quickScenarios.ts'
@@ -54,9 +54,7 @@ export function Dashboard({ onOpenDetail, initialSelectedId = null }: DashboardP
   })
   const results = indicators.map((indicator) => indicator.result)
   const overall = overallStatus(results)
-  const covered = results.filter((result) => result.kind !== 'missing' && !result.outdated).length
   const streak = streakDays(entries, now)
-  const growth = plantGrowth(covered, indicators.length, streak)
 
   const review: ReviewItem[] = indicators
     .filter(({ result }) => result.kind === 'red' || result.kind === 'yellow')
@@ -160,7 +158,7 @@ export function Dashboard({ onOpenDetail, initialSelectedId = null }: DashboardP
 
         <aside className="dash-side">
           <StatusPanel overall={overall} review={review} onSelect={setSelectedId} />
-          <SpacePlant growth={growth} streak={streak} overall={overall} />
+          <SpacePlant readings={entries.length} streak={streak} hasCritical={review.some((item) => item.kind === 'red')} />
           {confirmClear ? (
             <div ref={confirmRef} tabIndex={-1} className="alert alert-caution clear-confirm" role="alertdialog" aria-labelledby="clear-title">
               <p id="clear-title" className="clear-title">
