@@ -320,3 +320,17 @@
     padding-bottom: var(--space-2);
   }
 }
+
+/* Indicator selector in the register and charts views */
+.detail-select {
+  max-width: 360px;
+}
+
+.detail-select select {
+  width: 100%;
+}
+
+/* The register view holds only the form: keep it at a readable width */
+.detail-form-card {
+  max-width: 720px;
+}

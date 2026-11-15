@@ -15,22 +15,11 @@ import { shortUnit } from '../components/format.ts'
 import { overallStatus, streakDays } from '../domain/health.ts'
 import type { StatusKind } from '../domain/types.ts'
 import { entryStore } from '../storage/entries.ts'
-import type { DetailFocus } from './IndicatorDetail.tsx'
+import type { DetailMode } from './IndicatorDetail.tsx'
+import { INDICATOR_IDS } from './indicators.ts'
 import { safeStatus, valueText } from './safeStatus.ts'
 import './dashboard.css'
 
-// The wheel's order, clockwise from the top.
-const INDICATOR_IDS = [
-  'heart-rate',
-  'blood-pressure',
-  'oxygen-saturation',
-  'blood-glucose',
-  'body-temperature',
-  'immune-symptoms',
-  'exercise',
-  'sleep-hours',
-  'mood',
-] as const
 
 interface CriticalItem {
   id: string
@@ -39,7 +28,8 @@ interface CriticalItem {
 }
 
 interface DashboardProps {
-  onOpenDetail: (id: string, focus?: DetailFocus) => void
+  /** Opens one indicator in the register, charts, or guidance view. */
+  onOpenDetail: (id: string, mode: DetailMode) => void
   /** Indicator selected when the screen opens, e.g. the one the user came back from. */
   initialSelectedId?: string | null
 }
@@ -80,10 +70,10 @@ export function Dashboard({ onOpenDetail, initialSelectedId = null }: DashboardP
 
       {/* In the DOM right after the title, so the tab order is unchanged; shown fixed at the bottom right. */}
       <div className="fab" role="group" aria-label="Quick actions">
-        <button type="button" className="btn btn-primary" onClick={() => onOpenDetail(selected.sheet.id, 'form')}>
+        <button type="button" className="btn btn-primary" onClick={() => onOpenDetail(selected.sheet.id, 'register')}>
           Register
         </button>
-        <button type="button" className="btn btn-secondary" onClick={() => onOpenDetail(selected.sheet.id, 'chart')}>
+        <button type="button" className="btn btn-secondary" onClick={() => onOpenDetail(selected.sheet.id, 'charts')}>
           Charts
         </button>
       </div>
@@ -146,7 +136,7 @@ export function Dashboard({ onOpenDetail, initialSelectedId = null }: DashboardP
 
             {/* d) Actions. */}
             <div className="selected-actions">
-              <button type="button" className="link-action" onClick={() => onOpenDetail(selected.sheet.id)}>
+              <button type="button" className="link-action" onClick={() => onOpenDetail(selected.sheet.id, 'guidance')}>
                 View details
               </button>
             </div>

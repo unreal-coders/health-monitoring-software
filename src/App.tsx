@@ -6,7 +6,7 @@ import { TopNav } from './components/TopNav.tsx'
 import { ageFrom, callSignOf, profileStore, scenarioFor } from './profiles/profileStore.ts'
 import { entryStore } from './storage/entries.ts'
 import { Dashboard } from './screens/Dashboard.tsx'
-import { IndicatorDetail, type DetailFocus } from './screens/IndicatorDetail.tsx'
+import { IndicatorDetail, type DetailMode } from './screens/IndicatorDetail.tsx'
 import { ProfilePicker } from './screens/ProfilePicker.tsx'
 import { ProfileSetup } from './screens/ProfileSetup.tsx'
 import { buildEntries, SCENARIOS } from './screens/quickScenarios.ts'
@@ -31,7 +31,7 @@ function App() {
   const profile = profiles.find((item) => item.id === activeId) ?? null
 
   const [screen, setScreen] = useState<Screen>(() => (profileStore.getActiveId() ? 'dashboard' : 'profiles'))
-  const [detail, setDetail] = useState<{ id: string; focus: DetailFocus } | null>(null)
+  const [detail, setDetail] = useState<{ id: string; mode: DetailMode } | null>(null)
   const [lastId, setLastId] = useState<string | null>(null)
 
   // Without an active profile, the app always shows the profile screens.
@@ -79,9 +79,10 @@ function App() {
       <main className="app-main">
         {current === 'detail' && detail ? (
           <IndicatorDetail
-            key={`${detail.id}-${detail.focus}`}
+            key={detail.mode}
             sheet={getSheet(detail.id)}
-            focus={detail.focus}
+            mode={detail.mode}
+            onChangeIndicator={(id) => setDetail({ id, mode: detail.mode })}
             onBack={() => {
               setLastId(detail.id)
               setScreen('dashboard')
@@ -90,8 +91,8 @@ function App() {
         ) : (
           <Dashboard
             initialSelectedId={lastId}
-            onOpenDetail={(id, focus = null) => {
-              setDetail({ id, focus })
+            onOpenDetail={(id, mode) => {
+              setDetail({ id, mode })
               setScreen('detail')
             }}
           />
