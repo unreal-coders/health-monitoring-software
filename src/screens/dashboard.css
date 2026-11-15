@@ -309,7 +309,8 @@
 /* On wide screens, size the wheel to the window height so the wheel and its
    chips fit above the floating buttons on the first screen. */
 @media (min-width: 901px) {
-  .dash-main .radial {
+  /* Size the wrapper (it holds the glass layers and the SVG), not the SVG alone */
+  .dash-main .radial-wrap {
     max-width: clamp(320px, calc(100vh - 470px), 600px);
   }
 }
