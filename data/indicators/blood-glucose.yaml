@@ -84,7 +84,8 @@ thresholds:
     for severe low blood sugar; this sheet uses 54 from the CDC low blood sugar
     page, which the team must confirm. Sharing prediabetes and diabetes range
     values with the flight surgeon follows the project rule.
-  sources: [cdc-diabetes-testing, cdc-low-blood-sugar, cdc-treat-low-blood-sugar]
+  sources:
+    [cdc-diabetes-testing, cdc-low-blood-sugar, cdc-treat-low-blood-sugar]
 
 countermeasures:
   - text: >-
@@ -104,7 +105,7 @@ flight_surgeon:
   if_no_real_time_contact: >-
     Each vehicle has at least two crewmembers trained as Crew Medical Officers,
     the medical experts for the mission. The astronaut reports to them.
-  sources: [cdc-low-blood-sugar, nasa-std-3001-v1]
+  sources: [cdc-low-blood-sugar, cdc-diabetes-testing, nasa-std-3001-v1]
 
 astronaut_text:
   how_to: Measure after an overnight fast.
@@ -143,4 +144,4 @@ sources:
     url: https://www.cdc.gov/diabetes/treatment/treatment-low-blood-sugar-hypoglycemia.html
 
 author: Troy Leonardo Moreno Calderon
-reviewer: null
+reviewer: Mike Armando Montano Valencia

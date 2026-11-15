@@ -67,13 +67,13 @@ thresholds:
     - color: yellow
       label: Below today's target
       when: "value < 90"
-      text: You are below today's exercise. ISS astronauts do 1.5 hours a day to protect against muscle and bone loss.
+      text: You are below today's exercise target. ISS astronauts do 1.5 hours a day to protect against muscle and bone loss.
       contact_flight_surgeon: false
       source: hrp-risk-fitness
     - color: green
       label: Target reached
       when: "value >= 90"
-      text: You reached today's exercise, the 1.5 hours a day ISS astronauts do.
+      text: You reached today's exercise target, the 1.5 hours a day ISS astronauts do.
       contact_flight_surgeon: false
       source: hrp-risk-fitness
   note: >-
@@ -118,6 +118,7 @@ limitations:
   - Logging exercise does not measure bone density, muscle strength, or aerobic capacity.
   - Deconditioning varies by person and depends on starting fitness, age, mission duration, and gravity level (ochmo-tb-031).
   - Spacecraft for the Moon and Mars will likely have less room for exercise equipment.
+  - The 1.5 hours a day is an average for ISS astronauts. NASA exercise specialists set each crewmember's prescription from their ability and performance (ochmo-tb-031). Neither ochmo-tb-031 nor hrp-risk-fitness gives a different daily target by age or sex.
 
 sources:
   - id: hrp-risk-fitness
@@ -143,4 +144,4 @@ sources:
     locator: "[V1 4003], [V1 4024], [V1 4027]; [V1 3006], [V1 5003]"
 
 author: Troy Leonardo Moreno Calderon
-reviewer: null
+reviewer: Mike Armando Montano Valencia

@@ -20,7 +20,8 @@ mechanism:
       source: ochmo-tb-041
     - text: Late insomnia is the medical condition with the highest likelihood per mission in NASA's sample Integrated Medical Model output.
       source: nasa-std-3001-v1
-  sources: [hrp-risk-sleep, hrp-hazard-isolation, ochmo-tb-041, nasa-std-3001-v1]
+  sources:
+    [hrp-risk-sleep, hrp-hazard-isolation, ochmo-tb-041, nasa-std-3001-v1]
 
 measurement:
   method: >-
@@ -94,6 +95,7 @@ astronaut_text:
 limitations:
   - The 7-hour reference is for average adults on Earth, cited by NASA; NASA gives no spaceflight-specific value.
   - No NASA value was found for a critical (red) level of sleep loss.
+  - OCHMO-TB-041 gives one range for an average adult (7 to 9 hours), and neither it nor the HRP sleep page gives different values by age or sex.
 
 sources:
   - id: hrp-risk-sleep
@@ -123,4 +125,4 @@ sources:
     locator: "[V1 6001]; Appendix E, Table E.2-1; [V1 3006], [V1 5003]"
 
 author: Troy Leonardo Moreno Calderon
-reviewer: null
+reviewer: Mike Armando Montano Valencia
