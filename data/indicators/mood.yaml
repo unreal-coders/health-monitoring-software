@@ -46,10 +46,10 @@ questionnaire:
     - id: down
       text: Feeling down, depressed, or hopeless
   options:
-    - {label: Not at all, score: 0}
-    - {label: Several days, score: 1}
-    - {label: More than half the days, score: 2}
-    - {label: Nearly every day, score: 3}
+    - { label: Not at all, score: 0 }
+    - { label: Several days, score: 1 }
+    - { label: More than half the days, score: 2 }
+    - { label: Nearly every day, score: 3 }
   score: sum
   source: phq-form
   permission: >-
@@ -146,4 +146,4 @@ sources:
     url: https://www.sralab.org/sites/default/files/2018-03/PHQ4.pdf
 
 author: Troy Leonardo Moreno Calderon
-reviewer: null
+reviewer: Mike Armando Montano Valencia
