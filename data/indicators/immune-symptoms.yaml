@@ -1,0 +1,111 @@
+id: immune-symptoms
+name: Immune symptoms
+domain: Immunity and temperature
+entry_kind: self-report
+unit: null
+input: checklist
+
+mechanism:
+  summary: >-
+    Radiation, microgravity, poor sleep, and other spaceflight stressors can
+    change the immune system. They may trigger allergic reactions or awaken
+    dormant viruses, like those that cause cold sores and shingles.
+  hazards: [space-radiation, gravity-fields, hostile-closed-environments]
+  detail:
+    - text: >-
+        In closed habitats, microbes pass more easily from person to person,
+        stress hormones can rise, and the immune system can change, which could
+        make allergies or other illnesses more likely.
+      source: hrp-hazard-closed
+  sources: [hrp-risk-immune, hrp-hazard-closed]
+
+measurement:
+  method: >-
+    The astronaut marks the symptoms they have from a checklist. The symptoms
+    come from those reported on the ISS and from NASA's list of common medical
+    conditions in spaceflight.
+  method_note: >-
+    NASA tracks immune changes with blood, saliva, and urine samples, which need
+    lab analysis. No NASA source was found for a symptom self-report method.
+  sources: [hrp-risk-immune]
+  interval: null
+  interval_note: No measurement interval found in the NASA sources consulted.
+
+checklist:
+  - id: cold-sores
+    label: Cold sores
+    source: hrp-risk-immune
+  - id: skin-rash
+    label: Skin rash
+    source: [hrp-risk-immune, nasa-std-3001-v1]
+  - id: allergic-reaction
+    label: Unusual allergic reaction
+    source: [hrp-risk-immune, nasa-std-3001-v1]
+  - id: shingles
+    label: Shingles
+    source: [hrp-risk-immune, nasa-std-3001-v1]
+  - id: respiratory-infection
+    label: Respiratory infection
+    source: nasa-std-3001-v1
+  - id: skin-infection
+    label: Skin infection
+    source: nasa-std-3001-v1
+  - id: urinary-tract-infection
+    label: Urinary tract infection
+    source: nasa-std-3001-v1
+
+baseline:
+  value: null
+  type: null
+  note: Not applicable to a symptom checklist.
+
+thresholds:
+  evaluation: first-match
+  rules: []
+  note: >-
+    No NASA rule or clinical guideline was found for which symptoms, or how
+    many, lead to each status. No green, yellow, or red rule is defined until
+    the team agrees on a source.
+  sources: []
+
+countermeasures:
+  - text: >-
+      In-mission countermeasures are in place to keep hematological and
+      immunological values within the normal range.
+    source: nasa-std-3001-v1
+
+flight_surgeon:
+  when_to_contact: >-
+    No NASA rule for this indicator was found. Following the project rule, the
+    astronaut shares any symptom the app cannot evaluate with the flight surgeon.
+  if_no_real_time_contact: >-
+    Each vehicle has at least two crewmembers trained as Crew Medical Officers,
+    the medical experts for the mission. The astronaut reports to them.
+  sources: [nasa-std-3001-v1]
+
+astronaut_text:
+  no_reference: There is no NASA reference to rate these symptoms yet. Share them with the flight surgeon.
+  no_contact: If you cannot reach the flight surgeon, tell your Crew Medical Officer.
+  missing: You have not checked your symptoms yet.
+
+limitations:
+  - A symptom checklist does not replace the blood, saliva, and urine analysis NASA uses to track immune changes.
+  - No NASA rule was found to turn symptoms into a status, so the app cannot assign a color yet.
+
+sources:
+  - id: hrp-risk-immune
+    title: Risk of Altered Immune System Responses
+    publisher: NASA Human Research Program
+    url: https://www.nasa.gov/reference/risk-of-altered-immune-system-responses/
+  - id: hrp-hazard-closed
+    title: "Hazard: Hostile/Closed Environments"
+    publisher: NASA Human Research Program
+    url: https://www.nasa.gov/hrp/hazard-hostile-closed-environments/
+  - id: nasa-std-3001-v1
+    title: "NASA-STD-3001 Volume 1, Revision C: Crew Health"
+    publisher: NASA
+    url: https://standards.nasa.gov/sites/default/files/standards/NASA/C//nasa-std-3001-vol-1-rev-c-signature.pdf
+    locator: "[V1 4016]; Appendix E, Tables E.2-1 and E.2-2; [V1 3006], [V1 5003]"
+
+author: Troy Leonardo Moreno Calderon
+reviewer: null

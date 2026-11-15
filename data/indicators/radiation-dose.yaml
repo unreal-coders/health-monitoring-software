@@ -1,0 +1,115 @@
+id: radiation-dose
+name: Radiation dose
+domain: Cross-cutting
+entry_kind: measurement
+unit: mSv
+accumulation: mission
+
+mechanism:
+  summary: >-
+    Outside Earth's magnetic field and atmosphere, galactic cosmic rays and
+    solar storms expose astronauts to ionizing radiation, which they cannot see
+    or feel. Exposure increases cancer risk, can damage the central nervous
+    system, alter cognitive and motor function, and prompt behavioral changes.
+  hazards: [space-radiation]
+  sources: [hrp-hazard-radiation]
+
+measurement:
+  method: >-
+    The astronaut reads their personal dosimeter and logs the accumulated dose.
+    NASA requires programs to monitor the radiation each crewmember receives from
+    galactic cosmic rays, solar energetic particles, and trapped radiation.
+  method_note: No NASA source was found for astronauts reading and logging their own dosimeter.
+  sources: [nasa-std-3001-v2, ochmo-tb-044]
+  interval: null
+  interval_note: No measurement interval found in the NASA sources consulted.
+
+baseline:
+  value: null
+  type: null
+  note: >-
+    The career limit counts all past spaceflight exposures plus the projected
+    exposure for the upcoming mission, so the astronaut's prior career dose is
+    needed for a full comparison.
+  source: nasa-std-3001-v1
+
+thresholds:
+  evaluation: first-match
+  applies_to: The accumulated effective dose.
+  rules:
+    - color: red
+      label: Career limit reached
+      when: "value >= 600"
+      text: Your dose reached NASA's career limit of 600 mSv. Contact the flight surgeon now.
+      contact_flight_surgeon: true
+      source: nasa-std-3001-v1
+  note: >-
+    NASA-STD-3001 limits a crewmember's total career effective radiation dose to
+    less than 600 mSv, and requires exposure to be kept as low as reasonably
+    achievable (ALARA). No NASA value was found for green or yellow.
+  sources: [nasa-std-3001-v1]
+
+reference_values:
+  - text: >-
+      Programs must protect crewmembers from the design reference solar particle
+      event to less than an effective dose of 250 mSv.
+    source: nasa-std-3001-v1
+  - text: The radiation monitoring system must alert the crew when exposure rates exceed predefined thresholds.
+    source: nasa-std-3001-v2
+
+profile_factors:
+  age_and_sex: false
+  note: The 600 mSv career limit is universal for all ages and sexes.
+  source: nasa-std-3001-v1
+
+countermeasures:
+  - text: All crewmember radiation exposures are minimized using the ALARA principle (as low as reasonably achievable).
+    source: nasa-std-3001-v1
+  - text: Design choices and shielding strategies can reduce the radiation threat.
+    source: ochmo-tb-020
+
+flight_surgeon:
+  when_to_contact: >-
+    When the accumulated dose reaches the 600 mSv career limit. For any other
+    value, the project rule applies: the astronaut shares values the app cannot
+    evaluate with the flight surgeon.
+  if_no_real_time_contact: >-
+    Each vehicle has at least two crewmembers trained as Crew Medical Officers,
+    the medical experts for the mission. The astronaut reports to them.
+  sources: [nasa-std-3001-v1]
+
+astronaut_text:
+  no_reference: There is no NASA reference to rate this value yet. Share it with the flight surgeon.
+  no_contact: If you cannot reach the flight surgeon, tell your Crew Medical Officer.
+  missing: You have not logged your radiation dose yet.
+
+limitations:
+  - The 600 mSv limit is for a whole career; the app only knows the dose logged in this mission unless the prior career dose is entered.
+  - No NASA value was found for an intermediate (yellow) level.
+
+sources:
+  - id: hrp-hazard-radiation
+    title: "Hazard: Space Radiation"
+    publisher: NASA Human Research Program
+    url: https://www.nasa.gov/hrp/hazard-space-radiation/
+  - id: nasa-std-3001-v1
+    title: "NASA-STD-3001 Volume 1, Revision C: Crew Health"
+    publisher: NASA
+    url: https://standards.nasa.gov/sites/default/files/standards/NASA/C//nasa-std-3001-vol-1-rev-c-signature.pdf
+    locator: "[V1 4029], [V1 4030], [V1 4031]; [V1 3006], [V1 5003]"
+  - id: nasa-std-3001-v2
+    title: "NASA-STD-3001 Volume 2 (as quoted in OCHMO-TB-016)"
+    publisher: NASA
+    url: https://www.nasa.gov/wp-content/uploads/2023/12/ochmo-tb-016-behavioral-health.pdf
+    locator: "[V2 6162], [V2 6164]"
+  - id: ochmo-tb-020
+    title: "OCHMO-TB-020 Radiation Protection"
+    publisher: NASA Office of the Chief Health and Medical Officer
+    url: https://www.nasa.gov/wp-content/uploads/2023/12/ochmo-tb-020-radiation-protection.pdf
+  - id: ochmo-tb-044
+    title: "OCHMO-TB-044 Medical Operations"
+    publisher: NASA Office of the Chief Health and Medical Officer
+    url: https://www.nasa.gov/wp-content/uploads/2025/08/ochmo-tb-044-medical-operations.pdf
+
+author: Troy Leonardo Moreno Calderon
+reviewer: null

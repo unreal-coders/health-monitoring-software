@@ -1,0 +1,159 @@
+id: blood-pressure
+name: Blood pressure
+domain: Cardiovascular
+entry_kind: measurement
+unit: mmHg
+fields: [systolic, diastolic]
+
+mechanism:
+  summary: >-
+    Weightlessness changes blood circulation and how the heart and blood vessels
+    work. Spaceflight can lead to blood clots, heart arrhythmias, and low blood
+    pressure, which raises the chance of fainting at landing.
+  hazards: [gravity-fields]
+  detail:
+    - text: >-
+        In microgravity, body fluids shift toward the head, and within about two
+        days the body reduces circulating fluid volume by around 15%. On return
+        to gravity, this lower volume can cause orthostatic intolerance: the body
+        cannot keep blood pressure up when standing, which can lead to fainting.
+      source: ochmo-tb-019
+    - text: >-
+        Symptoms of orthostatic intolerance after landing include decreased blood
+        pressure and increased heart rate.
+      source: ochmo-tb-033
+  sources: [hrp-risk-cardio, ochmo-tb-019, ochmo-tb-033]
+
+measurement:
+  method: >-
+    Blood pressure is one of the vital signs that in-mission medical capabilities
+    assess and store. NASA has tested non-invasive blood pressure measurement with
+    the Tempus Pro multi-functional medical device.
+  sources: [ochmo-tb-033, glenn-mim]
+  interval: null
+  interval_note: No measurement interval found in the NASA sources consulted.
+
+baseline:
+  value: null
+  type: null
+  note: No baseline value found in the NASA sources consulted.
+
+thresholds:
+  evaluation: first-match
+  rules:
+    - color: red
+      label: Severe hypertension
+      when: "systolic > 180 or diastolic > 120"
+      text: >-
+        Your blood pressure is very high. Wait 1 minute and measure again. If it
+        is still this high, contact the flight surgeon. If you have chest pain,
+        shortness of breath, back pain, numbness, weakness, a change in vision,
+        or difficulty speaking, it is an emergency.
+      contact_flight_surgeon: true
+      source: aha-bp-readings
+    - color: yellow
+      label: Stage 2 hypertension
+      when: "systolic >= 140 or diastolic >= 90"
+      text: Your blood pressure is in the stage 2 high blood pressure range. Share it with the flight surgeon.
+      contact_flight_surgeon: true
+      source: aha-bp-readings
+    - color: yellow
+      label: Stage 1 hypertension
+      when: "systolic >= 130 or diastolic >= 80"
+      text: Your blood pressure is in the stage 1 high blood pressure range. Share it with the flight surgeon.
+      contact_flight_surgeon: true
+      source: aha-bp-readings
+    - color: yellow
+      label: Elevated
+      when: "systolic >= 120 and diastolic < 80"
+      text: Your blood pressure is elevated. Keep heart-healthy habits, such as a balanced diet and regular exercise.
+      contact_flight_surgeon: false
+      source: aha-bp-readings
+    - color: yellow
+      label: Low blood pressure
+      when: "systolic < 90 or diastolic < 60"
+      text: >-
+        Your blood pressure is low. This is usually not harmful, but contact the
+        flight surgeon if you feel dizzy, confused, nauseous, very tired, or faint.
+      contact_flight_surgeon: if-symptoms
+      source: aha-low-bp
+    - color: green
+      label: Normal
+      when: "systolic < 120 and diastolic < 80"
+      text: Your blood pressure is in the normal range.
+      contact_flight_surgeon: false
+      source: aha-bp-readings
+  note: >-
+    NASA-STD-3001 gives no numeric blood pressure ranges, so the categories come
+    from the American Heart Association. The AHA page defines hypotension as
+    "less than 90/60 mm Hg" without saying whether both numbers must be low; the
+    rule above flags either one, which the team must confirm.
+  sources: [aha-bp-readings, aha-low-bp, nasa-std-3001-v1]
+
+countermeasures:
+  - text: Regular exercise and a healthy diet help crews keep cardiovascular fitness.
+    source: hrp-risk-cardio
+  - text: >-
+      Before landing, lower-body compression garments and drinking fluids help
+      prevent low blood pressure.
+    source: hrp-risk-cardio
+  - text: >-
+      Current protocols include drinking 24 to 48 oz of salt water (sodium
+      chloride solution) before deorbit, depending on body weight.
+    source: ochmo-tb-019
+  - text: In-flight aerobic or resistance exercise counteracts cardiac and muscle deconditioning.
+    source: ochmo-tb-019
+
+flight_surgeon:
+  when_to_contact: >-
+    At stage 1 or stage 2 high blood pressure, at severe hypertension (measured
+    twice), or with low blood pressure and symptoms, following the AHA actions
+    for each category.
+  if_no_real_time_contact: >-
+    Each vehicle has at least two crewmembers trained as Crew Medical Officers,
+    the medical experts for the mission. The astronaut reports to them.
+  sources: [aha-bp-readings, aha-low-bp, nasa-std-3001-v1]
+
+astronaut_text:
+  no_contact: If you cannot reach the flight surgeon, tell your Crew Medical Officer.
+  missing: You have not logged your blood pressure yet.
+
+limitations:
+  - The ranges are Earth clinical categories from the AHA, not values made for spaceflight. NASA gives none.
+  - Only a doctor or other medical professional can confirm a high blood pressure diagnosis (AHA).
+  - The AHA page gives no different ranges by age or sex; it notes that systolic pressure usually goes up with age.
+  - Females generally show more orthostatic intolerance symptoms in tilt tests (ochmo-tb-019). This affects risk, not a threshold.
+
+sources:
+  - id: hrp-risk-cardio
+    title: Risk of Cardiovascular Adaptations
+    publisher: NASA Human Research Program
+    url: https://www.nasa.gov/reference/risk-of-cardiovascular-adaptations/
+  - id: ochmo-tb-019
+    title: "OCHMO-TB-019 Orthostatic Intolerance, Rev B"
+    publisher: NASA Office of the Chief Health and Medical Officer
+    url: https://www.nasa.gov/wp-content/uploads/2023/12/ochmo-tb-019-orthostatic-intolerance.pdf
+  - id: ochmo-tb-033
+    title: "OCHMO-TB-033 Spaceflight Experience and Medical Care, Rev D"
+    publisher: NASA Office of the Chief Health and Medical Officer
+    url: https://www.nasa.gov/wp-content/uploads/2023/12/ochmo-tb-033-spaceflight-experience-medical-care.pdf
+  - id: glenn-mim
+    title: Multifunctional Integrated Medical Devices
+    publisher: NASA Glenn Research Center
+    url: https://www.nasa.gov/glenn/glenn-expertise-space-exploration/human-health-performance/exploration-medical-technologies/multifunctional-integrated-medical-devices
+  - id: nasa-std-3001-v1
+    title: "NASA-STD-3001 Volume 1, Revision C: Crew Health"
+    publisher: NASA
+    url: https://standards.nasa.gov/sites/default/files/standards/NASA/C//nasa-std-3001-vol-1-rev-c-signature.pdf
+    locator: "[V1 3004], [V1 3006], [V1 5003]"
+  - id: aha-bp-readings
+    title: Understanding Blood Pressure Readings (last reviewed Aug 14, 2025)
+    publisher: American Heart Association
+    url: https://www.heart.org/en/health-topics/high-blood-pressure/understanding-blood-pressure-readings
+  - id: aha-low-bp
+    title: Low Blood Pressure - When Blood Pressure Is Too Low (last reviewed May 6, 2024)
+    publisher: American Heart Association
+    url: https://www.heart.org/en/health-topics/high-blood-pressure/the-facts-about-high-blood-pressure/low-blood-pressure-when-blood-pressure-is-too-low
+
+author: Troy Leonardo Moreno Calderon
+reviewer: null

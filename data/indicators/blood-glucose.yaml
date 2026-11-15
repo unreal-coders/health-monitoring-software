@@ -1,0 +1,138 @@
+id: blood-glucose
+name: Blood glucose
+domain: Metabolism and nutrition
+entry_kind: measurement
+unit: mg/dL
+
+mechanism:
+  summary: >-
+    The challenge statement names blood sugar, in mg/dL, as a useful health
+    indicator for astronauts. Keeping nutritional status is critical to crew
+    health and performance, and each crewmember's nutrient and energy needs are
+    calculated from age, sex, body mass, height, and activity.
+  hazards: []
+  hazards_note: The NASA sources consulted do not link blood glucose to one of the five hazards.
+  sources: [space-apps-challenge, nasa-std-3001-v1]
+
+measurement:
+  method: >-
+    A fasting reading, taken after an overnight fast, so it can be compared with
+    the CDC fasting blood sugar ranges.
+  method_note: >-
+    No NASA source was found for how blood glucose is measured on board. The
+    fasting condition comes from the CDC ranges used below.
+  sources: [cdc-diabetes-testing]
+  interval: null
+  interval_note: No measurement interval found in the sources consulted.
+
+baseline:
+  value: null
+  type: null
+  note: No baseline value found in the sources consulted.
+
+thresholds:
+  evaluation: first-match
+  applies_to: Fasting blood sugar, measured after an overnight fast.
+  rules:
+    - color: red
+      label: Severe low blood sugar
+      when: "value < 54"
+      text: Your blood sugar is severely low. Contact the flight surgeon now.
+      contact_flight_surgeon: true
+      source: cdc-low-blood-sugar
+    - color: yellow
+      label: Low blood sugar
+      when: "value < 70"
+      text: >-
+        Your blood sugar is low. Have 15 grams of carbs, wait 15 minutes, and
+        check again. Repeat until it is back in range.
+      contact_flight_surgeon: false
+      source: [cdc-low-blood-sugar, cdc-treat-low-blood-sugar]
+    - color: yellow
+      label: In the diabetes range for a fasting test
+      when: "value >= 126"
+      text: >-
+        Your fasting blood sugar is in the diabetes range. One reading is not a
+        diagnosis. Share it with the flight surgeon.
+      contact_flight_surgeon: true
+      source: cdc-diabetes-testing
+    - color: yellow
+      label: In the prediabetes range for a fasting test
+      when: "value >= 100"
+      text: Your fasting blood sugar is in the prediabetes range. Share it with the flight surgeon.
+      contact_flight_surgeon: true
+      source: cdc-diabetes-testing
+    - color: green
+      label: Normal
+      when: "value >= 70 and value <= 99"
+      text: Your fasting blood sugar is in the normal range.
+      contact_flight_surgeon: false
+      source: [cdc-diabetes-testing, cdc-low-blood-sugar]
+  note: >-
+    No NASA glucose ranges were found, so the ranges come from the CDC: a
+    fasting result is normal at 99 mg/dL or below, prediabetes at 100 to 125,
+    and diabetes at 126 or above; low blood sugar is below 70 mg/dL and severe
+    low blood sugar is below 54. The CDC treatment page says "below 55 mg/dL"
+    for severe low blood sugar; this sheet uses 54 from the CDC low blood sugar
+    page, which the team must confirm. Sharing prediabetes and diabetes range
+    values with the flight surgeon follows the project rule.
+  sources: [cdc-diabetes-testing, cdc-low-blood-sugar, cdc-treat-low-blood-sugar]
+
+countermeasures:
+  - text: >-
+      Each crewmember is provided with 100% of their calculated nutrient and
+      energy requirements, based on age, sex, body mass, height, and activity.
+    source: nasa-std-3001-v1
+  - text: >-
+      For low blood sugar: have 15 grams of carbs, wait 15 minutes, and check
+      again; repeat while it is below 70 mg/dL. Once it recovers, have a snack
+      or meal with protein and carbohydrates.
+    source: cdc-treat-low-blood-sugar
+
+flight_surgeon:
+  when_to_contact: >-
+    Below 54 mg/dL (severe low blood sugar), and for fasting values in the
+    prediabetes or diabetes range.
+  if_no_real_time_contact: >-
+    Each vehicle has at least two crewmembers trained as Crew Medical Officers,
+    the medical experts for the mission. The astronaut reports to them.
+  sources: [cdc-low-blood-sugar, nasa-std-3001-v1]
+
+astronaut_text:
+  how_to: Measure after an overnight fast.
+  no_contact: If you cannot reach the flight surgeon, tell your Crew Medical Officer.
+  missing: You have not logged your blood glucose yet.
+
+limitations:
+  - No NASA source was found for on-board glucose measurement, its ranges, or its link to a spaceflight hazard.
+  - The ranges are Earth clinical references from the CDC, not values made for spaceflight.
+  - The CDC ranges are for diagnostic tests; one fingerstick reading does not diagnose prediabetes or diabetes.
+  - The CDC low blood sugar and treatment pages are part of CDC's diabetes section.
+  - Readings taken after eating cannot be compared with the fasting ranges; the CDC gives no normal range for a random test.
+  - The CDC pages give no different ranges by age or sex.
+
+sources:
+  - id: space-apps-challenge
+    title: "Create Health Monitoring Software for Astronauts on Space Missions"
+    publisher: NASA Space Apps Challenge 2026
+    url: https://www.spaceappschallenge.org/2026/challenges/health-monitoring-software/?tab=details
+  - id: nasa-std-3001-v1
+    title: "NASA-STD-3001 Volume 1, Revision C: Crew Health"
+    publisher: NASA
+    url: https://standards.nasa.gov/sites/default/files/standards/NASA/C//nasa-std-3001-vol-1-rev-c-signature.pdf
+    locator: "Section 4.5, [V1 4020], [V1 3006], [V1 5003]"
+  - id: cdc-diabetes-testing
+    title: Diabetes Testing
+    publisher: Centers for Disease Control and Prevention
+    url: https://www.cdc.gov/diabetes/diabetes-testing/index.html
+  - id: cdc-low-blood-sugar
+    title: Low Blood Sugar (Hypoglycemia)
+    publisher: Centers for Disease Control and Prevention
+    url: https://www.cdc.gov/diabetes/about/low-blood-sugar-hypoglycemia.html
+  - id: cdc-treat-low-blood-sugar
+    title: Treatment of Low Blood Sugar (Hypoglycemia)
+    publisher: Centers for Disease Control and Prevention
+    url: https://www.cdc.gov/diabetes/treatment/treatment-low-blood-sugar-hypoglycemia.html
+
+author: Troy Leonardo Moreno Calderon
+reviewer: null

@@ -1,0 +1,117 @@
+id: sleep-hours
+name: Sleep hours
+domain: Behavioral
+entry_kind: self-report
+unit: hours
+input: number
+
+mechanism:
+  summary: >-
+    Astronauts face work overload, irregular light-dark cycles (16 sunrises and
+    sunsets a day on the ISS), and disrupted sleep patterns. These stressors can
+    lead to short- and long-term health problems that can affect the mission.
+  hazards: [isolation-and-confinement]
+  detail:
+    - text: >-
+        Astronauts sleep an average of about six hours in space, less than the
+        amount recommended to maintain alertness, performance, and health.
+        Actigraphy shows an average nightly sleep of 6 to 6.5 hours on the Space
+        Shuttle and the ISS.
+      source: ochmo-tb-041
+    - text: Late insomnia is the medical condition with the highest likelihood per mission in NASA's sample Integrated Medical Model output.
+      source: nasa-std-3001-v1
+  sources: [hrp-risk-sleep, hrp-hazard-isolation, ochmo-tb-041, nasa-std-3001-v1]
+
+measurement:
+  method: >-
+    The astronaut reports how many hours they slept on waking, or reads them from
+    a wrist actigraphy device. NASA collects sleep reports and wrist-sensor
+    activity data in Standard Measures, and actigraphy in ARCHeR.
+  sources: [hrp-standard-measures, hrp-archer, ochmo-tb-041]
+  interval: null
+  interval_note: One entry per sleep period. No NASA measurement interval was found.
+
+baseline:
+  value: null
+  type: null
+  note: No individual baseline value found in the NASA sources consulted.
+
+thresholds:
+  evaluation: first-match
+  rules:
+    - color: yellow
+      label: Below the recommended amount
+      when: "value < 7"
+      text: You slept less than 7 hours, below what an average adult needs. Use your scheduled rest and self-care time.
+      contact_flight_surgeon: false
+      source: [ochmo-tb-041, hrp-risk-sleep]
+    - color: green
+      label: Recommended amount
+      when: "value >= 7"
+      text: You slept 7 hours or more, the amount an average adult needs.
+      contact_flight_surgeon: false
+      source: ochmo-tb-041
+  note: >-
+    OCHMO-TB-041 cites the National Sleep Foundation and the American Academy of
+    Sleep Medicine: an average adult needs 7 to 9 hours of sleep for optimal
+    daytime functioning. No NASA value was found for a critical (red) level.
+  sources: [ochmo-tb-041]
+
+reference_values:
+  - text: NASA-STD-3001 recommends scheduling an 8.5-hour sleep period, plus 2 hours before and 1.5 hours after sleep.
+    source: nasa-std-3001-v1
+
+countermeasures:
+  - text: On the ISS, LED lights simulate Earth's light-dark cycle to help astronauts sleep better.
+    source: hrp-risk-sleep
+  - text: Astronauts get designated time for relaxation and self-care to help prevent burnout.
+    source: hrp-risk-sleep
+  - text: Countermeasures for sleep shifting, fatigue, and sleep issues include light, naps, and medication or non-medication options.
+    source: nasa-std-3001-v1
+
+flight_surgeon:
+  when_to_contact: >-
+    No NASA rule for this indicator was found. Following the project rule, the
+    astronaut shares any value the app cannot evaluate with the flight surgeon.
+  if_no_real_time_contact: >-
+    Each vehicle has at least two crewmembers trained as Crew Medical Officers,
+    the medical experts for the mission. The astronaut reports to them.
+  sources: [nasa-std-3001-v1]
+
+astronaut_text:
+  no_contact: If you cannot reach the flight surgeon, tell your Crew Medical Officer.
+  missing: You have not logged your sleep yet.
+
+limitations:
+  - The 7-hour reference is for average adults on Earth, cited by NASA; NASA gives no spaceflight-specific value.
+  - No NASA value was found for a critical (red) level of sleep loss.
+
+sources:
+  - id: hrp-risk-sleep
+    title: Risk from Inadequate Sleep and Irregular Schedules
+    publisher: NASA Human Research Program
+    url: https://www.nasa.gov/reference/risk-from-inadequate-sleep-and-irregular-schedules/
+  - id: hrp-hazard-isolation
+    title: "Hazard: Isolation and Confinement"
+    publisher: NASA Human Research Program
+    url: https://www.nasa.gov/hrp/hazard-isolation-and-confinement/
+  - id: ochmo-tb-041
+    title: "OCHMO-TB-041 Sleep Accommodations, Rev B"
+    publisher: NASA Office of the Chief Health and Medical Officer
+    url: https://www.nasa.gov/wp-content/uploads/2023/12/ochmo-tb-041-sleep-accommodations.pdf
+  - id: hrp-standard-measures
+    title: Standard Measures
+    publisher: NASA Human Research Program
+    url: https://www.nasa.gov/reference/standard-measures/
+  - id: hrp-archer
+    title: ARCHeR
+    publisher: NASA Human Research Program
+    url: https://www.nasa.gov/reference/archer/
+  - id: nasa-std-3001-v1
+    title: "NASA-STD-3001 Volume 1, Revision C: Crew Health"
+    publisher: NASA
+    url: https://standards.nasa.gov/sites/default/files/standards/NASA/C//nasa-std-3001-vol-1-rev-c-signature.pdf
+    locator: "[V1 6001]; Appendix E, Table E.2-1; [V1 3006], [V1 5003]"
+
+author: Troy Leonardo Moreno Calderon
+reviewer: null
