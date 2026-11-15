@@ -132,7 +132,12 @@ export function Dashboard({ onOpenDetail, initialSelectedId = null }: DashboardP
           </div>
 
           {/* c) The selected indicator's escalation, when its status asks for it. */}
-          <EscalationAlert result={selected.result} noContactText={selected.sheet.astronaut_text.no_contact} />
+          {/* A red indicator is already covered by the global alert above, so it gets no second
+              "Contact the flight surgeon" here. Yellow with contact and no-reference still show it.
+              The register, charts, and guidance views keep their escalation alert as is. */}
+          {selected.result.kind !== 'red' && (
+            <EscalationAlert result={selected.result} noContactText={selected.sheet.astronaut_text.no_contact} />
+          )}
 
           {/* d) Actions. */}
           <div className="selected-actions">
