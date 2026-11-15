@@ -1,3 +1,41 @@
+/*
+ * Design tokens: colors and typography.
+ * Source: Figma (styles exported by Kenan). Dark theme is the default.
+ * Components must use these variables and never hardcode colors or fonts.
+ */
+
+:root {
+  color-scheme: dark;
+
+  /* Surfaces and text */
+  --color-bg: #0b0e14;
+  --color-surface: #161b22;
+  --color-border: #30363d;
+  --color-text: #f0f6fc;
+  --color-text-muted: #8b949e;
+  --color-focus: #0dcaf0;
+
+  /* Status colors. Always shown with a label or icon too, never color alone. */
+  --color-status-normal: #2ea043;
+  --color-status-normal-text: #3fb950;
+  --color-status-caution: #d29922;
+  --color-status-critical: #f85149;
+  --color-status-missing: #8b949e;
+
+  /* Typography */
+  --font-family: 'Google Sans Flex', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-size-xl: 1.75rem;
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-bold: 700;
+  --line-height-body: 1.5;
+  --line-height-heading: 1.2;
+}
+
 *,
 *::before,
 *::after {
@@ -6,6 +44,30 @@
 
 body {
   margin: 0;
-  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-  line-height: 1.5;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-family);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-body);
+}
+
+h1,
+h2,
+h3 {
+  line-height: var(--line-height-heading);
+  font-weight: var(--font-weight-bold);
+}
+
+h1 {
+  font-size: var(--font-size-xl);
+}
+
+h2 {
+  font-size: var(--font-size-lg);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
 }
