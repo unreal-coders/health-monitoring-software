@@ -149,9 +149,6 @@ export function Dashboard({ onOpenDetail, initialSelectedId = null }: DashboardP
               <button type="button" className="link-action" onClick={() => onOpenDetail(selected.sheet.id)}>
                 View details
               </button>
-              <button type="button" className="link-action" onClick={() => onOpenDetail(selected.sheet.id, 'form')}>
-                Log this indicator
-              </button>
             </div>
           </article>
 
