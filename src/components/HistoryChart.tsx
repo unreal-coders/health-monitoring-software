@@ -61,6 +61,10 @@ interface HistoryChartProps {
   label: string
   /** Which value is plotted when the sheet has several, e.g. "Systolic". */
   seriesLabel?: string
+  /** First and last time on the x axis. Defaults to the first and last point. */
+  domain?: [number, number]
+  /** Times to label on the x axis, e.g. midnight of each day. Defaults to automatic ticks. */
+  ticks?: number[]
 }
 
 const LEGEND: { kind: StatusKind; text: string }[] = [
@@ -69,7 +73,7 @@ const LEGEND: { kind: StatusKind; text: string }[] = [
   { kind: 'red', text: 'Critical (square)' },
 ]
 
-export function HistoryChart({ points, unit, label, seriesLabel }: HistoryChartProps) {
+export function HistoryChart({ points, unit, label, seriesLabel, domain, ticks }: HistoryChartProps) {
   const hasNoStatus = points.some((point) => point.kind === 'no-reference' || point.kind === 'missing')
 
   return (
@@ -88,7 +92,8 @@ export function HistoryChart({ points, unit, label, seriesLabel }: HistoryChartP
               dataKey="time"
               type="number"
               scale="time"
-              domain={['dataMin', 'dataMax']}
+              domain={domain ?? ['dataMin', 'dataMax']}
+              ticks={ticks}
               tickFormatter={(value) => formatDay(Number(value))}
               tickLine={false}
               minTickGap={24}
