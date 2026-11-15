@@ -120,12 +120,14 @@
   color: var(--color-bg);
 }
 
-/* Wide: garden (~260px) | wheel (the rest) | card (~340px), aligned at the top.
+/* Wide: garden | wheel (the rest) | card, aligned at the top. Both side columns
+   share one width, --side-col.
    Below ~1100px: the wheel on top at full width, then card and garden side by side.
    Phones: one column, in DOM order: wheel, card, garden. */
 .dash {
   display: grid;
-  grid-template-columns: 260px minmax(0, 1fr) 340px;
+  --side-col: 340px;
+  grid-template-columns: var(--side-col) minmax(0, 1fr) var(--side-col);
   grid-template-areas: 'garden wheel card';
   align-items: start;
   gap: var(--space-4);
