@@ -145,8 +145,16 @@
     flex-basis: 100%;
   }
 
+  /* Tabs in one row that slides sideways instead of wrapping to two rows */
   .topnav-tabs ul {
-    gap: 0 var(--space-2);
+    flex-wrap: nowrap;
+    gap: 0 var(--space-3);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .topnav-tabs li {
+    flex-shrink: 0;
   }
 
   .topnav-tab {

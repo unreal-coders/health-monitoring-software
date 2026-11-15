@@ -1,9 +1,10 @@
-// Health overview: the wheel of indicators and, below it, one card with the
-// global alert, the indicators to review, and the selected indicator. The side
-// column holds the space garden and the demo data controls. Register and
-// Charts float at the bottom right, above the disclaimer.
+// Health overview: the wheel of indicators with its keyboard chips, and a side
+// column with one card (global alert, indicators to review, selected indicator)
+// above the space garden. Register and Charts float at the bottom left, above
+// the disclaimer. Each demo profile loads its own scenario when it is picked
+// (see App.tsx), so the dashboard has no scenario selector.
 // Every status comes from the sheets through domain/ (see safeStatus.ts).
-import { useEffect, useRef, useState, useSyncExternalStore } from 'react'
+import { useState, useSyncExternalStore } from 'react'
 import { getSheet } from '../catalog/sheets.ts'
 import { EscalationAlert } from '../components/EscalationAlert.tsx'
 import { RadialHealth, type Segment } from '../components/RadialHealth.tsx'
@@ -16,7 +17,6 @@ import { overallStatus, streakDays } from '../domain/health.ts'
 import type { StatusKind } from '../domain/types.ts'
 import { entryStore } from '../storage/entries.ts'
 import type { DetailFocus } from './IndicatorDetail.tsx'
-import { buildEntries, SCENARIOS } from './quickScenarios.ts'
 import { safeStatus, valueText } from './safeStatus.ts'
 import './dashboard.css'
 
@@ -47,15 +47,8 @@ interface DashboardProps {
 
 export function Dashboard({ onOpenDetail, initialSelectedId = null }: DashboardProps) {
   const entries = useSyncExternalStore(entryStore.subscribe, entryStore.getEntries)
-  const [now, setNow] = useState(() => new Date())
+  const [now] = useState(() => new Date())
   const [selectedId, setSelectedId] = useState<string>(initialSelectedId ?? INDICATOR_IDS[0])
-  const [scenarioId, setScenarioId] = useState<string | null>(null)
-  const [confirmClear, setConfirmClear] = useState(false)
-  const confirmRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    if (confirmClear) confirmRef.current?.focus()
-  }, [confirmClear])
 
   const indicators = INDICATOR_IDS.map((id) => {
     const sheet = getSheet(id)
@@ -80,15 +73,6 @@ export function Dashboard({ onOpenDetail, initialSelectedId = null }: DashboardP
   }))
 
   const selected = indicators.find(({ sheet }) => sheet.id === selectedId) ?? indicators[0]
-
-  const loadScenario = (id: string) => {
-    const scenario = SCENARIOS.find((candidate) => candidate.id === id)
-    if (!scenario) return
-    const at = new Date()
-    entryStore.replaceEntries(buildEntries(scenario, at))
-    setNow(at)
-    setScenarioId(id)
-  }
 
   return (
     <div className="dash-root">
@@ -127,7 +111,9 @@ export function Dashboard({ onOpenDetail, initialSelectedId = null }: DashboardP
               </li>
             ))}
           </ul>
+        </section>
 
+        <aside className="dash-side">
           <article className="card selected-card" aria-labelledby="selected-name">
             {/* a) Global alert: shown whenever any indicator is critical, whatever is selected. */}
             {critical.length > 0 && (
@@ -210,65 +196,8 @@ export function Dashboard({ onOpenDetail, initialSelectedId = null }: DashboardP
               </button>
             </div>
           </article>
-        </section>
 
-        <aside className="dash-side">
           <SpacePlant readings={entries.length} streak={streak} hasCritical={critical.length > 0} />
-
-          <section className="card demo-card" aria-labelledby="demo-title">
-            <h2 id="demo-title" className="card-title">
-              Demo data
-            </h2>
-            <p className="muted">Load a synthetic scenario. It replaces the readings saved on this device.</p>
-            <div className="segmented demo-segmented" role="group" aria-label="Demo scenario">
-              {SCENARIOS.map((scenario) => (
-                <button
-                  key={scenario.id}
-                  type="button"
-                  className="segmented-option"
-                  aria-pressed={scenario.id === scenarioId}
-                  onClick={() => loadScenario(scenario.id)}
-                >
-                  {scenario.label}
-                </button>
-              ))}
-            </div>
-
-            {confirmClear ? (
-              <div
-                ref={confirmRef}
-                tabIndex={-1}
-                className="alert alert-caution clear-confirm"
-                role="alertdialog"
-                aria-labelledby="clear-title"
-              >
-                <p id="clear-title" className="clear-title">
-                  Delete all saved readings?
-                </p>
-                <p className="muted">This removes every reading on this device. It cannot be undone.</p>
-                <div className="clear-actions">
-                  <button
-                    type="button"
-                    className="btn btn-secondary btn-danger"
-                    onClick={() => {
-                      entryStore.clearEntries()
-                      setScenarioId(null)
-                      setConfirmClear(false)
-                    }}
-                  >
-                    Delete readings
-                  </button>
-                  <button type="button" className="btn btn-secondary" onClick={() => setConfirmClear(false)}>
-                    Cancel
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <button type="button" className="btn btn-secondary dash-clear" onClick={() => setConfirmClear(true)}>
-                Clear all readings
-              </button>
-            )}
-          </section>
         </aside>
       </div>
     </div>

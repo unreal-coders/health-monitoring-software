@@ -66,10 +66,10 @@
   font-size: var(--font-size-2xl);
 }
 
-/* Floating Register / Charts: fixed bottom right, just above the disclaimer footer */
+/* Floating Register / Charts: fixed bottom left, just above the disclaimer footer */
 .fab {
   position: fixed;
-  right: max(var(--space-3), calc((100vw - var(--max-width)) / 2 + var(--space-3)));
+  left: max(var(--space-3), calc((100vw - var(--max-width)) / 2 + var(--space-3)));
   bottom: calc(var(--disclaimer-height, 56px) + var(--space-3));
   z-index: 5;
   display: flex;
@@ -306,49 +306,12 @@
   min-height: 44px;
 }
 
-/* Demo data card */
-.demo-card {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-}
-
-.demo-segmented {
-  display: flex;
-}
-
-.demo-segmented .segmented-option {
-  flex: 1 1 auto;
-  padding: 0 var(--space-2);
-}
-
-.dash-clear {
-  align-self: flex-start;
-}
-
-.clear-confirm {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-}
-
-.clear-confirm p {
-  margin: 0;
-}
-
-.clear-title {
-  font-weight: var(--font-weight-bold);
-}
-
-.clear-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2);
-}
-
-.btn-danger {
-  border-color: var(--color-status-critical);
-  color: var(--color-status-critical-text);
+/* On wide screens, size the wheel to the window height so the wheel and its
+   chips fit above the floating buttons on the first screen. */
+@media (min-width: 901px) {
+  .dash-main .radial {
+    max-width: clamp(320px, calc(100vh - 470px), 600px);
+  }
 }
 
 /* Older detail card (MetricDetail), kept until it is removed */
@@ -453,6 +416,24 @@
 
   .selected-actions {
     gap: 0 var(--space-4);
+  }
+
+  /* One row of chips that slides sideways, so the wheel and chips fit above the floating buttons */
+  .chips {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    overflow-x: auto;
+    margin: 0 calc(var(--space-3) * -1);
+    padding: var(--space-1) var(--space-3);
+    scrollbar-width: thin;
+  }
+
+  .chips li {
+    flex-shrink: 0;
+  }
+
+  .chip {
+    white-space: nowrap;
   }
 
   .dash-title {
