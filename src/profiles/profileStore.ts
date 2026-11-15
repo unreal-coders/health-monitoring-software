@@ -38,6 +38,23 @@ const DEMO_PROFILES: readonly CrewProfile[] = [
   { id: 'demo-ms2', name: 'Taylor Kim', birthDate: '1992-05-18', role: 'Mission specialist', callSign: 'MS-2', avatar: 'satellite' },
 ]
 
+/**
+ * Demo scenario each demo profile loads when it is picked (ids from
+ * screens/quickScenarios.ts). Profiles created by the user have none and
+ * start without readings. Kept by id, so profiles saved before this map
+ * existed still get their scenario.
+ */
+const DEMO_SCENARIOS: Readonly<Record<string, string>> = {
+  'demo-cdr': 'normal',
+  'demo-fe1': 'gradual',
+  'demo-ms1': 'acute',
+  'demo-ms2': 'normal',
+}
+
+export function scenarioFor(profile: Pick<CrewProfile, 'id'>): string | null {
+  return DEMO_SCENARIOS[profile.id] ?? null
+}
+
 /** Whole years between the date of birth and now. */
 export function ageFrom(birthDate: string, now: Date = new Date()): number {
   const [year, month, day] = birthDate.split('-').map(Number)

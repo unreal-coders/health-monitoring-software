@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { ACTIVE_KEY, ageFrom, callSignOf, createProfileStore, PROFILES_KEY } from './profileStore.ts'
+import { ACTIVE_KEY, ageFrom, callSignOf, createProfileStore, PROFILES_KEY, scenarioFor } from './profileStore.ts'
 
 function fakeStorage(initial: Record<string, string> = {}) {
   const data = new Map(Object.entries(initial))
@@ -67,5 +67,14 @@ describe('ageFrom and callSignOf', () => {
   it('uses initials when there is no call sign', () => {
     expect(callSignOf({ name: 'ana maria ruiz soto' })).toBe('AMR')
     expect(callSignOf({ name: 'Ana Ruiz', callSign: ' fe-2 ' })).toBe('FE-2')
+  })
+})
+
+describe('scenarioFor', () => {
+  it('gives each demo profile a scenario and new profiles none', () => {
+    const store = createProfileStore(fakeStorage())
+    expect(store.getProfiles().map((profile) => scenarioFor(profile))).toEqual(['normal', 'gradual', 'acute', 'normal'])
+    const added = store.addProfile({ name: 'Ana Ruiz', birthDate: '1991-02-03', role: 'Pilot', avatar: 'rocket' })
+    expect(scenarioFor(added)).toBeNull()
   })
 })
