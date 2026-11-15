@@ -78,12 +78,6 @@ thresholds:
       contact_flight_surgeon: true
       source: aha-bp-readings
     - color: yellow
-      label: Elevated
-      when: "systolic >= 120 and diastolic < 80"
-      text: Your blood pressure is elevated. Keep heart-healthy habits, such as a balanced diet and regular exercise.
-      contact_flight_surgeon: false
-      source: aha-bp-readings
-    - color: yellow
       label: Low blood pressure
       when: "systolic < 90 or diastolic < 60"
       text: >-
@@ -91,6 +85,12 @@ thresholds:
         flight surgeon if you feel dizzy, confused, nauseous, very tired, or faint.
       contact_flight_surgeon: if-symptoms
       source: aha-low-bp
+    - color: yellow
+      label: Elevated
+      when: "systolic >= 120 and diastolic < 80"
+      text: Your blood pressure is elevated. Keep heart-healthy habits, such as a balanced diet and regular exercise.
+      contact_flight_surgeon: false
+      source: aha-bp-readings
     - color: green
       label: Normal
       when: "systolic < 120 and diastolic < 80"
@@ -101,7 +101,7 @@ thresholds:
     NASA-STD-3001 gives no numeric blood pressure ranges, so the categories come
     from the American Heart Association. The AHA page defines hypotension as
     "less than 90/60 mm Hg" without saying whether both numbers must be low; the
-    rule above flags either one, which the team must confirm.
+    rule above flags either one.
   sources: [aha-bp-readings, aha-low-bp, nasa-std-3001-v1]
 
 countermeasures:
@@ -178,4 +178,4 @@ sources:
     url: https://www.heart.org/en/health-topics/high-blood-pressure/understanding-blood-pressure-readings/monitoring-your-blood-pressure-at-home
 
 author: Troy Leonardo Moreno Calderon
-reviewer: null
+reviewer: Mike Armando Montano Valencia
