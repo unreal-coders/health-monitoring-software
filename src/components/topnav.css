@@ -4,7 +4,9 @@
   position: sticky;
   top: 0;
   z-index: 10;
-  background: color-mix(in srgb, var(--color-bg) 60%, transparent);
+  /* Nearly opaque so content scrolling under the sticky bar stays legible; stars still show faintly */
+  background: color-mix(in srgb, var(--color-bg) 92%, transparent);
+  backdrop-filter: blur(8px);
   border-bottom: 1px solid var(--color-border);
 }
 
@@ -133,6 +135,11 @@
 }
 
 @media (max-width: 640px) {
+  /* The bar wraps to several rows on phones; let it scroll away instead of covering the screen */
+  .topnav {
+    position: static;
+  }
+
   .topnav-tabs {
     order: 3;
     flex-basis: 100%;
